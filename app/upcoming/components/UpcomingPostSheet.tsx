@@ -19,6 +19,7 @@ import {
   Select,
   Stack,
   Text,
+  Textarea,
   TextInput,
   UnstyledButton,
   useMantineTheme,
@@ -36,7 +37,7 @@ type UpcomingPostSheetProps = {
 
 type ReelType = (typeof REEL_TYPE_KINDS)[number];
 
-// Adds an upcoming post (type, title, photos or clips, spot and date), or edits one's details.
+// Adds an upcoming post (type, title, photos or clips, caption and spot), or edits one's details.
 export function UpcomingPostSheet(props: UpcomingPostSheetProps) {
   return (
     <Drawer
@@ -77,9 +78,9 @@ function PostForm({ post, onClose }: UpcomingPostSheetProps) {
 
   const [kind, setKind] = useState<UpcomingPostKind>(post?.kind ?? "carousel");
   const [title, setTitle] = useState(post?.title ?? "");
+  const [caption, setCaption] = useState(post?.caption ?? "");
   const [reelType, setReelType] = useState<ReelType>((post?.reelType as ReelType) ?? "bts");
   const [spotId, setSpotId] = useState<string | null>(post?.spotId ?? null);
-  const [postDate, setPostDate] = useState(post?.postDate ?? "");
   const [picked, setPicked] = useState<PickedFile[]>([]);
   const [progress, setProgress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -167,7 +168,7 @@ function PostForm({ post, onClose }: UpcomingPostSheetProps) {
     try {
       if (isEditing) {
         setProgress("Saving…");
-        await update.mutateAsync({ id: post.id, title, spotId, postDate: postDate || null });
+        await update.mutateAsync({ id: post.id, title, caption, spotId });
       } else {
         const media = await uploadAll(
           picked.map((item) => item.file),
@@ -177,9 +178,9 @@ function PostForm({ post, onClose }: UpcomingPostSheetProps) {
         await create.mutateAsync({
           kind,
           title,
+          caption: kind === "reel" ? "" : caption,
           reelType: kind === "reel" ? reelType : null,
           spotId,
-          postDate: postDate || null,
           media,
         });
       }
@@ -404,27 +405,32 @@ function PostForm({ post, onClose }: UpcomingPostSheetProps) {
         </Stack>
       )}
 
-      <Group gap="sm" grow align="flex-start">
-        <Select
+      {kind !== "reel" && (
+        <Textarea
           size="md"
-          label="Spot"
-          placeholder="Pick a spot"
-          data={spotOptions}
-          value={spotId}
-          onChange={setSpotId}
-          searchable
-          clearable
-          nothingFoundMessage="No spots match"
-          comboboxProps={{ zIndex: 400 }}
+          label="Caption"
+          placeholder="What you'll write with the post"
+          value={caption}
+          onChange={(event) => setCaption(event.currentTarget.value)}
+          autosize
+          minRows={3}
+          maxRows={8}
+          maxLength={2200}
         />
-        <TextInput
-          size="md"
-          type="date"
-          label="Post date (optional)"
-          value={postDate}
-          onChange={(event) => setPostDate(event.currentTarget.value)}
-        />
-      </Group>
+      )}
+
+      <Select
+        size="md"
+        label="Spot"
+        placeholder="Pick a spot"
+        data={spotOptions}
+        value={spotId}
+        onChange={setSpotId}
+        searchable
+        clearable
+        nothingFoundMessage="No spots match"
+        comboboxProps={{ zIndex: 400 }}
+      />
 
       {error && (
         <Text fz="sm" c="red.4" role="alert">

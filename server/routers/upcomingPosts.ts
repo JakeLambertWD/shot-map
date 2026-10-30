@@ -6,7 +6,6 @@ import {
 } from "@/lib/photo-spots";
 import { TRPCError } from "@trpc/server";
 import { del } from "@vercel/blob";
-import { sql } from "kysely";
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
 import { assertCanEdit, getDb } from "./spots";
@@ -28,12 +27,11 @@ const postSchema = z.object({
   id: z.string(),
   kind: z.enum(UPCOMING_POST_KINDS),
   title: z.string(),
+  caption: z.string(),
   reelType: z.enum(UPCOMING_REEL_TYPES).nullable(),
   instagramUrl: z.string().nullable(),
   spotId: z.string().nullable(),
   spotTitle: z.string().nullable(),
-  // "YYYY-MM-DD", or null when no date is planned yet.
-  postDate: z.string().nullable(),
   media: z.array(mediaSchema),
 });
 
@@ -41,10 +39,7 @@ export type UpcomingPost = z.infer<typeof postSchema>;
 export type UpcomingPostMedia = z.infer<typeof mediaSchema>;
 
 const titleSchema = z.string().trim().min(1, "Give the post a title").max(160);
-const postDateSchema = z
-  .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "Pick a date")
-  .nullable();
+const captionSchema = z.string().trim().max(2200);
 const newMediaSchema = z.object({
   url: z.string().refine(isUpcomingMediaUrl, "Media must be uploaded to Vercel Blob."),
   mediaType: z.enum(["image", "video"]),
@@ -76,9 +71,9 @@ async function nextMediaPosition(postId: string) {
   return maxPosition === null ? 0 : Number(maxPosition) + 1;
 }
 
-// Photos, carousels and reels waiting to be posted, ordered by when they're planned to go out.
+// Photos, carousels and reels waiting to be posted.
 export const upcomingPostsRouter = router({
-  // Every upcoming post, soonest first, then the ones without a date (newest first).
+  // Every upcoming post, newest first.
   list: publicProcedure.query(async () => {
     const db = getDb();
     const [postRows, mediaRows] = await Promise.all([
@@ -89,13 +84,12 @@ export const upcomingPostsRouter = router({
           "post.id",
           "post.kind",
           "post.title",
+          "post.caption",
           "post.reel_type as reelType",
           "post.instagram_url as instagramUrl",
           "post.spot_id as spotId",
           "spot.title as spotTitle",
-          sql<string | null>`to_char(post.post_date, 'YYYY-MM-DD')`.as("postDate"),
         ])
-        .orderBy(sql`post.post_date asc nulls last`)
         .orderBy("post.created_at", "desc")
         .execute(),
       db
@@ -129,9 +123,9 @@ export const upcomingPostsRouter = router({
       z.object({
         kind: z.enum(UPCOMING_POST_KINDS),
         title: titleSchema,
+        caption: captionSchema,
         reelType: z.enum(UPCOMING_REEL_TYPES).nullable(),
         spotId: z.uuid().nullable(),
-        postDate: postDateSchema,
         media: z.array(newMediaSchema).max(MAX_UPCOMING_MEDIA),
       }),
     )
@@ -145,9 +139,9 @@ export const upcomingPostsRouter = router({
             .values({
               kind: input.kind,
               title: input.title,
+              caption: input.caption,
               reel_type: input.kind === "reel" ? (input.reelType ?? "bts") : null,
               spot_id: input.spotId,
-              post_date: input.postDate,
             })
             .returning("id")
             .executeTakeFirstOrThrow();
@@ -171,21 +165,21 @@ export const upcomingPostsRouter = router({
       return { id };
     }),
 
-  // Title, spot and date.
+  // Title, caption and spot.
   update: publicProcedure
     .input(
       z.object({
         id: z.uuid(),
         title: titleSchema,
+        caption: captionSchema,
         spotId: z.uuid().nullable(),
-        postDate: postDateSchema,
       }),
     )
     .mutation(async ({ input }) => {
       assertCanEdit();
       const result = await getDb()
         .updateTable("upcoming_post")
-        .set({ title: input.title, spot_id: input.spotId, post_date: input.postDate })
+        .set({ title: input.title, caption: input.caption, spot_id: input.spotId })
         .where("id", "=", input.id)
         .executeTakeFirst();
       if (result.numUpdatedRows === BigInt(0)) notFound();

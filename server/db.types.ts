@@ -107,6 +107,7 @@ export interface TrialReel {
 }
 
 export interface UpcomingPost {
+  caption: Generated<string>;
   created_at: Generated<Timestamp>;
   id: Generated<string>;
   instagram_url: string | null;
