@@ -10,11 +10,9 @@ import { formatPhotoPostSummary } from "./UpcomingPosts.constants";
 // Tapping it opens the post's details to edit.
 export function UpcomingPhotoPostCard({
   post,
-  isUndated,
   onOpen,
 }: {
   post: UpcomingPost;
-  isUndated: boolean;
   onOpen: () => void;
 }) {
   return (
@@ -26,7 +24,7 @@ export function UpcomingPhotoPostCard({
       w="100%"
       style={{
         borderRadius: "var(--mantine-radius-md)",
-        border: isUndated ? "1px dashed var(--mantine-color-brown-3)" : REEL_CARD_BORDER,
+        border: REEL_CARD_BORDER,
       }}
     >
       <Stack gap="sm">
@@ -70,21 +68,19 @@ export function UpcomingPhotoPostCard({
             ))
           )}
         </Group>
-        <Group justify="space-between" align="flex-end" wrap="nowrap" gap="xs">
-          <Stack gap={4} miw={0}>
-            <Text ff="heading" fz={15} fw={600} lh={1.3} c="brown.0">
-              {post.title}
-            </Text>
-            <Text fz="xs" c="brown.1">
-              {formatPhotoPostSummary(post)}
-            </Text>
-          </Stack>
-          {isUndated && (
-            <Text fz={13} fw={700} c="yellow.5" style={{ whiteSpace: "nowrap" }}>
-              Set a date
+        <Stack gap={4} miw={0}>
+          <Text ff="heading" fz={15} fw={600} lh={1.3} c="brown.0">
+            {post.title}
+          </Text>
+          <Text fz="xs" c="brown.1">
+            {formatPhotoPostSummary(post)}
+          </Text>
+          {post.caption && (
+            <Text fz="sm" lh={1.35} c="brown.0" lineClamp={2} style={{ whiteSpace: "pre-line" }}>
+              {post.caption}
             </Text>
           )}
-        </Group>
+        </Stack>
       </Stack>
     </UnstyledButton>
   );
