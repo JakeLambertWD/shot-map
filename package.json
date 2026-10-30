@@ -1,0 +1,47 @@
+{
+  "name": "shot-map",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.22.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:types": "kysely-codegen --dialect postgres --env-file .env.local --out-file server/db.types.ts --include-pattern 'public.*'"
+  },
+  "dependencies": {
+    "@mantine/core": "^9.5.2",
+    "@mantine/hooks": "^9.5.2",
+    "@neondatabase/serverless": "^1.1.0",
+    "@tabler/icons-react": "^3.47.0",
+    "@tanstack/react-query": "^5.102.1",
+    "@trpc/client": "^11.18.0",
+    "@trpc/react-query": "^11.18.0",
+    "@trpc/server": "^11.18.0",
+    "@vercel/blob": "^2.8.1",
+    "kysely": "^0.29.7",
+    "maplibre-gl": "^5.24.0",
+    "motion": "^13.4.0",
+    "next": "16.3.2",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-map-gl": "^8.1.3",
+    "supercluster": "^9.1.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/supercluster": "^7.1.3",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.2",
+    "kysely-codegen": "^0.20.0",
+    "pg": "^8.23.1",
+    "prettier": "^3.9.8",
+    "typescript": "^5"
+  }
+}
