@@ -1,0 +1,289 @@
+import {
+  cleanInstagramUrl,
+  isInstagramUrl,
+  isUpcomingMediaUrl,
+  MAX_UPCOMING_MEDIA,
+} from "@/lib/photo-spots";
+import { TRPCError } from "@trpc/server";
+import { del } from "@vercel/blob";
+import { sql } from "kysely";
+import { z } from "zod";
+import { publicProcedure, router } from "../trpc";
+import { assertCanEdit, getDb } from "./spots";
+
+export const UPCOMING_POST_KINDS = ["carousel", "single", "reel"] as const;
+export type UpcomingPostKind = (typeof UPCOMING_POST_KINDS)[number];
+export const UPCOMING_REEL_TYPES = ["educational", "technique", "bts"] as const;
+
+const mediaSchema = z.object({
+  id: z.string(),
+  mediaUrl: z.string(),
+  mediaType: z.enum(["image", "video"]),
+  description: z.string(),
+  durationSeconds: z.number().nullable(),
+  position: z.number(),
+});
+
+const postSchema = z.object({
+  id: z.string(),
+  kind: z.enum(UPCOMING_POST_KINDS),
+  title: z.string(),
+  reelType: z.enum(UPCOMING_REEL_TYPES).nullable(),
+  instagramUrl: z.string().nullable(),
+  spotId: z.string().nullable(),
+  spotTitle: z.string().nullable(),
+  // "YYYY-MM-DD", or null when no date is planned yet.
+  postDate: z.string().nullable(),
+  media: z.array(mediaSchema),
+});
+
+export type UpcomingPost = z.infer<typeof postSchema>;
+export type UpcomingPostMedia = z.infer<typeof mediaSchema>;
+
+const titleSchema = z.string().trim().min(1, "Give the post a title").max(160);
+const postDateSchema = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Pick a date")
+  .nullable();
+const newMediaSchema = z.object({
+  url: z.string().refine(isUpcomingMediaUrl, "Media must be uploaded to Vercel Blob."),
+  mediaType: z.enum(["image", "video"]),
+  durationSeconds: z.number().int().min(1).max(600).nullable(),
+});
+
+function notFound(): never {
+  throw new TRPCError({ code: "NOT_FOUND", message: "Upcoming post not found." });
+}
+
+// Deletes Upcoming Post files from Vercel Blob. The rows are already gone, so a leftover file is
+// harmless and never fails the request.
+async function deleteMediaFiles(urls: string[]) {
+  const blobUrls = urls.filter(isUpcomingMediaUrl);
+  if (blobUrls.length === 0 || !process.env.BLOB_READ_WRITE_TOKEN) return;
+  try {
+    await del(blobUrls);
+  } catch (error) {
+    console.error("Failed to delete upcoming post media from Vercel Blob:", error);
+  }
+}
+
+async function nextMediaPosition(postId: string) {
+  const { maxPosition } = await getDb()
+    .selectFrom("upcoming_post_media")
+    .select((eb) => eb.fn.max("position").as("maxPosition"))
+    .where("post_id", "=", postId)
+    .executeTakeFirstOrThrow();
+  return maxPosition === null ? 0 : Number(maxPosition) + 1;
+}
+
+// Photos, carousels and reels waiting to be posted, ordered by when they're planned to go out.
+export const upcomingPostsRouter = router({
+  // Every upcoming post, soonest first, then the ones without a date (newest first).
+  list: publicProcedure.query(async () => {
+    const db = getDb();
+    const [postRows, mediaRows] = await Promise.all([
+      db
+        .selectFrom("upcoming_post as post")
+        .leftJoin("photo_spot as spot", "spot.id", "post.spot_id")
+        .select([
+          "post.id",
+          "post.kind",
+          "post.title",
+          "post.reel_type as reelType",
+          "post.instagram_url as instagramUrl",
+          "post.spot_id as spotId",
+          "spot.title as spotTitle",
+          sql<string | null>`to_char(post.post_date, 'YYYY-MM-DD')`.as("postDate"),
+        ])
+        .orderBy(sql`post.post_date asc nulls last`)
+        .orderBy("post.created_at", "desc")
+        .execute(),
+      db
+        .selectFrom("upcoming_post_media")
+        .select([
+          "id",
+          "post_id as postId",
+          "media_url as mediaUrl",
+          "media_type as mediaType",
+          "description",
+          "duration_seconds as durationSeconds",
+          "position",
+        ])
+        .orderBy("position")
+        .orderBy("created_at")
+        .execute(),
+    ]);
+
+    const mediaByPost = new Map<string, typeof mediaRows>();
+    for (const row of mediaRows) {
+      mediaByPost.set(row.postId, [...(mediaByPost.get(row.postId) ?? []), row]);
+    }
+
+    return z
+      .array(postSchema)
+      .parse(postRows.map((post) => ({ ...post, media: mediaByPost.get(post.id) ?? [] })));
+  }),
+
+  create: publicProcedure
+    .input(
+      z.object({
+        kind: z.enum(UPCOMING_POST_KINDS),
+        title: titleSchema,
+        reelType: z.enum(UPCOMING_REEL_TYPES).nullable(),
+        spotId: z.uuid().nullable(),
+        postDate: postDateSchema,
+        media: z.array(newMediaSchema).max(MAX_UPCOMING_MEDIA),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+      const id = await getDb()
+        .transaction()
+        .execute(async (trx) => {
+          const post = await trx
+            .insertInto("upcoming_post")
+            .values({
+              kind: input.kind,
+              title: input.title,
+              reel_type: input.kind === "reel" ? (input.reelType ?? "bts") : null,
+              spot_id: input.spotId,
+              post_date: input.postDate,
+            })
+            .returning("id")
+            .executeTakeFirstOrThrow();
+
+          if (input.media.length > 0) {
+            await trx
+              .insertInto("upcoming_post_media")
+              .values(
+                input.media.map((media, position) => ({
+                  post_id: post.id,
+                  media_url: media.url,
+                  media_type: media.mediaType,
+                  duration_seconds: media.durationSeconds,
+                  position,
+                })),
+              )
+              .execute();
+          }
+          return post.id;
+        });
+      return { id };
+    }),
+
+  // Title, spot and date.
+  update: publicProcedure
+    .input(
+      z.object({
+        id: z.uuid(),
+        title: titleSchema,
+        spotId: z.uuid().nullable(),
+        postDate: postDateSchema,
+      }),
+    )
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+      const result = await getDb()
+        .updateTable("upcoming_post")
+        .set({ title: input.title, spot_id: input.spotId, post_date: input.postDate })
+        .where("id", "=", input.id)
+        .executeTakeFirst();
+      if (result.numUpdatedRows === BigInt(0)) notFound();
+    }),
+
+  setReelType: publicProcedure
+    .input(z.object({ id: z.uuid(), reelType: z.enum(UPCOMING_REEL_TYPES) }))
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+      await getDb()
+        .updateTable("upcoming_post")
+        .set({ reel_type: input.reelType })
+        .where("id", "=", input.id)
+        .where("kind", "=", "reel")
+        .execute();
+    }),
+
+  setInstagramUrl: publicProcedure
+    .input(
+      z.object({
+        id: z.uuid(),
+        instagramUrl: z
+          .string()
+          .trim()
+          .refine(isInstagramUrl, "Paste a link from instagram.com, like a reel or post.")
+          .transform(cleanInstagramUrl)
+          .nullable(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+      await getDb()
+        .updateTable("upcoming_post")
+        .set({ instagram_url: input.instagramUrl })
+        .where("id", "=", input.id)
+        .execute();
+    }),
+
+  // Adds photos or clips to the end of a post.
+  addMedia: publicProcedure
+    .input(
+      z.object({ postId: z.uuid(), media: z.array(newMediaSchema).min(1).max(MAX_UPCOMING_MEDIA) }),
+    )
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+      const start = await nextMediaPosition(input.postId);
+      await getDb()
+        .insertInto("upcoming_post_media")
+        .values(
+          input.media.map((media, index) => ({
+            post_id: input.postId,
+            media_url: media.url,
+            media_type: media.mediaType,
+            duration_seconds: media.durationSeconds,
+            position: start + index,
+          })),
+        )
+        .execute();
+    }),
+
+  // A reel clip's description and length.
+  updateMedia: publicProcedure
+    .input(
+      z.object({
+        id: z.uuid(),
+        description: z.string().trim().max(1000),
+        durationSeconds: z.number().int().min(1).max(600).nullable(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+      await getDb()
+        .updateTable("upcoming_post_media")
+        .set({ description: input.description, duration_seconds: input.durationSeconds })
+        .where("id", "=", input.id)
+        .execute();
+    }),
+
+  deleteMedia: publicProcedure.input(z.object({ id: z.uuid() })).mutation(async ({ input }) => {
+    assertCanEdit();
+    const row = await getDb()
+      .deleteFrom("upcoming_post_media")
+      .where("id", "=", input.id)
+      .returning("media_url")
+      .executeTakeFirst();
+    if (row) await deleteMediaFiles([row.media_url]);
+  }),
+
+  // Deletes a post and its files, e.g. once it's been posted.
+  delete: publicProcedure.input(z.object({ id: z.uuid() })).mutation(async ({ input }) => {
+    assertCanEdit();
+    const db = getDb();
+    const media = await db
+      .selectFrom("upcoming_post_media")
+      .select("media_url")
+      .where("post_id", "=", input.id)
+      .execute();
+    await db.deleteFrom("upcoming_post").where("id", "=", input.id).execute();
+    await deleteMediaFiles(media.map((row) => row.media_url));
+  }),
+});

@@ -14,6 +14,12 @@ export const SPOT_PHOTO_ALLOWED_TYPES = [
   "image/heif",
 ] as const;
 
+// Upcoming Posts keep their photos and videos under their own prefix in the same Blob store.
+export const UPCOMING_MEDIA_PATH_PREFIX = "upcoming/";
+export const UPCOMING_VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/webm"] as const;
+export const UPCOMING_VIDEO_MAX_BYTES = 500 * 1024 * 1024;
+export const MAX_UPCOMING_MEDIA = 20;
+
 export const MAX_SPOT_PHOTOS = 10;
 export const MAX_SPOT_TAGS = 8;
 
@@ -55,6 +61,20 @@ export function isSpotPhotoUrl(value: string) {
       url.protocol === "https:" &&
       url.hostname.endsWith(".public.blob.vercel-storage.com") &&
       url.pathname.startsWith(`/${SPOT_PHOTO_PATH_PREFIX}`)
+    );
+  } catch {
+    return false;
+  }
+}
+
+// Only accept Upcoming Post media that was uploaded to this project's public Vercel Blob store.
+export function isUpcomingMediaUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return (
+      url.protocol === "https:" &&
+      url.hostname.endsWith(".public.blob.vercel-storage.com") &&
+      url.pathname.startsWith(`/${UPCOMING_MEDIA_PATH_PREFIX}`)
     );
   } catch {
     return false;

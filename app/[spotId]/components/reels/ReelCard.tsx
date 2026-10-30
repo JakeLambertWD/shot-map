@@ -53,6 +53,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
   });
   const deleteReel = api.reels.delete.useMutation({ onSuccess: refresh });
   const setKind = api.reels.setKind.useMutation({ onSuccess: refresh });
+  const setInstagramUrl = api.reels.setInstagramUrl.useMutation({ onSuccess: refresh });
 
   const isSavingClip = addClip.isPending || updateClip.isPending || deleteClip.isPending;
   const clipError =
@@ -248,12 +249,11 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
 
       {CAN_EDIT_SPOTS && (
         <InstagramLinkSheet
-          spotId={spotId}
-          reelId={reel.id}
           reelTitle={reel.title}
           currentUrl={reel.instagramUrl}
           opened={linkSheetOpen}
           onClose={() => setLinkSheetOpen(false)}
+          onSave={(instagramUrl) => setInstagramUrl.mutateAsync({ id: reel.id, instagramUrl })}
         />
       )}
     </Paper>

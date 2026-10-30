@@ -24,6 +24,7 @@ import {
   IconCalendar,
   IconCheck,
   IconCurrentLocation,
+  IconLibraryPhoto,
   IconPlus,
 } from "@tabler/icons-react";
 import { findNearestPostcode } from "@/lib/postcodes";
@@ -91,6 +92,8 @@ export function PhotoSpotsMap() {
   const moveSpot = api.spots.move.useMutation();
   const mapStyle = useMapStyle();
   const shoot = useTodayShoot();
+  // Posts waiting to go out, counted on the Upcoming button.
+  const upcomingCount = api.upcomingPosts.list.useQuery().data?.length ?? 0;
 
   const [viewport, setViewport] = useState<Viewport | null>(null);
   const [searchedPlace, setSearchedPlace] = useState<PlaceResult | null>(null);
@@ -539,7 +542,7 @@ export function PhotoSpotsMap() {
         </Center>
       )}
 
-      <Box pos="absolute" bottom={MAP_OVERLAY_BOTTOM_OFFSET} left={0} right={0} px="lg">
+      <Box pos="absolute" bottom={MAP_OVERLAY_BOTTOM_OFFSET} left={0} right={0} px="md">
         {activeFilterCount > 0 && (
           <Box mb="md">
             <FilterResultCount
@@ -584,73 +587,119 @@ export function PhotoSpotsMap() {
             </Group>
           </Stack>
         ) : (
-          <Group gap="sm" align="stretch" justify="flex-end" wrap="nowrap">
-            {/* Today's shoot, with how many spots are on it. */}
-            <Button
-              component={Link}
-              href="/today"
-              h="auto"
-              radius="sm"
-              variant="default"
-              leftSection={<IconCalendar size={18} color={theme.colors.yellow[5]} />}
-              rightSection={
-                shoot.spots.length > 0 ? (
-                  <Text
-                    component="span"
-                    fz="xs"
-                    fw={900}
-                    c="brown.9"
-                    bg="yellow.5"
-                    px={6}
-                    miw={22}
-                    ta="center"
-                    style={{ borderRadius: 11, lineHeight: "22px" }}
-                  >
-                    {shoot.spots.length}
-                  </Text>
-                ) : null
-              }
-              styles={{
-                root: {
-                  backgroundColor: theme.colors.brown[7],
-                  borderColor:
-                    shoot.spots.length > 0 ? theme.colors.yellow[5] : theme.colors.brown[4],
-                  color: theme.colors.brown[0],
-                },
-              }}
-            >
-              Today
-            </Button>
-            <Tooltip label={locationError ?? "Centre on my location"}>
-              <ActionIcon
-                aria-label={locationError ?? "Centre on my location"}
-                onClick={() => locateUser()}
-                loading={isLocating}
-                variant="default"
-                size={56}
+          <Stack gap="sm">
+            {/* Floats above the bar on the right, leaving the bar room for its labels. */}
+            <Group justify="flex-end" style={{ pointerEvents: "none" }}>
+              <Tooltip label={locationError ?? "Centre on my location"}>
+                <ActionIcon
+                  aria-label={locationError ?? "Centre on my location"}
+                  onClick={() => locateUser()}
+                  loading={isLocating}
+                  variant="default"
+                  size={56}
+                  radius="sm"
+                  styles={{
+                    root: {
+                      backgroundColor: theme.colors.brown[7],
+                      borderColor: theme.colors.brown[4],
+                      pointerEvents: "auto",
+                    },
+                  }}
+                >
+                  <IconCurrentLocation size={22} color={theme.colors.brown[0]} />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
+            <Group gap="xs" align="stretch" justify="flex-end" wrap="nowrap">
+              {/* Content captured and waiting to be posted. */}
+              <Button
+                component={Link}
+                href="/upcoming"
+                h="auto"
+                px="sm"
                 radius="sm"
+                variant="default"
+                leftSection={<IconLibraryPhoto size={18} color={theme.colors.yellow[5]} />}
+                rightSection={
+                  upcomingCount > 0 ? (
+                    <Text
+                      component="span"
+                      fz="xs"
+                      fw={900}
+                      c="brown.9"
+                      bg="yellow.5"
+                      px={6}
+                      miw={22}
+                      ta="center"
+                      style={{ borderRadius: 11, lineHeight: "22px" }}
+                    >
+                      {upcomingCount}
+                    </Text>
+                  ) : null
+                }
                 styles={{
                   root: {
                     backgroundColor: theme.colors.brown[7],
                     borderColor: theme.colors.brown[4],
+                    color: theme.colors.brown[0],
+                  },
+                  section: { marginInlineStart: 8 },
+                }}
+              >
+                Upcoming
+              </Button>
+              {/* Today's shoot, with how many spots are on it. */}
+              <Button
+                component={Link}
+                href="/today"
+                h="auto"
+                px="sm"
+                radius="sm"
+                variant="default"
+                leftSection={<IconCalendar size={18} color={theme.colors.yellow[5]} />}
+                rightSection={
+                  shoot.spots.length > 0 ? (
+                    <Text
+                      component="span"
+                      fz="xs"
+                      fw={900}
+                      c="brown.9"
+                      bg="yellow.5"
+                      px={6}
+                      miw={22}
+                      ta="center"
+                      style={{ borderRadius: 11, lineHeight: "22px" }}
+                    >
+                      {shoot.spots.length}
+                    </Text>
+                  ) : null
+                }
+                styles={{
+                  root: {
+                    backgroundColor: theme.colors.brown[7],
+                    borderColor:
+                      shoot.spots.length > 0 ? theme.colors.yellow[5] : theme.colors.brown[4],
+                    color: theme.colors.brown[0],
                   },
                 }}
               >
-                <IconCurrentLocation size={22} color={theme.colors.brown[0]} />
-              </ActionIcon>
-            </Tooltip>
-            {CAN_EDIT_SPOTS && (
-              <Button
-                h="auto"
-                radius="sm"
-                autoContrast
-                leftSection={<IconPlus size={18} />}
-                onClick={confirmPlacement}
-              >
-                Add spot
+                Today
               </Button>
-            )}
-          </Group>
+              {CAN_EDIT_SPOTS && (
+                <Tooltip label="Add spot">
+                  <ActionIcon
+                    aria-label="Add spot"
+                    onClick={confirmPlacement}
+                    size={56}
+                    radius="sm"
+                    color="yellow.5"
+                  >
+                    <IconPlus size={24} stroke={2.6} color={theme.colors.brown[9]} />
+                  </ActionIcon>
+                </Tooltip>
+              )}
+            </Group>
+          </Stack>
         )}
       </Box>
 

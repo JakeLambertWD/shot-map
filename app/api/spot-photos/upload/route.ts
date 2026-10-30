@@ -3,10 +3,14 @@ import {
   SPOT_PHOTO_ALLOWED_TYPES,
   SPOT_PHOTO_MAX_BYTES,
   SPOT_PHOTO_PATH_PREFIX,
+  UPCOMING_MEDIA_PATH_PREFIX,
+  UPCOMING_VIDEO_MAX_BYTES,
+  UPCOMING_VIDEO_TYPES,
 } from "@/lib/photo-spots";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 
-// Issues short-lived tokens so the browser can upload spot photos straight to Vercel Blob.
+// Issues short-lived tokens so the browser can upload spot photos, and Upcoming Post photos and
+// videos, straight to Vercel Blob.
 export async function POST(request: Request) {
   if (!CAN_EDIT_SPOTS) {
     return Response.json(
@@ -29,6 +33,14 @@ export async function POST(request: Request) {
       body,
       request,
       onBeforeGenerateToken: async (pathname) => {
+        if (pathname.startsWith(UPCOMING_MEDIA_PATH_PREFIX)) {
+          return {
+            allowedContentTypes: [...SPOT_PHOTO_ALLOWED_TYPES, ...UPCOMING_VIDEO_TYPES],
+            maximumSizeInBytes: UPCOMING_VIDEO_MAX_BYTES,
+            addRandomSuffix: true,
+          };
+        }
+
         if (!pathname.startsWith(SPOT_PHOTO_PATH_PREFIX)) {
           throw new Error("Invalid upload path.");
         }

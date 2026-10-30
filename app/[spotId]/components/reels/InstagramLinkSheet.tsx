@@ -1,18 +1,17 @@
 "use client";
 
-import { api } from "@/app/providers";
 import { isInstagramUrl } from "@/lib/photo-spots";
 import { Button, Drawer, Group, Stack, Text, TextInput } from "@mantine/core";
 import { IconBrandInstagram, IconCheck } from "@tabler/icons-react";
 import { useState } from "react";
 
 type InstagramLinkSheetProps = {
-  spotId: string;
-  reelId: string;
   reelTitle: string;
   currentUrl: string | null;
   opened: boolean;
   onClose: () => void;
+  // Saves the link, or removes it with null. Rejects with the reason it couldn't be saved.
+  onSave: (instagramUrl: string | null) => Promise<unknown>;
 };
 
 export function InstagramLinkSheet(props: InstagramLinkSheetProps) {
@@ -44,22 +43,29 @@ export function InstagramLinkSheet(props: InstagramLinkSheetProps) {
   );
 }
 
-function InstagramLinkForm({ spotId, reelId, currentUrl, onClose }: InstagramLinkSheetProps) {
-  const utils = api.useUtils();
+function InstagramLinkForm({ currentUrl, onClose, onSave }: InstagramLinkSheetProps) {
   const [value, setValue] = useState(currentUrl ?? "");
   const [showError, setShowError] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-  const setInstagramUrl = api.reels.setInstagramUrl.useMutation({
-    onSuccess: async () => {
-      await utils.reels.list.invalidate({ spotId });
+  async function saveUrl(instagramUrl: string | null) {
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      await onSave(instagramUrl);
       onClose();
-    },
-  });
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "Couldn't save the link.");
+    } finally {
+      setIsSaving(false);
+    }
+  }
 
   const trimmed = value.trim();
   const isValid = isInstagramUrl(trimmed);
   const error =
-    setInstagramUrl.error?.message ??
+    saveError ??
     (showError && trimmed && !isValid
       ? "Paste a link from instagram.com, like a reel or post."
       : null);
@@ -76,7 +82,7 @@ function InstagramLinkForm({ spotId, reelId, currentUrl, onClose }: InstagramLin
   function save() {
     setShowError(true);
     if (!isValid) return;
-    setInstagramUrl.mutate({ id: reelId, instagramUrl: trimmed });
+    void saveUrl(trimmed);
   }
 
   return (
@@ -112,10 +118,10 @@ function InstagramLinkForm({ spotId, reelId, currentUrl, onClose }: InstagramLin
       </Stack>
 
       <Group gap="sm" grow>
-        <Button h={52} variant="default" onClick={onClose} disabled={setInstagramUrl.isPending}>
+        <Button h={52} variant="default" onClick={onClose} disabled={isSaving}>
           Cancel
         </Button>
-        <Button h={52} onClick={save} loading={setInstagramUrl.isPending} autoContrast>
+        <Button h={52} onClick={save} loading={isSaving} autoContrast>
           Save link
         </Button>
       </Group>
@@ -124,8 +130,8 @@ function InstagramLinkForm({ spotId, reelId, currentUrl, onClose }: InstagramLin
         <Button
           variant="subtle"
           color="red.5"
-          onClick={() => setInstagramUrl.mutate({ id: reelId, instagramUrl: null })}
-          disabled={setInstagramUrl.isPending}
+          onClick={() => void saveUrl(null)}
+          disabled={isSaving}
         >
           Remove link
         </Button>

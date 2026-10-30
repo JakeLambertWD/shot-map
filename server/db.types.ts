@@ -106,6 +106,28 @@ export interface TrialReel {
   instagram_url: string;
 }
 
+export interface UpcomingPost {
+  created_at: Generated<Timestamp>;
+  id: Generated<string>;
+  instagram_url: string | null;
+  kind: string;
+  post_date: Timestamp | null;
+  reel_type: string | null;
+  spot_id: string | null;
+  title: string;
+}
+
+export interface UpcomingPostMedia {
+  created_at: Generated<Timestamp>;
+  description: Generated<string>;
+  duration_seconds: number | null;
+  id: Generated<string>;
+  media_type: string;
+  media_url: string;
+  position: Generated<number>;
+  post_id: string;
+}
+
 export interface DB {
   admin_credentials: AdminCredentials;
   creator_shot: CreatorShot;
@@ -118,4 +140,6 @@ export interface DB {
   photo_spot_reel_clip: PhotoSpotReelClip;
   photo_spot_trial_reel: PhotoSpotTrialReel;
   trial_reel: TrialReel;
+  upcoming_post: UpcomingPost;
+  upcoming_post_media: UpcomingPostMedia;
 }
