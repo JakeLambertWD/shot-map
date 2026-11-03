@@ -23,4 +23,15 @@ The spot tables already exist in Neon. New migrations go in `db/migrations` here
 safe to run more than once. Run them in the Neon SQL editor, then `pnpm db:types` to refresh
 `server/db.types.ts`.
 
+## Upcoming Post videos
+
+Videos must be MP4s under 8 MB, so the Blob store's monthly data transfer lasts. Compress them
+first (needs `brew install ffmpeg`):
+
+```bash
+scripts/compress-videos.sh ~/Desktop/reel-clips
+```
+
+This writes 720p MP4s, plus a poster frame for each, to `~/Desktop/reel-clips/compressed`.
+
 See `docs/photo-spots-map.md` for how the map, spot pages and API fit together.

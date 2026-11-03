@@ -127,6 +127,7 @@ export interface UpcomingPostMedia {
   media_url: string;
   position: Generated<number>;
   post_id: string;
+  poster_url: string | null;
 }
 
 export interface DB {

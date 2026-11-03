@@ -17,6 +17,7 @@ import {
   Collapse,
   FileButton,
   Group,
+  Image,
   Modal,
   Paper,
   Stack,
@@ -254,6 +255,8 @@ export function UpcomingReelCard({
         {playing && (
           <video
             src={playing.mediaUrl}
+            poster={playing.posterUrl ?? undefined}
+            preload="none"
             controls
             autoPlay
             playsInline
@@ -325,14 +328,9 @@ function ClipRow({
         bg="brown.5"
         style={{ borderRadius: 4, overflow: "hidden", flex: "none" }}
       >
-        <video
-          src={`${clip.mediaUrl}#t=0.1`}
-          muted
-          playsInline
-          preload="metadata"
-          aria-hidden
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
+        {clip.posterUrl && (
+          <Image src={clip.posterUrl} alt="" aria-hidden w="100%" h="100%" fit="cover" />
+        )}
         <Center pos="absolute" inset={0} aria-hidden>
           <IconPlayerPlayFilled size={14} color="var(--mantine-color-brown-0)" />
         </Center>
