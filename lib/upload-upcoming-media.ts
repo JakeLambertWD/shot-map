@@ -1,13 +1,23 @@
-import { SPOT_PHOTO_UPLOAD_URL, UPCOMING_MEDIA_PATH_PREFIX } from "@/lib/photo-spots";
+import {
+  SPOT_PHOTO_UPLOAD_URL,
+  UPCOMING_MEDIA_PATH_PREFIX,
+  UPCOMING_VIDEO_MAX_BYTES,
+  UPCOMING_VIDEO_TYPES,
+} from "@/lib/photo-spots";
 import { resizeImage } from "@/lib/resize-image";
 import { upload } from "@vercel/blob/client";
 
 export type UploadedMedia = {
   url: string;
   mediaType: "image" | "video";
+  // Videos only: a still frame shown until the video is played.
+  posterUrl: string | null;
   // Videos only, read from the file itself.
   durationSeconds: number | null;
 };
+
+const POSTER_WIDTH = 720;
+const POSTER_QUALITY = 0.75;
 
 function toSlug(value: string) {
   const slug = value
@@ -18,44 +28,88 @@ function toSlug(value: string) {
   return slug || "post";
 }
 
-// A video's length in whole seconds (1–600), or null if the browser can't read it.
-function readVideoDuration(file: File): Promise<number | null> {
+// Stops raw or oversized videos before any bytes reach the Blob store.
+function checkVideo(file: File) {
+  const hint = "Run scripts/compress-videos.sh on it first.";
+  if (!(UPCOMING_VIDEO_TYPES as readonly string[]).includes(file.type)) {
+    throw new Error(`"${file.name}" isn't an MP4. ${hint}`);
+  }
+  if (file.size > UPCOMING_VIDEO_MAX_BYTES) {
+    const limitMb = UPCOMING_VIDEO_MAX_BYTES / 1024 / 1024;
+    throw new Error(`"${file.name}" is over ${limitMb} MB. ${hint}`);
+  }
+}
+
+// A video's length in whole seconds (1–600) and a JPEG of the frame about 1s in, either of which
+// is null if the browser can't read the file.
+function readVideoDetails(
+  file: File,
+): Promise<{ durationSeconds: number | null; poster: Blob | null }> {
   return new Promise((resolve) => {
     const video = document.createElement("video");
     const url = URL.createObjectURL(file);
-    const done = (seconds: number | null) => {
+    let durationSeconds: number | null = null;
+    const done = (poster: Blob | null) => {
+      clearTimeout(timeout);
       URL.revokeObjectURL(url);
-      resolve(seconds);
+      resolve({ durationSeconds, poster });
     };
-    video.preload = "metadata";
-    video.onloadedmetadata = () =>
-      done(
-        Number.isFinite(video.duration)
-          ? Math.min(Math.max(Math.round(video.duration), 1), 600)
-          : null,
-      );
+    // Some browsers never fire `seeked` for odd files; upload without a poster rather than hang.
+    const timeout = setTimeout(() => done(null), 10_000);
+
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = "auto";
+    video.onloadedmetadata = () => {
+      if (Number.isFinite(video.duration)) {
+        durationSeconds = Math.min(Math.max(Math.round(video.duration), 1), 600);
+      }
+      video.currentTime = Math.min(1, (video.duration || 0) / 2);
+    };
+    video.onseeked = () => {
+      const scale = Math.min(1, POSTER_WIDTH / video.videoWidth);
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(video.videoWidth * scale);
+      canvas.height = Math.round(video.videoHeight * scale);
+      const context = canvas.getContext("2d");
+      if (!context || canvas.width === 0) return done(null);
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(done, "image/jpeg", POSTER_QUALITY);
+    };
     video.onerror = () => done(null);
     video.src = url;
   });
 }
 
-// Uploads a photo (resized first) or a video straight to Vercel Blob for an Upcoming Post.
+// Uploads a photo (resized first) or a video and its poster straight to Vercel Blob for an
+// Upcoming Post.
 export async function uploadUpcomingMedia(file: File, postTitle: string): Promise<UploadedMedia> {
   const isVideo = file.type.startsWith("video/");
   const slug = toSlug(postTitle);
 
   if (isVideo) {
-    const [durationSeconds, blob] = await Promise.all([
-      readVideoDuration(file),
-      upload(`${UPCOMING_MEDIA_PATH_PREFIX}${slug}.${file.name.split(".").pop() ?? "mp4"}`, file, {
+    checkVideo(file);
+    const [{ durationSeconds, poster }, blob] = await Promise.all([
+      readVideoDetails(file),
+      upload(`${UPCOMING_MEDIA_PATH_PREFIX}${slug}.mp4`, file, {
         access: "public",
         handleUploadUrl: SPOT_PHOTO_UPLOAD_URL,
         contentType: file.type,
-        // Splits big videos into parts so they upload reliably.
-        multipart: file.size > 50 * 1024 * 1024,
       }),
     ]);
-    return { url: blob.url, mediaType: "video", durationSeconds };
+    const posterBlob = poster
+      ? await upload(`${UPCOMING_MEDIA_PATH_PREFIX}${slug}-poster.jpg`, poster, {
+          access: "public",
+          handleUploadUrl: SPOT_PHOTO_UPLOAD_URL,
+          contentType: "image/jpeg",
+        })
+      : null;
+    return {
+      url: blob.url,
+      mediaType: "video",
+      posterUrl: posterBlob?.url ?? null,
+      durationSeconds,
+    };
   }
 
   const image = await resizeImage(file);
@@ -65,5 +119,5 @@ export async function uploadUpcomingMedia(file: File, postTitle: string): Promis
     handleUploadUrl: SPOT_PHOTO_UPLOAD_URL,
     contentType: image.type || file.type,
   });
-  return { url: blob.url, mediaType: "image", durationSeconds: null };
+  return { url: blob.url, mediaType: "image", posterUrl: null, durationSeconds: null };
 }

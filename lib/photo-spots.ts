@@ -16,9 +16,14 @@ export const SPOT_PHOTO_ALLOWED_TYPES = [
 
 // Upcoming Posts keep their photos and videos under their own prefix in the same Blob store.
 export const UPCOMING_MEDIA_PATH_PREFIX = "upcoming/";
-export const UPCOMING_VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/webm"] as const;
-export const UPCOMING_VIDEO_MAX_BYTES = 500 * 1024 * 1024;
+// Videos must be compressed with scripts/compress-videos.sh first: MP4 only, small enough that
+// playing one doesn't eat into the Blob store's monthly data transfer.
+export const UPCOMING_VIDEO_TYPES = ["video/mp4"] as const;
+export const UPCOMING_VIDEO_MAX_BYTES = 8 * 1024 * 1024;
 export const MAX_UPCOMING_MEDIA = 20;
+
+// Uploaded files never change (each gets a random suffix), so browsers can keep them for a year.
+export const BLOB_CACHE_MAX_AGE_SECONDS = 365 * 24 * 60 * 60;
 
 export const MAX_SPOT_PHOTOS = 10;
 export const MAX_SPOT_TAGS = 8;

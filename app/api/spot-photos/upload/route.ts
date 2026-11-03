@@ -1,4 +1,5 @@
 import {
+  BLOB_CACHE_MAX_AGE_SECONDS,
   CAN_EDIT_SPOTS,
   SPOT_PHOTO_ALLOWED_TYPES,
   SPOT_PHOTO_MAX_BYTES,
@@ -34,11 +35,20 @@ export async function POST(request: Request) {
       request,
       onBeforeGenerateToken: async (pathname) => {
         if (pathname.startsWith(UPCOMING_MEDIA_PATH_PREFIX)) {
-          return {
-            allowedContentTypes: [...SPOT_PHOTO_ALLOWED_TYPES, ...UPCOMING_VIDEO_TYPES],
-            maximumSizeInBytes: UPCOMING_VIDEO_MAX_BYTES,
-            addRandomSuffix: true,
-          };
+          // Videos are always uploaded as .mp4; everything else here is a photo or a video poster.
+          return pathname.endsWith(".mp4")
+            ? {
+                allowedContentTypes: [...UPCOMING_VIDEO_TYPES],
+                maximumSizeInBytes: UPCOMING_VIDEO_MAX_BYTES,
+                addRandomSuffix: true,
+                cacheControlMaxAge: BLOB_CACHE_MAX_AGE_SECONDS,
+              }
+            : {
+                allowedContentTypes: [...SPOT_PHOTO_ALLOWED_TYPES],
+                maximumSizeInBytes: SPOT_PHOTO_MAX_BYTES,
+                addRandomSuffix: true,
+                cacheControlMaxAge: BLOB_CACHE_MAX_AGE_SECONDS,
+              };
         }
 
         if (!pathname.startsWith(SPOT_PHOTO_PATH_PREFIX)) {
@@ -49,6 +59,7 @@ export async function POST(request: Request) {
           allowedContentTypes: [...SPOT_PHOTO_ALLOWED_TYPES],
           maximumSizeInBytes: SPOT_PHOTO_MAX_BYTES,
           addRandomSuffix: true,
+          cacheControlMaxAge: BLOB_CACHE_MAX_AGE_SECONDS,
         };
       },
     });

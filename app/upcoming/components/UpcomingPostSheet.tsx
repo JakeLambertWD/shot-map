@@ -235,12 +235,16 @@ function PostForm({ post, onClose }: UpcomingPostSheetProps) {
         key: media.id,
         url: media.mediaUrl,
         isVideo: media.mediaType === "video",
+        // Saved videos show their poster, so opening the sheet downloads no video.
+        posterUrl: media.posterUrl,
         onRemove: () => deleteMedia.mutate({ id: media.id }),
       }))
     : picked.map((item, index) => ({
         key: item.previewUrl,
         url: item.previewUrl,
         isVideo: item.file.type.startsWith("video/"),
+        // Picked files are still on this device, so previewing the video itself is free.
+        posterUrl: null,
         onRemove: () => {
           URL.revokeObjectURL(item.previewUrl);
           setPicked((current) => current.filter((_, other) => other !== index));
@@ -338,14 +342,20 @@ function PostForm({ post, onClose }: UpcomingPostSheetProps) {
               >
                 {thumb.isVideo ? (
                   <>
-                    <video
-                      src={`${thumb.url}#t=0.1`}
-                      muted
-                      playsInline
-                      preload="metadata"
-                      aria-hidden
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    />
+                    {isEditing ? (
+                      thumb.posterUrl && (
+                        <Image src={thumb.posterUrl} alt="" w="100%" h="100%" fit="cover" />
+                      )
+                    ) : (
+                      <video
+                        src={`${thumb.url}#t=0.1`}
+                        muted
+                        playsInline
+                        preload="metadata"
+                        aria-hidden
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    )}
                     <Center pos="absolute" inset={0} aria-hidden>
                       <IconPlayerPlayFilled size={16} color={theme.colors.brown[0]} />
                     </Center>

@@ -50,13 +50,9 @@ export function UpcomingPhotoPostCard({
               >
                 {media.mediaType === "video" ? (
                   <>
-                    <video
-                      src={`${media.mediaUrl}#t=0.1`}
-                      muted
-                      playsInline
-                      preload="metadata"
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    />
+                    {media.posterUrl && (
+                      <Image src={media.posterUrl} alt="" w="100%" h="100%" fit="cover" />
+                    )}
                     <Center pos="absolute" inset={0}>
                       <IconPlayerPlayFilled size={18} color="var(--mantine-color-brown-0)" />
                     </Center>
