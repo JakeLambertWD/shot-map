@@ -38,7 +38,13 @@ const GEAR_ICONS: Record<SpotGear, typeof IconCamera> = { camera: IconCamera, dr
 
 // Bottom sheet for filtering the map by weather, status and gear.
 // Choices are drafts until "Show N spots" applies them.
-export function SpotFilterSheet({ opened, onClose, filters, onApply, spots }: SpotFilterSheetProps) {
+export function SpotFilterSheet({
+  opened,
+  onClose,
+  filters,
+  onApply,
+  spots,
+}: SpotFilterSheetProps) {
   const theme = useMantineTheme();
 
   return (
@@ -288,7 +294,14 @@ function FilterSheetBody({
 function FilterSection({ label, children }: { label: string; children: ReactNode }) {
   return (
     <Box component="fieldset" m={0} p={0} style={{ border: 0 }}>
-      <Text component="legend" fz={12} fw={900} c="brown.1" pb={10} style={{ letterSpacing: "0.08em" }}>
+      <Text
+        component="legend"
+        fz={12}
+        fw={900}
+        c="brown.1"
+        pb={10}
+        style={{ letterSpacing: "0.08em" }}
+      >
         {label.toUpperCase()}
       </Text>
       {children}

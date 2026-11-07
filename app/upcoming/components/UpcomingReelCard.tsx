@@ -8,7 +8,11 @@ import { api } from "@/app/providers";
 import { CAN_EDIT_SPOTS, type ReelKind } from "@/lib/photo-spots";
 import { getPhotoUploadErrorMessage } from "@/lib/upload-spot-photo";
 import { uploadUpcomingMedia, type UploadedMedia } from "@/lib/upload-upcoming-media";
-import type { UpcomingPost, UpcomingPostMedia } from "@/server/routers/upcomingPosts";
+import type {
+  UpcomingPost,
+  UpcomingPostMedia,
+  UpcomingReelType,
+} from "@/server/routers/upcomingPosts";
 import {
   ActionIcon,
   Box,
@@ -145,7 +149,7 @@ export function UpcomingReelCard({
                 onChange={(kind) =>
                   setReelType.mutate({
                     id: post.id,
-                    reelType: kind as "educational" | "technique" | "bts",
+                    reelType: kind as UpcomingReelType,
                   })
                 }
               />

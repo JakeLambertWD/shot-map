@@ -28,6 +28,14 @@ export const REEL_KIND_COPY: Record<ReelKind, { emptyText: string; placeholder: 
     emptyText: "No 1 clip reel ideas yet",
     placeholder: "e.g. 1 Clip #01: the puddle reflection",
   },
+  humour: {
+    emptyText: "No humour reel ideas yet",
+    placeholder: "e.g. Things photographers say at blue hour",
+  },
+  cinema: {
+    emptyText: "No cinema reel ideas yet",
+    placeholder: "e.g. A slow cinematic walk through the station",
+  },
   pov: {
     emptyText: "No trial reel ideas yet",
     placeholder: "e.g. POV: you wait 20 mins for one train",
@@ -40,6 +48,8 @@ export const REEL_TYPE_KINDS = [
   "educational",
   "technique",
   "bts",
+  "humour",
+  "cinema",
 ] as const satisfies readonly ReelKind[];
 
 // Label and colours for each reel type's pill. Colours differ in lightness as well as hue.
@@ -60,6 +70,18 @@ export const REEL_TYPE_STYLES: Record<
     tint: "rgba(231, 186, 61, 0.14)",
   },
   bts: { label: "BTS", color: "#e8916a", text: "#f0ad8e", tint: "rgba(232, 145, 106, 0.12)" },
+  humour: {
+    label: "Humour",
+    color: "#c48be0",
+    text: "#d9b1ee",
+    tint: "rgba(196, 139, 224, 0.12)",
+  },
+  cinema: {
+    label: "Cinema",
+    color: "#6cc59b",
+    text: "#97d8b8",
+    tint: "rgba(108, 197, 155, 0.12)",
+  },
 };
 
 // Wording for the combined Reels tab.

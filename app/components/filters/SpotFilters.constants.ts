@@ -65,7 +65,11 @@ export function matchesSpotFilters(spot: SpotSummary, filters: SpotFilters) {
   return true;
 }
 
-export type ActiveFilterChip = { key: string; label: string; remove: (f: SpotFilters) => SpotFilters };
+export type ActiveFilterChip = {
+  key: string;
+  label: string;
+  remove: (f: SpotFilters) => SpotFilters;
+};
 
 // One removable chip per active filter, in the panel's order.
 export function getActiveFilterChips(filters: SpotFilters): ActiveFilterChip[] {
@@ -104,7 +108,9 @@ export function readStoredFilters(): SpotFilters {
     if (!stored) return EMPTY_SPOT_FILTERS;
     const parsed = JSON.parse(stored) as Partial<SpotFilters>;
     return {
-      weather: Array.isArray(parsed.weather) ? parsed.weather.filter((v) => typeof v === "string") : [],
+      weather: Array.isArray(parsed.weather)
+        ? parsed.weather.filter((v) => typeof v === "string")
+        : [],
       status: SPOT_STATUS_OPTIONS.some((option) => option.value === parsed.status)
         ? (parsed.status as SpotStatus)
         : null,

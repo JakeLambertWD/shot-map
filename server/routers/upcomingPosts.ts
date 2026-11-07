@@ -12,7 +12,8 @@ import { assertCanEdit, getDb } from "./spots";
 
 export const UPCOMING_POST_KINDS = ["carousel", "single", "reel"] as const;
 export type UpcomingPostKind = (typeof UPCOMING_POST_KINDS)[number];
-export const UPCOMING_REEL_TYPES = ["educational", "technique", "bts"] as const;
+export const UPCOMING_REEL_TYPES = ["educational", "technique", "bts", "humour", "cinema"] as const;
+export type UpcomingReelType = (typeof UPCOMING_REEL_TYPES)[number];
 
 const mediaSchema = z.object({
   id: z.string(),
