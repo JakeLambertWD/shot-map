@@ -7,6 +7,7 @@ export const SUGGESTED_SPOT_TAGS = [
   "night",
   "fog",
   "snow",
+  "autumn",
 ] as const;
 
 export const SPOT_TAG_EMOJIS: Record<string, string> = {
@@ -17,6 +18,7 @@ export const SPOT_TAG_EMOJIS: Record<string, string> = {
   fog: "🌫️",
   rain: "🌧️",
   snow: "❄️",
+  autumn: "🍂",
   any: "🌍",
 };
 
