@@ -40,7 +40,11 @@ import {
 import { useState } from "react";
 import { UpcomingMediaThumbnail } from "./UpcomingMediaThumbnail";
 import { UpcomingMediaViewer } from "./UpcomingMediaViewer";
-import { UPCOMING_POST_NUMBER_GUTTER, UpcomingPostNumber } from "./UpcomingPostNumber";
+import {
+  UPCOMING_POST_NUMBER_HEIGHT,
+  UpcomingPostNumber,
+  type UpcomingPostDragHandle,
+} from "./UpcomingPostNumber";
 import { formatReelPostSummary } from "./UpcomingPosts.constants";
 
 // The Instagram and expand buttons in the header.
@@ -50,6 +54,8 @@ type UpcomingReelCardProps = {
   post: UpcomingPost;
   // Its place in the Reels tab.
   number: number;
+  // Given, the number is a handle for dragging the reel into a new place.
+  dragHandle?: UpcomingPostDragHandle;
   expanded: boolean;
   onToggle: () => void;
   onEditDetails: () => void;
@@ -61,6 +67,7 @@ type UpcomingReelCardProps = {
 export function UpcomingReelCard({
   post,
   number,
+  dragHandle,
   expanded,
   onToggle,
   onEditDetails,
@@ -131,8 +138,8 @@ export function UpcomingReelCard({
         align="flex-start"
         p="sm"
         pr="xs"
-        // Tall enough for the number to sit under the icons on the right.
-        mih={ICON_SIZE + UPCOMING_POST_NUMBER_GUTTER + 4}
+        // Tall enough for the number to sit under the icons on the right, below the top padding.
+        mih={8 + ICON_SIZE + UPCOMING_POST_NUMBER_HEIGHT}
       >
         <Stack gap={6} flex={1} miw={0}>
           <UnstyledButton onClick={onToggle} aria-expanded={expanded}>
@@ -202,7 +209,7 @@ export function UpcomingReelCard({
 
       <Collapse expanded={expanded}>
         {/* The number shares the edit buttons' row; without them, leave it a row of its own. */}
-        <Box px="sm" pb={CAN_EDIT_SPOTS ? "sm" : UPCOMING_POST_NUMBER_GUTTER}>
+        <Box px="sm" pb={CAN_EDIT_SPOTS ? "sm" : UPCOMING_POST_NUMBER_HEIGHT}>
           <Box component="ol" m={0} p={0} style={{ listStyle: "none" }}>
             {post.media.map((clip, index) =>
               editingClipId === clip.id ? (
@@ -282,7 +289,7 @@ export function UpcomingReelCard({
         </Box>
       </Collapse>
 
-      <UpcomingPostNumber number={number} />
+      <UpcomingPostNumber postId={post.id} number={number} dragHandle={dragHandle} />
 
       <UpcomingMediaViewer
         media={post.media}

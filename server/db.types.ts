@@ -113,6 +113,7 @@ export interface UpcomingPost {
   id: Generated<string>;
   instagram_url: string | null;
   kind: string;
+  position: Generated<number>;
   post_date: Timestamp | null;
   reel_type: string | null;
   spot_id: string | null;

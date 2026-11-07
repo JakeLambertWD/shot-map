@@ -6,6 +6,7 @@ import {
 } from "@/lib/photo-spots";
 import { TRPCError } from "@trpc/server";
 import { del } from "@vercel/blob";
+import { sql } from "kysely";
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
 import { assertCanEdit, getDb } from "./spots";
@@ -98,7 +99,7 @@ async function nextMediaPosition(postId: string) {
 
 // Photos, carousels and reels waiting to be posted.
 export const upcomingPostsRouter = router({
-  // Every upcoming post, newest first.
+  // Every upcoming post, in the order they've been dragged into (new ones at the top).
   list: publicProcedure.query(async () => {
     const db = getDb();
     const [postRows, mediaRows] = await Promise.all([
@@ -115,6 +116,7 @@ export const upcomingPostsRouter = router({
           "post.spot_id as spotId",
           "spot.title as spotTitle",
         ])
+        .orderBy("post.position")
         .orderBy("post.created_at", "desc")
         .execute(),
       db
@@ -169,6 +171,8 @@ export const upcomingPostsRouter = router({
               caption: input.caption,
               reel_type: input.kind === "reel" ? (input.reelType ?? "bts") : null,
               spot_id: input.spotId,
+              // Above every other post.
+              position: sql<number>`coalesce((select min(position) from upcoming_post), 0) - 1`,
             })
             .returning("id")
             .executeTakeFirstOrThrow();
@@ -212,6 +216,38 @@ export const upcomingPostsRouter = router({
         .where("id", "=", input.id)
         .executeTakeFirst();
       if (result.numUpdatedRows === BigInt(0)) notFound();
+    }),
+
+  // Saves a new order for one tab's posts. They swap the positions they already hold, so posts
+  // in the other tab keep their place.
+  reorder: publicProcedure
+    .input(z.object({ postIds: z.array(z.uuid()).min(1).max(500) }))
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+      await getDb()
+        .transaction()
+        .execute(async (trx) => {
+          const rows = await trx
+            .selectFrom("upcoming_post")
+            .select("position")
+            .where("id", "in", input.postIds)
+            .orderBy("position")
+            .forUpdate()
+            .execute();
+          // Also catches a repeated id, which would leave the two lists different lengths.
+          if (rows.length !== input.postIds.length) notFound();
+
+          // Raw SQL: Kysely has no builder for unnest, and this updates every post in one query.
+          await sql`
+            update upcoming_post post
+            set position = slots.position
+            from unnest(
+              ${input.postIds}::uuid[],
+              ${rows.map((row) => row.position)}::integer[]
+            ) as slots(id, position)
+            where post.id = slots.id
+          `.execute(trx);
+        });
     }),
 
   setReelType: publicProcedure

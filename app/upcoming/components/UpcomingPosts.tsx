@@ -21,12 +21,13 @@ import { IconChevronLeft, IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
 import { useState } from "react";
 import { UpcomingPhotoPostCard } from "./UpcomingPhotoPostCard";
+import { UpcomingPostList } from "./UpcomingPostList";
 import { UpcomingPostSheet } from "./UpcomingPostSheet";
 import { getUpcomingTabId, UPCOMING_TABS, type UpcomingTabId } from "./UpcomingPosts.constants";
 import { UpcomingReelCard } from "./UpcomingReelCard";
 
-// The Upcoming page: everything captured and waiting to be posted, newest first, split into
-// Carousels and Reels tabs.
+// The Upcoming page: everything captured and waiting to be posted, split into Carousels and Reels
+// tabs. Posts can be dragged into the order they'll go out; new ones start at the top.
 export function UpcomingPosts() {
   const theme = useMantineTheme();
   const { data: posts, isPending, isError, error } = api.upcomingPosts.list.useQuery();
@@ -34,6 +35,27 @@ export function UpcomingPosts() {
   // undefined: sheet closed; null: adding; a post: editing it.
   const [editing, setEditing] = useState<UpcomingPost | null | undefined>(undefined);
   const [openReelId, setOpenReelId] = useState<string | null>(null);
+  const utils = api.useUtils();
+  const reorderPosts = api.upcomingPosts.reorder.useMutation();
+
+  // Shows one tab's new order straight away, then saves it.
+  function savePostOrder(postIds: string[]) {
+    utils.upcomingPosts.list.setData(undefined, (current) => {
+      if (!current) return current;
+      // The tab's posts take each other's places; the other tab's posts stay put.
+      const byId = new Map(current.map((post) => [post.id, post]));
+      const moved = new Set(postIds);
+      let next = 0;
+      return current.map((post) =>
+        moved.has(post.id) ? (byId.get(postIds[next++]) ?? post) : post,
+      );
+    });
+    reorderPosts.mutate(
+      { postIds },
+      // On failure, put back the saved order.
+      { onError: () => utils.upcomingPosts.list.invalidate() },
+    );
+  }
 
   return (
     <Container size="30rem" px={0} pb="xxl" w="100%">
@@ -152,27 +174,32 @@ export function UpcomingPosts() {
                     )}
                   </Stack>
                 ) : (
-                  <Stack gap={8} px="md" pt={4}>
-                    {tabPosts.map((post, index) =>
-                      post.kind === "reel" ? (
-                        <UpcomingReelCard
-                          key={post.id}
-                          post={post}
-                          number={index + 1}
-                          expanded={openReelId === post.id}
-                          onToggle={() => setOpenReelId(openReelId === post.id ? null : post.id)}
-                          onEditDetails={() => setEditing(post)}
-                        />
-                      ) : (
-                        <UpcomingPhotoPostCard
-                          key={post.id}
-                          post={post}
-                          number={index + 1}
-                          onOpen={() => setEditing(post)}
-                        />
-                      ),
-                    )}
-                  </Stack>
+                  <Box px="md" pt={4}>
+                    <UpcomingPostList
+                      posts={tabPosts}
+                      canReorder={CAN_EDIT_SPOTS}
+                      onReorder={savePostOrder}
+                      renderPost={(post, number, dragHandle) =>
+                        post.kind === "reel" ? (
+                          <UpcomingReelCard
+                            post={post}
+                            number={number}
+                            dragHandle={dragHandle}
+                            expanded={openReelId === post.id}
+                            onToggle={() => setOpenReelId(openReelId === post.id ? null : post.id)}
+                            onEditDetails={() => setEditing(post)}
+                          />
+                        ) : (
+                          <UpcomingPhotoPostCard
+                            post={post}
+                            number={number}
+                            dragHandle={dragHandle}
+                            onOpen={() => setEditing(post)}
+                          />
+                        )
+                      }
+                    />
+                  </Box>
                 )}
               </Tabs.Panel>
             );

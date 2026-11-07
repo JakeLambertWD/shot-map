@@ -7,7 +7,11 @@ import { IconPhoto } from "@tabler/icons-react";
 import { useState } from "react";
 import { UpcomingMediaThumbnail } from "./UpcomingMediaThumbnail";
 import { UpcomingMediaViewer } from "./UpcomingMediaViewer";
-import { UPCOMING_POST_NUMBER_GUTTER, UpcomingPostNumber } from "./UpcomingPostNumber";
+import {
+  UPCOMING_POST_NUMBER_GUTTER,
+  UpcomingPostNumber,
+  type UpcomingPostDragHandle,
+} from "./UpcomingPostNumber";
 import { formatPhotoPostSummary } from "./UpcomingPosts.constants";
 
 // A carousel or single-photo post: its photos in a row, then the title and what's in it.
@@ -15,11 +19,14 @@ import { formatPhotoPostSummary } from "./UpcomingPosts.constants";
 export function UpcomingPhotoPostCard({
   post,
   number,
+  dragHandle,
   onOpen,
 }: {
   post: UpcomingPost;
   // Its place in the Carousels tab.
   number: number;
+  // Given, the number is a handle for dragging the post into a new place.
+  dragHandle?: UpcomingPostDragHandle;
   onOpen: () => void;
 }) {
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
@@ -73,7 +80,7 @@ export function UpcomingPhotoPostCard({
           </Stack>
         </UnstyledButton>
       </Stack>
-      <UpcomingPostNumber number={number} />
+      <UpcomingPostNumber postId={post.id} number={number} dragHandle={dragHandle} />
 
       <UpcomingMediaViewer
         media={post.media}
