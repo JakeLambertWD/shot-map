@@ -32,6 +32,8 @@ type UpcomingPostSheetProps = {
   opened: boolean;
   // The post being edited; null adds a new one.
   post: UpcomingPost | null;
+  // The type a new post starts as.
+  defaultKind: UpcomingPostKind;
   onClose: () => void;
 };
 
@@ -71,12 +73,12 @@ export function UpcomingPostSheet(props: UpcomingPostSheetProps) {
 // A file picked in the add sheet, shown as a preview until it's uploaded on save.
 type PickedFile = { file: File; previewUrl: string };
 
-function PostForm({ post, onClose }: UpcomingPostSheetProps) {
+function PostForm({ post, defaultKind, onClose }: UpcomingPostSheetProps) {
   const theme = useMantineTheme();
   const utils = api.useUtils();
   const spotsQuery = api.spots.list.useQuery();
 
-  const [kind, setKind] = useState<UpcomingPostKind>(post?.kind ?? "carousel");
+  const [kind, setKind] = useState<UpcomingPostKind>(post?.kind ?? defaultKind);
   const [title, setTitle] = useState(post?.title ?? "");
   const [caption, setCaption] = useState(post?.caption ?? "");
   const [reelType, setReelType] = useState<ReelType>((post?.reelType as ReelType) ?? "bts");

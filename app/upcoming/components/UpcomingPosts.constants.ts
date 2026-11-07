@@ -5,6 +5,28 @@ export const UPCOMING_KIND_OPTIONS: { value: UpcomingPostKind; label: string }[]
   { value: "reel", label: "Reel" },
 ];
 
+// The tabs at the top of the Upcoming page. Single photo posts sit under Carousels.
+export type UpcomingTabId = "carousel" | "reel";
+
+export const UPCOMING_TABS = [
+  {
+    id: "carousel",
+    label: "Carousels",
+    emptyTitle: "No carousels waiting",
+    addLabel: "Add a carousel",
+  },
+  { id: "reel", label: "Reels", emptyTitle: "No reels waiting", addLabel: "Add a reel" },
+] as const satisfies readonly {
+  id: UpcomingTabId;
+  label: string;
+  emptyTitle: string;
+  addLabel: string;
+}[];
+
+export function getUpcomingTabId(kind: UpcomingPostKind): UpcomingTabId {
+  return kind === "reel" ? "reel" : "carousel";
+}
+
 // "Carousel · 3 photos · Canary Wharf" for photo posts.
 export function formatPhotoPostSummary(post: UpcomingPost) {
   const kind = post.kind === "single" ? "Single photo" : "Carousel";
