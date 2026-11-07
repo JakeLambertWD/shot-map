@@ -88,51 +88,6 @@ export function matchesSpotFilters(spot: SpotSummary, filters: SpotFilters) {
   return true;
 }
 
-export type ActiveFilterChip = {
-  key: string;
-  label: string;
-  remove: (f: SpotFilters) => SpotFilters;
-};
-
-// One removable chip per active filter, in the panel's order.
-export function getActiveFilterChips(filters: SpotFilters): ActiveFilterChip[] {
-  const chips: ActiveFilterChip[] = filters.weather.map((tag) => ({
-    key: `weather:${tag}`,
-    label: formatWeatherLabel(tag),
-    remove: (f) => ({ ...f, weather: f.weather.filter((value) => value !== tag) }),
-  }));
-
-  if (filters.status) {
-    const status = filters.status;
-    chips.push({
-      key: `status:${status}`,
-      label:
-        STATUS_FILTER_OPTIONS.find((option) => option.value === status)?.label ??
-        SPOT_STATUS_OPTIONS.find((option) => option.value === status)?.label ??
-        status,
-      remove: (f) => ({ ...f, status: null }),
-    });
-  }
-
-  for (const gear of filters.gear) {
-    chips.push({
-      key: `gear:${gear}`,
-      label: SPOT_GEAR_OPTIONS.find((option) => option.value === gear)?.label ?? gear,
-      remove: (f) => ({ ...f, gear: f.gear.filter((value) => value !== gear) }),
-    });
-  }
-
-  if (filters.posted !== EMPTY_SPOT_FILTERS.posted) {
-    chips.push({
-      key: `posted:${filters.posted}`,
-      label: filters.posted ? "Posted" : "Posted or not",
-      remove: (f) => ({ ...f, posted: EMPTY_SPOT_FILTERS.posted }),
-    });
-  }
-
-  return chips;
-}
-
 export function readStoredFilters(): SpotFilters {
   try {
     const stored = sessionStorage.getItem(SPOT_FILTERS_STORAGE_KEY);

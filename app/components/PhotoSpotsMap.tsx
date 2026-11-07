@@ -54,7 +54,7 @@ import { PLACE_ZOOM } from "./PlaceSearch.constants";
 import { SearchedPlaceMarker } from "./SearchedPlaceMarker";
 import { MAP_COLOURS, useMapStyle } from "./mapStyle";
 import { useTodayShoot } from "../today/useTodayShoot";
-import { ActiveFilterChips, FilterResultCount } from "./filters/ActiveFilters";
+import { FilterResultCount } from "./filters/ActiveFilters";
 import { SpotFilterSheet } from "./filters/SpotFilterSheet";
 import {
   countActiveFilters,
@@ -126,14 +126,14 @@ export function PhotoSpotsMap() {
   // Spots that match the filters get full pins; the rest shrink to small dots.
   const [matchingSpots, filteredOutSpots] = useMemo(() => {
     if (movingSpotId) return [spots.filter((spot) => spot.id !== movingSpotId), []];
-    if (activeFilterCount === 0) return [spots, []];
+    // Filter even with none on, as the default shrinks posted spots to dots.
     const matching: SpotSummary[] = [];
     const filteredOut: SpotSummary[] = [];
     for (const spot of spots) {
       (matchesSpotFilters(spot, filters) ? matching : filteredOut).push(spot);
     }
     return [matching, filteredOut];
-  }, [spots, filters, activeFilterCount, movingSpotId]);
+  }, [spots, filters, movingSpotId]);
 
   // Leaving move mode clears it, so moving the same spot again re-centres on it.
   useEffect(() => {
@@ -496,7 +496,7 @@ export function PhotoSpotsMap() {
               </ActionIcon>
             )}
           </Group>
-          {isMoving ? (
+          {isMoving && (
             <Paper
               px="md"
               py="sm"
@@ -519,8 +519,6 @@ export function PhotoSpotsMap() {
                 </Box>
               </Group>
             </Paper>
-          ) : (
-            <ActiveFilterChips filters={filters} onChange={setFilters} />
           )}
         </Stack>
       </Box>
