@@ -235,7 +235,8 @@ function PostForm({ post, defaultKind, onClose }: UpcomingPostSheetProps) {
   const thumbs = isEditing
     ? savedMedia.map((media) => ({
         key: media.id,
-        url: media.mediaUrl,
+        // The small copy, so opening the sheet doesn't download full-size photos.
+        url: media.thumbnailUrl ?? media.mediaUrl,
         isVideo: media.mediaType === "video",
         // Saved videos show their poster, so opening the sheet downloads no video.
         posterUrl: media.posterUrl,

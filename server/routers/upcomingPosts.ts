@@ -20,6 +20,8 @@ const mediaSchema = z.object({
   mediaType: z.enum(["image", "video"]),
   // Videos only: a still frame to show until the video is played.
   posterUrl: z.string().nullable(),
+  // Photos only: a small copy for thumbnails. Null if it couldn't be made.
+  thumbnailUrl: z.string().nullable(),
   description: z.string(),
   durationSeconds: z.number().nullable(),
   position: z.number(),
@@ -49,6 +51,10 @@ const newMediaSchema = z.object({
     .string()
     .refine(isUpcomingMediaUrl, "Media must be uploaded to Vercel Blob.")
     .nullable(),
+  thumbnailUrl: z
+    .string()
+    .refine(isUpcomingMediaUrl, "Media must be uploaded to Vercel Blob.")
+    .nullable(),
   durationSeconds: z.number().int().min(1).max(600).nullable(),
 });
 
@@ -68,10 +74,15 @@ async function deleteMediaFiles(urls: string[]) {
   }
 }
 
-// Every file behind some media rows: the photo or video, plus a video's poster.
-function mediaFileUrls(rows: { media_url: string; poster_url: string | null }[]) {
+const MEDIA_FILE_COLUMNS = ["media_url", "poster_url", "thumbnail_url"] as const;
+
+// Every file behind some media rows: the photo or video, plus a video's poster or a photo's
+// thumbnail.
+function mediaFileUrls(
+  rows: { media_url: string; poster_url: string | null; thumbnail_url: string | null }[],
+) {
   return rows.flatMap((row) =>
-    row.poster_url ? [row.media_url, row.poster_url] : [row.media_url],
+    [row.media_url, row.poster_url, row.thumbnail_url].filter((url) => url !== null),
   );
 }
 
@@ -113,6 +124,7 @@ export const upcomingPostsRouter = router({
           "media_url as mediaUrl",
           "media_type as mediaType",
           "poster_url as posterUrl",
+          "thumbnail_url as thumbnailUrl",
           "description",
           "duration_seconds as durationSeconds",
           "position",
@@ -169,6 +181,7 @@ export const upcomingPostsRouter = router({
                   media_url: media.url,
                   media_type: media.mediaType,
                   poster_url: media.posterUrl,
+                  thumbnail_url: media.thumbnailUrl,
                   duration_seconds: media.durationSeconds,
                   position,
                 })),
@@ -249,6 +262,7 @@ export const upcomingPostsRouter = router({
             media_url: media.url,
             media_type: media.mediaType,
             poster_url: media.posterUrl,
+            thumbnail_url: media.thumbnailUrl,
             duration_seconds: media.durationSeconds,
             position: start + index,
           })),
@@ -279,7 +293,7 @@ export const upcomingPostsRouter = router({
     const row = await getDb()
       .deleteFrom("upcoming_post_media")
       .where("id", "=", input.id)
-      .returning(["media_url", "poster_url"])
+      .returning(MEDIA_FILE_COLUMNS)
       .executeTakeFirst();
     if (row) await deleteMediaFiles(mediaFileUrls([row]));
   }),
@@ -290,7 +304,7 @@ export const upcomingPostsRouter = router({
     const db = getDb();
     const media = await db
       .selectFrom("upcoming_post_media")
-      .select(["media_url", "poster_url"])
+      .select(MEDIA_FILE_COLUMNS)
       .where("post_id", "=", input.id)
       .execute();
     await db.deleteFrom("upcoming_post").where("id", "=", input.id).execute();

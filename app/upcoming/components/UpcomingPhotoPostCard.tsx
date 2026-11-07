@@ -2,9 +2,10 @@
 
 import { REEL_CARD_BORDER } from "@/app/[spotId]/components/reels/Reels.constants";
 import type { UpcomingPost } from "@/server/routers/upcomingPosts";
-import { Center, Group, Image, Paper, Stack, Text, UnstyledButton } from "@mantine/core";
-import { IconPhoto, IconPlayerPlayFilled } from "@tabler/icons-react";
+import { Center, Group, Paper, Stack, Text, UnstyledButton } from "@mantine/core";
+import { IconPhoto } from "@tabler/icons-react";
 import { useState } from "react";
+import { UpcomingMediaThumbnail } from "./UpcomingMediaThumbnail";
 import { UpcomingMediaViewer } from "./UpcomingMediaViewer";
 import { UPCOMING_POST_NUMBER_GUTTER, UpcomingPostNumber } from "./UpcomingPostNumber";
 import { formatPhotoPostSummary } from "./UpcomingPosts.constants";
@@ -39,29 +40,14 @@ export function UpcomingPhotoPostCard({
             </Center>
           ) : (
             post.media.map((media, index) => (
-              <UnstyledButton
+              <UpcomingMediaThumbnail
                 key={media.id}
-                onClick={() => setViewerIndex(index)}
-                aria-label={`View ${media.mediaType === "video" ? "video" : "photo"} ${index + 1} full screen`}
-                pos="relative"
+                media={media}
+                index={index}
                 w={100}
                 h={125}
-                bg="brown.5"
-                style={{ borderRadius: 6, overflow: "hidden", flex: "none" }}
-              >
-                {media.mediaType === "video" ? (
-                  <>
-                    {media.posterUrl && (
-                      <Image src={media.posterUrl} alt="" w="100%" h="100%" fit="cover" />
-                    )}
-                    <Center pos="absolute" inset={0}>
-                      <IconPlayerPlayFilled size={18} color="var(--mantine-color-brown-0)" />
-                    </Center>
-                  </>
-                ) : (
-                  <Image src={media.mediaUrl} alt="" w="100%" h="100%" fit="cover" />
-                )}
-              </UnstyledButton>
+                onClick={() => setViewerIndex(index)}
+              />
             ))
           )}
         </Group>

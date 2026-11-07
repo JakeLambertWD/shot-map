@@ -128,6 +128,7 @@ export interface UpcomingPostMedia {
   position: Generated<number>;
   post_id: string;
   poster_url: string | null;
+  thumbnail_url: string | null;
 }
 
 export interface DB {

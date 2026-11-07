@@ -34,6 +34,8 @@ import {
   IconPlus,
 } from "@tabler/icons-react";
 import { useState } from "react";
+import { UpcomingMediaThumbnail } from "./UpcomingMediaThumbnail";
+import { UpcomingMediaViewer } from "./UpcomingMediaViewer";
 import { UPCOMING_POST_NUMBER_GUTTER, UpcomingPostNumber } from "./UpcomingPostNumber";
 import { formatReelPostSummary } from "./UpcomingPosts.constants";
 
@@ -50,7 +52,8 @@ type UpcomingReelCardProps = {
 };
 
 // A reel waiting to be posted, laid out like a reel idea on a spot's Reels tab: title, type pill,
-// Instagram inspo and the clips, which here are the videos you've uploaded.
+// Instagram inspo and the clips, which here are the videos you've uploaded. Like a carousel card,
+// it opens with a row of the clips' poster frames, which play full screen when tapped.
 export function UpcomingReelCard({
   post,
   number,
@@ -61,6 +64,7 @@ export function UpcomingReelCard({
   const utils = api.useUtils();
   const [editingClipId, setEditingClipId] = useState<string | null>(null);
   const [playing, setPlaying] = useState<UpcomingPostMedia | null>(null);
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
   const [linkSheetOpen, setLinkSheetOpen] = useState(false);
   const [progress, setProgress] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -96,6 +100,27 @@ export function UpcomingReelCard({
 
   return (
     <Paper pos="relative" bg="brown.6" radius="md" style={{ border: REEL_CARD_BORDER }}>
+      {post.media.length > 0 && (
+        <Group
+          gap={6}
+          wrap="nowrap"
+          px="sm"
+          pt="sm"
+          style={{ overflowX: "auto", scrollbarWidth: "none" }}
+        >
+          {post.media.map((clip, index) => (
+            <UpcomingMediaThumbnail
+              key={clip.id}
+              media={clip}
+              index={index}
+              w={72}
+              h={128}
+              onClick={() => setViewerIndex(index)}
+            />
+          ))}
+        </Group>
+      )}
+
       <Group
         gap="xs"
         wrap="nowrap"
@@ -255,6 +280,13 @@ export function UpcomingReelCard({
 
       <UpcomingPostNumber number={number} />
 
+      <UpcomingMediaViewer
+        media={post.media}
+        startIndex={viewerIndex}
+        title={post.title}
+        onClose={() => setViewerIndex(null)}
+      />
+
       {CAN_EDIT_SPOTS && (
         <InstagramLinkSheet
           reelTitle={post.title}
@@ -349,7 +381,15 @@ function ClipRow({
         style={{ borderRadius: 4, overflow: "hidden", flex: "none" }}
       >
         {clip.posterUrl && (
-          <Image src={clip.posterUrl} alt="" aria-hidden w="100%" h="100%" fit="cover" />
+          <Image
+            src={clip.posterUrl}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            w="100%"
+            h="100%"
+            fit="cover"
+          />
         )}
         <Center pos="absolute" inset={0} aria-hidden>
           <IconPlayerPlayFilled size={14} color="var(--mantine-color-brown-0)" />

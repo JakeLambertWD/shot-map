@@ -12,12 +12,18 @@ export type UploadedMedia = {
   mediaType: "image" | "video";
   // Videos only: a still frame shown until the video is played.
   posterUrl: string | null;
+  // Photos only: a small copy for thumbnails, so lists don't download the full photo.
+  thumbnailUrl: string | null;
   // Videos only, read from the file itself.
   durationSeconds: number | null;
 };
 
 const POSTER_WIDTH = 720;
 const POSTER_QUALITY = 0.75;
+// Thumbnails are at most 100×125 on screen, so 480px stays sharp at 3x even when a landscape
+// photo is cropped to fill one.
+const THUMBNAIL_EDGE = 480;
+const THUMBNAIL_QUALITY = 0.75;
 
 function toSlug(value: string) {
   const slug = value
@@ -108,16 +114,36 @@ export async function uploadUpcomingMedia(file: File, postTitle: string): Promis
       url: blob.url,
       mediaType: "video",
       posterUrl: posterBlob?.url ?? null,
+      thumbnailUrl: null,
       durationSeconds,
     };
   }
 
-  const image = await resizeImage(file);
+  const [image, thumbnail] = await Promise.all([
+    resizeImage(file),
+    resizeImage(file, THUMBNAIL_EDGE, THUMBNAIL_QUALITY),
+  ]);
   const extension = image.type === "image/jpeg" ? "jpg" : (file.name.split(".").pop() ?? "jpg");
-  const blob = await upload(`${UPCOMING_MEDIA_PATH_PREFIX}${slug}.${extension}`, image, {
-    access: "public",
-    handleUploadUrl: SPOT_PHOTO_UPLOAD_URL,
-    contentType: image.type || file.type,
-  });
-  return { url: blob.url, mediaType: "image", posterUrl: null, durationSeconds: null };
+  const [blob, thumbnailBlob] = await Promise.all([
+    upload(`${UPCOMING_MEDIA_PATH_PREFIX}${slug}.${extension}`, image, {
+      access: "public",
+      handleUploadUrl: SPOT_PHOTO_UPLOAD_URL,
+      contentType: image.type || file.type,
+    }),
+    // resizeImage hands back the original if the browser can't decode it; that's no thumbnail.
+    thumbnail === file
+      ? null
+      : upload(`${UPCOMING_MEDIA_PATH_PREFIX}${slug}-thumb.jpg`, thumbnail, {
+          access: "public",
+          handleUploadUrl: SPOT_PHOTO_UPLOAD_URL,
+          contentType: "image/jpeg",
+        }),
+  ]);
+  return {
+    url: blob.url,
+    mediaType: "image",
+    posterUrl: null,
+    thumbnailUrl: thumbnailBlob?.url ?? null,
+    durationSeconds: null,
+  };
 }

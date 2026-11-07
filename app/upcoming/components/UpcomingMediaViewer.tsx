@@ -118,6 +118,7 @@ function ViewerTrack({
               className={styles.slide}
               src={item.mediaUrl}
               alt={`Photo ${index + 1}`}
+              loading="lazy"
               fit="contain"
             />
           ),
