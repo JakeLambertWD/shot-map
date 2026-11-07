@@ -153,11 +153,12 @@ export function UpcomingPosts() {
                   </Stack>
                 ) : (
                   <Stack gap={8} px="md" pt={4}>
-                    {tabPosts.map((post) =>
+                    {tabPosts.map((post, index) =>
                       post.kind === "reel" ? (
                         <UpcomingReelCard
                           key={post.id}
                           post={post}
+                          number={index + 1}
                           expanded={openReelId === post.id}
                           onToggle={() => setOpenReelId(openReelId === post.id ? null : post.id)}
                           onEditDetails={() => setEditing(post)}
@@ -166,6 +167,7 @@ export function UpcomingPosts() {
                         <UpcomingPhotoPostCard
                           key={post.id}
                           post={post}
+                          number={index + 1}
                           onOpen={() => setEditing(post)}
                         />
                       ),

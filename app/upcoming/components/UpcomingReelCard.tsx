@@ -24,6 +24,7 @@ import {
   Text,
   Title,
   UnstyledButton,
+  VisuallyHidden,
 } from "@mantine/core";
 import {
   IconBrandInstagram,
@@ -33,10 +34,16 @@ import {
   IconPlus,
 } from "@tabler/icons-react";
 import { useState } from "react";
+import { UPCOMING_POST_NUMBER_GUTTER, UpcomingPostNumber } from "./UpcomingPostNumber";
 import { formatReelPostSummary } from "./UpcomingPosts.constants";
+
+// The Instagram and expand buttons in the header.
+const ICON_SIZE = 32;
 
 type UpcomingReelCardProps = {
   post: UpcomingPost;
+  // Its place in the Reels tab.
+  number: number;
   expanded: boolean;
   onToggle: () => void;
   onEditDetails: () => void;
@@ -46,6 +53,7 @@ type UpcomingReelCardProps = {
 // Instagram inspo and the clips, which here are the videos you've uploaded.
 export function UpcomingReelCard({
   post,
+  number,
   expanded,
   onToggle,
   onEditDetails,
@@ -87,11 +95,20 @@ export function UpcomingReelCard({
   }
 
   return (
-    <Paper bg="brown.6" radius="md" style={{ border: REEL_CARD_BORDER }}>
-      <Group gap="xs" wrap="nowrap" align="flex-start" p="sm" pr="xs">
+    <Paper pos="relative" bg="brown.6" radius="md" style={{ border: REEL_CARD_BORDER }}>
+      <Group
+        gap="xs"
+        wrap="nowrap"
+        align="flex-start"
+        p="sm"
+        pr="xs"
+        // Tall enough for the number to sit under the icons on the right.
+        mih={ICON_SIZE + UPCOMING_POST_NUMBER_GUTTER + 4}
+      >
         <Stack gap={6} flex={1} miw={0}>
           <UnstyledButton onClick={onToggle} aria-expanded={expanded}>
             <Title order={3} fz={expanded ? 16 : 15} lh={1.3} c="brown.0">
+              <VisuallyHidden>{`${number}. `}</VisuallyHidden>
               {post.title}
             </Title>
           </UnstyledButton>
@@ -123,7 +140,7 @@ export function UpcomingReelCard({
             aria-label="Open Instagram inspo"
             variant="default"
             radius="xl"
-            size={32}
+            size={ICON_SIZE}
             bg="brown.5"
           >
             <IconBrandInstagram size={17} color="var(--mantine-color-yellow-5)" />
@@ -134,7 +151,7 @@ export function UpcomingReelCard({
               aria-label="Add Instagram inspo link"
               variant="transparent"
               radius="xl"
-              size={32}
+              size={ICON_SIZE}
               onClick={() => setLinkSheetOpen(true)}
               style={{ border: "1.5px dashed var(--mantine-color-brown-2)" }}
             >
@@ -147,7 +164,7 @@ export function UpcomingReelCard({
           aria-label={expanded ? "Collapse reel" : "Expand reel"}
           variant="transparent"
           color="brown.1"
-          size={32}
+          size={ICON_SIZE}
           onClick={onToggle}
         >
           {expanded ? <IconChevronUp size={20} /> : <IconChevronDown size={20} />}
@@ -155,7 +172,8 @@ export function UpcomingReelCard({
       </Group>
 
       <Collapse expanded={expanded}>
-        <Box px="sm" pb="sm">
+        {/* The number shares the edit buttons' row; without them, leave it a row of its own. */}
+        <Box px="sm" pb={CAN_EDIT_SPOTS ? "sm" : UPCOMING_POST_NUMBER_GUTTER}>
           <Box component="ol" m={0} p={0} style={{ listStyle: "none" }}>
             {post.media.map((clip, index) =>
               editingClipId === clip.id ? (
@@ -216,7 +234,7 @@ export function UpcomingReelCard({
           )}
 
           {CAN_EDIT_SPOTS && (
-            <Group gap={0} mt="xs" justify="flex-end">
+            <Group gap={0} mt="xs">
               <Button variant="subtle" color="brown.1" size="compact-sm" onClick={onEditDetails}>
                 Edit details
               </Button>
@@ -234,6 +252,8 @@ export function UpcomingReelCard({
           )}
         </Box>
       </Collapse>
+
+      <UpcomingPostNumber number={number} />
 
       {CAN_EDIT_SPOTS && (
         <InstagramLinkSheet
