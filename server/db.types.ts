@@ -51,6 +51,7 @@ export interface PhotoSpot {
   longitude: number;
   notes: string | null;
   postcode: string | null;
+  posted: Generated<boolean>;
   status: Generated<string>;
   tags: Generated<string[]>;
   title: string;

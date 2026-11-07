@@ -8,6 +8,7 @@ import {
   applySpotTitleCase,
   MAX_SPOT_TAGS,
   SPOT_GEAR_OPTIONS,
+  SPOT_POSTED_OPTIONS,
   SPOT_STATUS_OPTIONS,
   type SpotGear,
   type SpotStatus,
@@ -51,6 +52,7 @@ function EditSpotForm({ spot, formId, onSavingChange, onDone }: EditSpotFormProp
   const postcode = spot.postcode ?? "";
   const [status, setStatus] = useState<SpotStatus>(spot.status);
   const [gear, setGear] = useState<SpotGear>(spot.gear);
+  const [posted, setPosted] = useState(spot.posted);
   const [tags, setTags] = useState<string[]>(spot.tags);
   const sortedTags = useSortedSpotTags(spot.tags);
   const [photos, setPhotos] = useState(spot.photos);
@@ -91,6 +93,7 @@ function EditSpotForm({ spot, formId, onSavingChange, onDone }: EditSpotFormProp
         status,
         gear,
         tags,
+        posted,
       });
 
       const keptIds = new Set(
@@ -136,6 +139,13 @@ function EditSpotForm({ spot, formId, onSavingChange, onDone }: EditSpotFormProp
         />
 
         <SpotToggle label="Gear" options={SPOT_GEAR_OPTIONS} value={gear} onChange={setGear} />
+
+        <SpotToggle
+          label="Posted"
+          options={SPOT_POSTED_OPTIONS}
+          value={posted ? "yes" : "no"}
+          onChange={(value) => setPosted(value === "yes")}
+        />
 
         <MultiSelect
           size="md"

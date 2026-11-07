@@ -22,6 +22,7 @@ import {
   getWeatherEmoji,
   getWeatherFilterOptions,
   matchesSpotFilters,
+  POSTED_FILTER_OPTIONS,
   STATUS_FILTER_OPTIONS,
   type SpotFilters,
 } from "./SpotFilters.constants";
@@ -36,7 +37,7 @@ type SpotFilterSheetProps = {
 
 const GEAR_ICONS: Record<SpotGear, typeof IconCamera> = { camera: IconCamera, drone: IconDrone };
 
-// Bottom sheet for filtering the map by weather, status and gear.
+// Bottom sheet for filtering the map by posted, weather, status and gear.
 // Choices are drafts until "Show N spots" applies them.
 export function SpotFilterSheet({
   opened,
@@ -142,6 +143,14 @@ function FilterSheetBody({
   return (
     <>
       <Stack gap="lg" px="lg" pt="xs" pb="md">
+        <FilterSection label="Posted">
+          <FilterSegments
+            options={POSTED_FILTER_OPTIONS}
+            value={draft.posted}
+            onChange={(posted) => setDraft((current) => ({ ...current, posted }))}
+          />
+        </FilterSection>
+
         <FilterSection label="Weather">
           <Group gap={8}>
             {weatherOptions.map((tag) => {
@@ -173,43 +182,14 @@ function FilterSheetBody({
         </FilterSection>
 
         <FilterSection label="Status">
-          <SimpleGrid
-            cols={3}
-            spacing={4}
-            p={4}
-            style={{
-              borderRadius: 10,
-              backgroundColor: theme.colors.brown[5],
-              border: `1px solid ${theme.colors.brown[4]}`,
-            }}
-          >
-            {STATUS_FILTER_OPTIONS.map((option) => {
-              const value = option.value === "any" ? null : option.value;
-              const isOn = draft.status === value;
-              return (
-                <UnstyledButton
-                  key={option.value}
-                  aria-pressed={isOn}
-                  onClick={() => setDraft((current) => ({ ...current, status: value }))}
-                  h={40}
-                  fz="sm"
-                  fw={isOn ? 900 : 700}
-                  ta="center"
-                  style={{
-                    borderRadius: 7,
-                    backgroundColor: isOn ? theme.colors.yellow[5] : "transparent",
-                    color: isOn
-                      ? theme.colors.brown[9]
-                      : value
-                        ? theme.colors.brown[0]
-                        : theme.colors.brown[1],
-                  }}
-                >
-                  {option.label}
-                </UnstyledButton>
-              );
-            })}
-          </SimpleGrid>
+          <FilterSegments
+            options={STATUS_FILTER_OPTIONS.map((option) => ({
+              value: option.value === "any" ? null : option.value,
+              label: option.label,
+            }))}
+            value={draft.status}
+            onChange={(status) => setDraft((current) => ({ ...current, status }))}
+          />
         </FilterSection>
 
         <FilterSection label="Gear">
@@ -288,6 +268,59 @@ function FilterSheetBody({
         </Button>
       </Group>
     </>
+  );
+}
+
+// A row of options where exactly one is on, like Status. A null option means "any" and is
+// labelled more quietly.
+function FilterSegments<Value>({
+  options,
+  value,
+  onChange,
+}: {
+  options: readonly { value: Value; label: string }[];
+  value: Value;
+  onChange: (value: Value) => void;
+}) {
+  const theme = useMantineTheme();
+
+  return (
+    <SimpleGrid
+      cols={options.length}
+      spacing={4}
+      p={4}
+      style={{
+        borderRadius: 10,
+        backgroundColor: theme.colors.brown[5],
+        border: `1px solid ${theme.colors.brown[4]}`,
+      }}
+    >
+      {options.map((option) => {
+        const isOn = option.value === value;
+        return (
+          <UnstyledButton
+            key={option.label}
+            aria-pressed={isOn}
+            onClick={() => onChange(option.value)}
+            h={40}
+            fz="sm"
+            fw={isOn ? 900 : 700}
+            ta="center"
+            style={{
+              borderRadius: 7,
+              backgroundColor: isOn ? theme.colors.yellow[5] : "transparent",
+              color: isOn
+                ? theme.colors.brown[9]
+                : option.value === null
+                  ? theme.colors.brown[1]
+                  : theme.colors.brown[0],
+            }}
+          >
+            {option.label}
+          </UnstyledButton>
+        );
+      })}
+    </SimpleGrid>
   );
 }
 

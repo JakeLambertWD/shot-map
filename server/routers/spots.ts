@@ -24,6 +24,7 @@ const spotSummarySchema = z.object({
   status: z.enum(SPOT_STATUSES),
   gear: z.enum(SPOT_GEAR),
   tags: z.array(z.string()),
+  posted: z.boolean(),
   coverImageUrl: z.string().nullable(),
   photoCount: z.number(),
 });
@@ -65,9 +66,11 @@ const spotDetailsInputSchema = z.object({
   status: z.enum(SPOT_STATUSES),
   gear: z.enum(SPOT_GEAR),
   tags: z.array(z.string().trim().min(1).max(40)).max(MAX_SPOT_TAGS),
+  posted: z.boolean(),
 });
 
-const createSpotInputSchema = spotDetailsInputSchema.extend({
+// New spots always start as not posted; they're marked posted from the edit form.
+const createSpotInputSchema = spotDetailsInputSchema.omit({ posted: true }).extend({
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
   photos: z.array(spotPhotoInputSchema).max(MAX_SPOT_PHOTOS),
@@ -212,6 +215,7 @@ export const spotsRouter = router({
         "s.status",
         "s.gear",
         "s.tags",
+        "s.posted",
         "cover.image_url as coverImageUrl",
         eb
           .selectFrom("photo_spot_image")
@@ -242,6 +246,7 @@ export const spotsRouter = router({
           "status",
           "gear",
           "tags",
+          "posted",
         ])
         .where("id", "=", input.id)
         .executeTakeFirst(),
@@ -326,6 +331,7 @@ export const spotsRouter = router({
             status: input.status,
             gear: input.gear,
             tags: input.tags,
+            posted: false,
           })
           .execute();
 
@@ -391,6 +397,7 @@ export const spotsRouter = router({
           status: input.status,
           gear: input.gear,
           tags: input.tags,
+          posted: input.posted,
         })
         .where("id", "=", input.id)
         .returning("id")

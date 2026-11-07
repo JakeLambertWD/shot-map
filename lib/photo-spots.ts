@@ -44,6 +44,14 @@ export function getSpotStatusLabel(status: SpotStatus) {
   return SPOT_STATUS_OPTIONS.find((option) => option.value === status)?.label ?? status;
 }
 
+// Whether the spot has been posted yet, as the edit form's Posted toggle. New spots start as not
+// posted.
+export const SPOT_POSTED_OPTIONS = [
+  { value: "no", label: "No" },
+  { value: "yes", label: "Yes" },
+] as const satisfies readonly { value: string; label: string }[];
+export type SpotPostedOption = (typeof SPOT_POSTED_OPTIONS)[number]["value"];
+
 // What the spot will be shot with.
 export const SPOT_GEAR = ["camera", "drone"] as const;
 export type SpotGear = (typeof SPOT_GEAR)[number];

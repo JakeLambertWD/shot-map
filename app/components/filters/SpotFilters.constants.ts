@@ -14,9 +14,18 @@ export type SpotFilters = {
   status: SpotStatus | null;
   // Empty means any gear.
   gear: SpotGear[];
+  // Spots that have (true) or haven't (false) been posted; null shows both. Defaults to false, so
+  // the map leads with spots still to post.
+  posted: boolean | null;
 };
 
-export const EMPTY_SPOT_FILTERS: SpotFilters = { weather: [], status: null, gear: [] };
+// The filters the map starts with, and goes back to when they're cleared.
+export const EMPTY_SPOT_FILTERS: SpotFilters = {
+  weather: [],
+  status: null,
+  gear: [],
+  posted: false,
+};
 
 // Keeps the filters while the user opens a spot and comes back to the map.
 export const SPOT_FILTERS_STORAGE_KEY = "photo-spots:filters";
@@ -27,6 +36,13 @@ export const STATUS_FILTER_OPTIONS = [
   { value: "planning", label: "Planning" },
   { value: "ready_to_shoot", label: "Ready" },
 ] as const;
+
+// Labels for the Posted filter toggle, in its order.
+export const POSTED_FILTER_OPTIONS = [
+  { value: null, label: "Any" },
+  { value: false, label: "Not posted" },
+  { value: true, label: "Posted" },
+] as const satisfies readonly { value: boolean | null; label: string }[];
 
 const ANY_WEATHER_TAG = "any";
 
@@ -49,11 +65,18 @@ export function getWeatherFilterOptions(spots: SpotSummary[]) {
   return options;
 }
 
+// The default "Not posted" doesn't count, so the map isn't always showing one filter on.
 export function countActiveFilters(filters: SpotFilters) {
-  return filters.weather.length + (filters.status ? 1 : 0) + filters.gear.length;
+  return (
+    filters.weather.length +
+    (filters.status ? 1 : 0) +
+    filters.gear.length +
+    (filters.posted === EMPTY_SPOT_FILTERS.posted ? 0 : 1)
+  );
 }
 
 export function matchesSpotFilters(spot: SpotSummary, filters: SpotFilters) {
+  if (filters.posted !== null && spot.posted !== filters.posted) return false;
   if (filters.status && spot.status !== filters.status) return false;
   if (filters.gear.length > 0 && !filters.gear.includes(spot.gear)) return false;
   if (
@@ -99,6 +122,14 @@ export function getActiveFilterChips(filters: SpotFilters): ActiveFilterChip[] {
     });
   }
 
+  if (filters.posted !== EMPTY_SPOT_FILTERS.posted) {
+    chips.push({
+      key: `posted:${filters.posted}`,
+      label: filters.posted ? "Posted" : "Posted or not",
+      remove: (f) => ({ ...f, posted: EMPTY_SPOT_FILTERS.posted }),
+    });
+  }
+
   return chips;
 }
 
@@ -117,6 +148,10 @@ export function readStoredFilters(): SpotFilters {
       gear: Array.isArray(parsed.gear)
         ? parsed.gear.filter((v): v is SpotGear => SPOT_GEAR_OPTIONS.some((o) => o.value === v))
         : [],
+      posted:
+        typeof parsed.posted === "boolean" || parsed.posted === null
+          ? parsed.posted
+          : EMPTY_SPOT_FILTERS.posted,
     };
   } catch {
     return EMPTY_SPOT_FILTERS;
