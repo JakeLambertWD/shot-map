@@ -38,6 +38,7 @@ import Supercluster from "supercluster";
 import { AddSpotForm, type DraftLocation } from "./add-spot/AddSpotForm";
 import { PlacementCrosshair } from "./add-spot/PlacementCrosshair";
 import { SPOT_FORM_MODAL_TITLE_STYLES, SpotFormModalTitle } from "./add-spot/SpotFormModalTitle";
+import { AppMenu } from "./AppMenu";
 import { ClusterMarker } from "./ClusterMarker";
 import {
   CLUSTER_MAX_ZOOM,
@@ -442,6 +443,7 @@ export function PhotoSpotsMap() {
       <Box pos="absolute" top={MAP_OVERLAY_TOP_OFFSET} left={0} right={0} px="md">
         <Stack gap="sm" maw="30rem" mx="auto">
           <Group gap="xs" wrap="nowrap" align="flex-start">
+            {!isMoving && <AppMenu />}
             <Box flex={1} miw={0}>
               <PlaceSearch
                 placeholder="Search places, postcodes or your spots"
