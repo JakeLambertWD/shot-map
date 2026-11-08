@@ -23,6 +23,7 @@ import {
   getWeatherFilterOptions,
   matchesSpotFilters,
   POSTED_FILTER_OPTIONS,
+  REELS_FILTER_OPTIONS,
   STATUS_FILTER_OPTIONS,
   type SpotFilters,
 } from "./SpotFilters.constants";
@@ -37,7 +38,7 @@ type SpotFilterSheetProps = {
 
 const GEAR_ICONS: Record<SpotGear, typeof IconCamera> = { camera: IconCamera, drone: IconDrone };
 
-// Bottom sheet for filtering the map by posted, weather, status and gear.
+// Bottom sheet for filtering the map by posted, reels, weather, status and gear.
 // Choices are drafts until "Show N spots" applies them.
 export function SpotFilterSheet({
   opened,
@@ -148,6 +149,14 @@ function FilterSheetBody({
             options={POSTED_FILTER_OPTIONS}
             value={draft.posted}
             onChange={(posted) => setDraft((current) => ({ ...current, posted }))}
+          />
+        </FilterSection>
+
+        <FilterSection label="Reels">
+          <FilterSegments
+            options={REELS_FILTER_OPTIONS}
+            value={draft.hasReels}
+            onChange={(hasReels) => setDraft((current) => ({ ...current, hasReels }))}
           />
         </FilterSection>
 

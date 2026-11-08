@@ -28,6 +28,8 @@ export function ReelsPanel({ spotId, kinds }: ReelsPanelProps) {
 
   const createReel = api.reels.create.useMutation({
     onSuccess: async ({ id }) => {
+      // The map's list counts each spot's reels for its Reels filter.
+      void utils.spots.list.invalidate();
       await utils.reels.list.invalidate({ spotId });
       setNewTitle(null);
       setOpenReelId(id);

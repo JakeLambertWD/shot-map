@@ -51,7 +51,10 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
   const rename = api.reels.rename.useMutation({
     onSuccess: async () => (await refresh(), setTitleDraft(null)),
   });
-  const deleteReel = api.reels.delete.useMutation({ onSuccess: refresh });
+  const deleteReel = api.reels.delete.useMutation({
+    // The map's list counts each spot's reels for its Reels filter.
+    onSuccess: () => Promise.all([refresh(), utils.spots.list.invalidate()]),
+  });
   const setKind = api.reels.setKind.useMutation({ onSuccess: refresh });
   const setInstagramUrl = api.reels.setInstagramUrl.useMutation({ onSuccess: refresh });
 

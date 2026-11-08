@@ -27,6 +27,8 @@ const spotSummarySchema = z.object({
   posted: z.boolean(),
   coverImageUrl: z.string().nullable(),
   photoCount: z.number(),
+  // Ideas on the spot's Reels tab; Trial Reels aren't counted.
+  reelCount: z.number(),
 });
 
 const spotPhotoSchema = z.object({
@@ -46,14 +48,16 @@ const spotCarouselSchema = z.object({
 
 export type SpotCarousel = z.infer<typeof spotCarouselSchema>;
 
-const spotDetailSchema = spotSummarySchema.omit({ coverImageUrl: true, photoCount: true }).extend({
-  editingNotes: z.string().nullable().optional(),
-  // Every Showcase photo, carousel by carousel.
-  photos: z.array(spotPhotoSchema),
-  carousels: z.array(spotCarouselSchema),
-  creatorPhotos: z.array(spotPhotoSchema).default([]),
-  editingPhotos: z.array(spotPhotoSchema).default([]),
-});
+const spotDetailSchema = spotSummarySchema
+  .omit({ coverImageUrl: true, photoCount: true, reelCount: true })
+  .extend({
+    editingNotes: z.string().nullable().optional(),
+    // Every Showcase photo, carousel by carousel.
+    photos: z.array(spotPhotoSchema),
+    carousels: z.array(spotCarouselSchema),
+    creatorPhotos: z.array(spotPhotoSchema).default([]),
+    editingPhotos: z.array(spotPhotoSchema).default([]),
+  });
 
 const spotPhotoInputSchema = z.object({
   imageUrl: z.string().refine(isSpotPhotoUrl, "Photos must be uploaded to Vercel Blob."),
@@ -223,6 +227,13 @@ export const spotsRouter = router({
           .whereRef("spot_id", "=", "s.id")
           .where((eb) => eb(photoKind(eb), "=", "showcase"))
           .as("photoCount"),
+        eb
+          .selectFrom("photo_spot_reel")
+          .select((eb) => eb.cast<number>(eb.fn.countAll(), "integer").as("count"))
+          .whereRef("spot_id", "=", "s.id")
+          // "pov" reels are the Trial Reels tab, not the Reels tab.
+          .where("kind", "!=", "pov")
+          .as("reelCount"),
       ])
       .orderBy("s.created_at", "desc")
       .execute();

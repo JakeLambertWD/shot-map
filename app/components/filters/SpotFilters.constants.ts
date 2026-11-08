@@ -17,6 +17,8 @@ export type SpotFilters = {
   // Spots that have (true) or haven't (false) been posted; null shows both. Defaults to false, so
   // the map leads with spots still to post.
   posted: boolean | null;
+  // Spots with (true) or without (false) reel ideas; null shows both.
+  hasReels: boolean | null;
 };
 
 // The filters the map starts with, and goes back to when they're cleared.
@@ -25,6 +27,7 @@ export const EMPTY_SPOT_FILTERS: SpotFilters = {
   status: null,
   gear: [],
   posted: false,
+  hasReels: null,
 };
 
 // Keeps the filters while the user opens a spot and comes back to the map.
@@ -42,6 +45,13 @@ export const POSTED_FILTER_OPTIONS = [
   { value: null, label: "Any" },
   { value: false, label: "Not posted" },
   { value: true, label: "Posted" },
+] as const satisfies readonly { value: boolean | null; label: string }[];
+
+// Labels for the Reels filter toggle, in its order.
+export const REELS_FILTER_OPTIONS = [
+  { value: null, label: "Any" },
+  { value: true, label: "Has reels" },
+  { value: false, label: "No reels" },
 ] as const satisfies readonly { value: boolean | null; label: string }[];
 
 const ANY_WEATHER_TAG = "any";
@@ -71,12 +81,14 @@ export function countActiveFilters(filters: SpotFilters) {
     filters.weather.length +
     (filters.status ? 1 : 0) +
     filters.gear.length +
-    (filters.posted === EMPTY_SPOT_FILTERS.posted ? 0 : 1)
+    (filters.posted === EMPTY_SPOT_FILTERS.posted ? 0 : 1) +
+    (filters.hasReels === null ? 0 : 1)
   );
 }
 
 export function matchesSpotFilters(spot: SpotSummary, filters: SpotFilters) {
   if (filters.posted !== null && spot.posted !== filters.posted) return false;
+  if (filters.hasReels !== null && spot.reelCount > 0 !== filters.hasReels) return false;
   if (filters.status && spot.status !== filters.status) return false;
   if (filters.gear.length > 0 && !filters.gear.includes(spot.gear)) return false;
   if (
@@ -107,6 +119,7 @@ export function readStoredFilters(): SpotFilters {
         typeof parsed.posted === "boolean" || parsed.posted === null
           ? parsed.posted
           : EMPTY_SPOT_FILTERS.posted,
+      hasReels: typeof parsed.hasReels === "boolean" ? parsed.hasReels : null,
     };
   } catch {
     return EMPTY_SPOT_FILTERS;
