@@ -1,5 +1,6 @@
 // Camera moves and angles to capture as b-roll at a spot.
 export const B_ROLL_SHOTS = [
+    { name: "Walk in", description: "Camera locked off on a tripod, you walk into the empty frame" },
   { name: "Reveal", description: "Start blocked by something, move to uncover the subject" },
   { name: "Push in", description: "Move slowly towards the subject" },
   { name: "Pull out", description: "Start tight and move back to show the whole scene" },
@@ -27,4 +28,19 @@ export const B_ROLL_SHOTS = [
   },
   { name: "Rack focus", description: "Switch focus from something near to something far" },
   { name: "Whip pan", description: "Fast pan that blurs, used to cut to the next shot" },
+  {
+    name: "Zoom in / zoom out",
+    description: "Twist the zoom ring while the camera stays still",
+  },
+  { name: "Crash zoom", description: "A very fast zoom in, for punchy, dramatic moments" },
+  {
+    name: "Punch in",
+    description:
+      "A zoom done in the edit by cropping into 4K footage, smoother than zooming by hand",
+  },
+  {
+    name: "Dolly zoom",
+    description:
+      "Walk backwards while zooming in (or forwards while zooming out), so the subject stays the same size but the background stretches or squashes. It’s the famous “Vertigo” effect",
+  },
 ] as const satisfies readonly { name: string; description: string }[];
