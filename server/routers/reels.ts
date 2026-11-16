@@ -1,8 +1,9 @@
 import { cleanInstagramUrl, isInstagramUrl, REEL_KINDS } from "@/lib/photo-spots";
 import { TRPCError } from "@trpc/server";
+import { sql } from "kysely";
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import { assertCanEdit, getDb } from "./spots";
+import { assertCanEdit, getDb, photoKind } from "./spots";
 
 const reelClipSchema = z.object({
   id: z.string(),
@@ -20,7 +21,20 @@ const reelSchema = z.object({
   clips: z.array(reelClipSchema),
 });
 
+// A spot on the Reels page.
+const reelSpotSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  postcode: z.string().nullable(),
+  latitude: z.number(),
+  longitude: z.number(),
+  coverImageUrl: z.string().nullable(),
+  reelCount: z.number(),
+  kinds: z.array(z.object({ kind: z.enum(REEL_KINDS), count: z.number() })),
+});
+
 export type SpotReel = z.infer<typeof reelSchema>;
+export type ReelSpot = z.infer<typeof reelSpotSchema>;
 export type SpotReelClip = z.infer<typeof reelClipSchema>;
 
 const titleSchema = z.string().trim().min(1, "Give the reel a name").max(160);
@@ -86,6 +100,78 @@ export const reelsRouter = router({
       }));
 
       return z.array(reelSchema).parse(reels);
+    }),
+
+  // Every spot with reel ideas, for the Reels page, in its saved order (spots not placed yet
+  // first, newest first), with how many reels of each type it has. Trial Reels aren't counted,
+  // as on the map's Reels filter.
+  spots: publicProcedure.query(async () => {
+    const db = getDb();
+
+    const [spotRows, countRows] = await Promise.all([
+      db
+        .selectFrom("photo_spot as s")
+        .select((eb) => [
+          "s.id",
+          "s.title",
+          "s.postcode",
+          "s.latitude",
+          "s.longitude",
+          // The spot's first Showcase photo, as on the map.
+          eb
+            .selectFrom("photo_spot_image")
+            .select("image_url")
+            .whereRef("spot_id", "=", "s.id")
+            .where((eb) => eb(photoKind(eb), "=", "showcase"))
+            .orderBy("position")
+            .limit(1)
+            .as("coverImageUrl"),
+        ])
+        .where(({ exists, selectFrom }) =>
+          exists(
+            selectFrom("photo_spot_reel")
+              .select("id")
+              .whereRef("spot_id", "=", "s.id")
+              .where("kind", "!=", "pov"),
+          ),
+        )
+        .orderBy("s.reels_position", (ob) => ob.asc().nullsFirst())
+        .orderBy("s.created_at", "desc")
+        .execute(),
+      db
+        .selectFrom("photo_spot_reel")
+        .select((eb) => [
+          "spot_id as spotId",
+          "kind",
+          eb.cast<number>(eb.fn.countAll(), "integer").as("count"),
+        ])
+        .where("kind", "!=", "pov")
+        .groupBy(["spot_id", "kind"])
+        .execute(),
+    ]);
+
+    const spots = spotRows.map((spot) => {
+      const kinds = countRows
+        .filter((row) => row.spotId === spot.id)
+        .map(({ kind, count }) => ({ kind, count }));
+      return { ...spot, kinds, reelCount: kinds.reduce((total, { count }) => total + count, 0) };
+    });
+
+    return z.array(reelSpotSchema).parse(spots);
+  }),
+
+  // Saves the Reels page's order: every spot on it, top first.
+  reorderSpots: publicProcedure
+    .input(z.object({ spotIds: z.array(z.uuid()).min(1).max(500) }))
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+      // Raw SQL: Kysely has no builder for unnest, and this updates every spot in one query.
+      await sql`
+        update photo_spot spot
+        set reels_position = slots.position - 1
+        from unnest(${input.spotIds}::uuid[]) with ordinality as slots(id, position)
+        where spot.id = slots.id
+      `.execute(getDb());
     }),
 
   create: publicProcedure
