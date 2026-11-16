@@ -107,7 +107,7 @@ export function assertCanEdit() {
 }
 
 // Photos saved before kinds existed have no kind; they're Showcase photos.
-const photoKind = (eb: ExpressionBuilder<DB, "photo_spot_image">) =>
+export const photoKind = (eb: ExpressionBuilder<DB, "photo_spot_image">) =>
   eb.fn.coalesce("kind", eb.val("showcase"));
 
 // Only files uploaded through the app live in Vercel Blob (not e.g. images in /public).

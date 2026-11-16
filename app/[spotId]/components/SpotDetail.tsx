@@ -19,7 +19,7 @@ import { useState } from "react";
 import { REEL_TYPE_KINDS } from "./reels/Reels.constants";
 import { ReelsPanel } from "./reels/ReelsPanel";
 import { TrialReelsGrid } from "./reels/TrialReelsGrid";
-import type { SpotTabId } from "./SpotContentTabs.constants";
+import { getSpotTabHref, type SpotTabId } from "./SpotContentTabs.constants";
 import { ContentTabChips } from "./ContentTabChips";
 import { SpotActions } from "./SpotActions";
 import { ShowcaseCarousels } from "./ShowcaseCarousels";
@@ -28,10 +28,19 @@ import { SpotTitle } from "./SpotTitle";
 
 type SpotDetailProps = {
   spotId: string;
+  // The tab to open on, from the page's `?tab=` query.
+  initialTab: SpotTabId;
 };
 
-export function SpotDetail({ spotId }: SpotDetailProps) {
-  const [activeTab, setActiveTab] = useState<SpotTabId>("showcase");
+export function SpotDetail({ spotId, initialTab }: SpotDetailProps) {
+  const [activeTab, setActiveTab] = useState<SpotTabId>(initialTab);
+
+  // Keeps the open tab in the URL, so a refresh or a shared link opens on it. Replacing the
+  // history entry means Back still leaves the spot rather than stepping through its tabs.
+  function changeTab(tab: SpotTabId) {
+    setActiveTab(tab);
+    window.history.replaceState(null, "", getSpotTabHref(spotId, tab));
+  }
 
   const spotQuery = api.spots.byId.useQuery({ id: spotId }, { retry: false });
 
@@ -93,7 +102,7 @@ export function SpotDetail({ spotId }: SpotDetailProps) {
 
       <Tabs
         value={activeTab}
-        onChange={(tab) => tab && setActiveTab(tab as SpotTabId)}
+        onChange={(tab) => tab && changeTab(tab as SpotTabId)}
         variant="pills"
       >
         <ContentTabChips spot={spot} value={activeTab} />

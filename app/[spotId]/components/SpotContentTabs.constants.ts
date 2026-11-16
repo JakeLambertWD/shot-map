@@ -25,6 +25,18 @@ export const SPOT_TABS = [
   { id: "pov", label: "Trial Reels" },
 ] as const satisfies readonly { id: SpotTabId; label: string }[];
 
+export const DEFAULT_SPOT_TAB: SpotTabId = "showcase";
+
+// The tab named by a spot page's `?tab=` query, or the default tab when it names none.
+export function getSpotTabFromQuery(value: string | string[] | undefined): SpotTabId {
+  return SPOT_TABS.find((tab) => tab.id === value)?.id ?? DEFAULT_SPOT_TAB;
+}
+
+// A spot page's URL, opened on the given tab. The default tab has no `?tab=`.
+export function getSpotTabHref(spotId: string, tab: SpotTabId) {
+  return tab === DEFAULT_SPOT_TAB ? `/${spotId}` : `/${spotId}?tab=${tab}`;
+}
+
 // Guide copy for each content format, used by the Shoot Day guide.
 export const CONTENT_TABS = [
   {
