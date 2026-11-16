@@ -2,7 +2,7 @@
 
 import { CAN_EDIT_SPOTS } from "@/lib/photo-spots";
 import type { SpotReelClip } from "@/server/routers/reels";
-import { Center, Group, Text, UnstyledButton } from "@mantine/core";
+import { Center, Group, Stack, Text, UnstyledButton } from "@mantine/core";
 import { CLIP_DIVIDER } from "./Reels.constants";
 
 type ReelClipRowProps = {
@@ -26,9 +26,13 @@ export function ReelClipRow({ clip, clipNumber, onEdit }: ReelClipRowProps) {
       >
         {clipNumber}
       </Center>
-      <Text flex={1} fz="sm" lh={1.35} c="brown.0" style={{ whiteSpace: "pre-line" }}>
-        {clip.description}
-      </Text>
+      <Stack gap={6} flex={1} miw={0}>
+        <Text fz="sm" lh={1.35} c="brown.0" style={{ whiteSpace: "pre-line" }}>
+          {clip.description}
+        </Text>
+        {clip.onScreenText && <ClipNote label="Text" text={clip.onScreenText} />}
+        {clip.howToFilm && <ClipNote label="Film" text={clip.howToFilm} />}
+      </Stack>
       {clip.durationSeconds && (
         <Text ff="monospace" fz={11} c="brown.1" pt={3}>
           {clip.durationSeconds}s
@@ -45,5 +49,28 @@ export function ReelClipRow({ clip, clipNumber, onEdit }: ReelClipRowProps) {
         {row}
       </UnstyledButton>
     </li>
+  );
+}
+
+// One of a clip's notes under its description, with a small label, e.g. "FILM  Low angle".
+function ClipNote({ label, text }: { label: string; text: string }) {
+  return (
+    <Group gap="xs" wrap="nowrap" align="baseline">
+      <Text
+        ff="monospace"
+        fz={10}
+        fw={700}
+        c="yellow.5"
+        tt="uppercase"
+        lts="0.08em"
+        w={32}
+        style={{ flexShrink: 0 }}
+      >
+        {label}
+      </Text>
+      <Text fz="xs" lh={1.4} c="brown.1" style={{ whiteSpace: "pre-line" }}>
+        {text}
+      </Text>
+    </Group>
   );
 }

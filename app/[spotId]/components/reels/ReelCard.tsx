@@ -7,6 +7,7 @@ import {
   ActionIcon,
   Box,
   Button,
+  Checkbox,
   Collapse,
   Group,
   Paper,
@@ -15,6 +16,7 @@ import {
   TextInput,
   Title,
   UnstyledButton,
+  useMantineTheme,
 } from "@mantine/core";
 import { IconBrandInstagram, IconChevronDown, IconChevronUp, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
@@ -38,8 +40,11 @@ type ClipEditing = string | "new" | null;
 
 export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCardProps) {
   const utils = api.useUtils();
+  const theme = useMantineTheme();
   const [clipEditing, setClipEditing] = useState<ClipEditing>(null);
   const [titleDraft, setTitleDraft] = useState<string | null>(null);
+  // The creator being edited, without its @; null when it isn't being edited.
+  const [creatorDraft, setCreatorDraft] = useState<string | null>(null);
   const [linkSheetOpen, setLinkSheetOpen] = useState(false);
 
   const refresh = () => utils.reels.list.invalidate({ spotId });
@@ -55,8 +60,15 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
     // The map's list counts each spot's reels for its Reels filter.
     onSuccess: () => Promise.all([refresh(), utils.spots.list.invalidate()]),
   });
+  const setCreator = api.reels.setCreator.useMutation({
+    onSuccess: async () => (await refresh(), setCreatorDraft(null)),
+  });
+  const setReady = api.reels.setReady.useMutation({ onSuccess: refresh });
   const setKind = api.reels.setKind.useMutation({ onSuccess: refresh });
   const setInstagramUrl = api.reels.setInstagramUrl.useMutation({ onSuccess: refresh });
+
+  // "@someone · 7 clips · ~21s", or just the clips when no creator was given.
+  const summary = [reel.creator, formatReelSummary(reel.clips)].filter(Boolean).join(" · ");
 
   const isSavingClip = addClip.isPending || updateClip.isPending || deleteClip.isPending;
   const clipError =
@@ -73,13 +85,40 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
     rename.mutate({ id: reel.id, title: titleDraft });
   }
 
+  function saveCreator() {
+    if (creatorDraft === null) return;
+    const savedCreator = reel.creator?.replace(/^@/, "") ?? "";
+    if (creatorDraft.trim() === savedCreator) return setCreatorDraft(null);
+    setCreator.mutate({ id: reel.id, creator: creatorDraft });
+  }
+
   function confirmDeleteReel() {
     if (window.confirm(`Delete “${reel.title}” and its clips?`)) deleteReel.mutate({ id: reel.id });
   }
 
+  // Shows the new tick straight away while it saves.
+  const isReady = setReady.isPending ? setReady.variables.ready : reel.ready;
+  const readyColor = theme.other!.colors.teal;
+
   return (
-    <Paper bg="brown.6" radius="md" style={{ border: REEL_CARD_BORDER }}>
+    <Paper
+      bg="brown.6"
+      radius="md"
+      style={{ border: isReady ? `1px solid ${readyColor}` : REEL_CARD_BORDER }}
+    >
       <Group gap="xs" wrap="nowrap" align="flex-start" p="sm" pr="xs">
+        <Checkbox
+          aria-label={`${reel.title}: ready to shoot`}
+          title="Ready to shoot"
+          checked={isReady}
+          onChange={(event) => setReady.mutate({ id: reel.id, ready: event.currentTarget.checked })}
+          disabled={!CAN_EDIT_SPOTS}
+          color={readyColor}
+          size="md"
+          radius="sm"
+          mt={2}
+          style={{ flexShrink: 0 }}
+        />
         {titleDraft !== null ? (
           <TextInput
             flex={1}
@@ -104,7 +143,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
                 </Title>
                 {!showType && (
                   <Text fz="xs" c="brown.1">
-                    {formatReelSummary(reel.clips)}
+                    {summary}
                   </Text>
                 )}
               </Stack>
@@ -118,7 +157,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
                   onChange={(kind) => setKind.mutate({ id: reel.id, kind })}
                 />
                 <Text fz="xs" c="brown.1" truncate>
-                  {formatReelSummary(reel.clips)}
+                  {summary}
                 </Text>
               </Group>
             )}
@@ -173,6 +212,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
                 <li key={clip.id}>
                   <ReelClipEditor
                     clipNumber={index + 1}
+                    withFilmingNotes
                     initial={clip}
                     isSaving={isSavingClip}
                     error={clipError}
@@ -196,6 +236,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
             (clipEditing === "new" ? (
               <ReelClipEditor
                 clipNumber={reel.clips.length + 1}
+                withFilmingNotes
                 isSaving={isSavingClip}
                 error={clipError}
                 onSave={saveClip}
@@ -216,6 +257,33 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
               </Button>
             ))}
 
+          {CAN_EDIT_SPOTS && creatorDraft !== null && (
+            <TextInput
+              mt="sm"
+              label="Creator"
+              placeholder="their.handle"
+              leftSection={
+                <Text component="span" c="brown.1" fw={700} aria-hidden>
+                  @
+                </Text>
+              }
+              value={creatorDraft}
+              onChange={(event) => setCreatorDraft(event.currentTarget.value.replace(/^@+/, ""))}
+              onBlur={saveCreator}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") saveCreator();
+                if (event.key === "Escape") setCreatorDraft(null);
+              }}
+              disabled={setCreator.isPending}
+              error={setCreator.error?.message}
+              autoComplete="off"
+              autoCapitalize="none"
+              spellCheck={false}
+              maxLength={60}
+              autoFocus
+            />
+          )}
+
           {CAN_EDIT_SPOTS && (
             <Group gap={0} mt="xs" justify="flex-end">
               <Button
@@ -225,6 +293,14 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
                 onClick={() => setTitleDraft(reel.title)}
               >
                 Rename
+              </Button>
+              <Button
+                variant="subtle"
+                color="brown.1"
+                size="compact-sm"
+                onClick={() => setCreatorDraft(reel.creator?.replace(/^@/, "") ?? "")}
+              >
+                {reel.creator ? "Edit creator" : "Add creator"}
               </Button>
               {reel.instagramUrl && (
                 <Button

@@ -5,6 +5,9 @@ import { useState } from "react";
 
 export type ReelClipDraft = {
   description: string;
+  // Only with `withFilmingNotes`: the text shown on screen, and how to film the clip.
+  onScreenText?: string | null;
+  howToFilm?: string | null;
   durationSeconds: number | null;
 };
 
@@ -17,6 +20,8 @@ type ReelClipEditorProps = {
   onCancel: () => void;
   // Only for existing clips.
   onDelete?: () => void;
+  // Adds the On-screen text and How to film fields, for a spot's reel ideas.
+  withFilmingNotes?: boolean;
 };
 
 export function ReelClipEditor({
@@ -27,8 +32,11 @@ export function ReelClipEditor({
   onSave,
   onCancel,
   onDelete,
+  withFilmingNotes,
 }: ReelClipEditorProps) {
   const [description, setDescription] = useState(initial?.description ?? "");
+  const [onScreenText, setOnScreenText] = useState(initial?.onScreenText ?? "");
+  const [howToFilm, setHowToFilm] = useState(initial?.howToFilm ?? "");
   const [durationSeconds, setDurationSeconds] = useState<number | string>(
     initial?.durationSeconds ?? "",
   );
@@ -38,6 +46,10 @@ export function ReelClipEditor({
 
     onSave({
       description: description.trim(),
+      ...(withFilmingNotes && {
+        onScreenText: onScreenText.trim() || null,
+        howToFilm: howToFilm.trim() || null,
+      }),
       durationSeconds: typeof durationSeconds === "number" ? durationSeconds : null,
     });
   }
@@ -45,8 +57,13 @@ export function ReelClipEditor({
   return (
     <Stack gap="xs" py="sm">
       <Textarea
-        aria-label={`Describe clip ${clipNumber}`}
-        placeholder="What the camera sees, plus any on-screen text"
+        label={withFilmingNotes ? "What happens" : undefined}
+        aria-label={withFilmingNotes ? undefined : `Describe clip ${clipNumber}`}
+        placeholder={
+          withFilmingNotes
+            ? "What the camera sees"
+            : "What the camera sees, plus any on-screen text"
+        }
         value={description}
         onChange={(event) => setDescription(event.currentTarget.value)}
         autosize
@@ -55,6 +72,28 @@ export function ReelClipEditor({
         error={error}
         autoFocus
       />
+      {withFilmingNotes && (
+        <>
+          <Textarea
+            label="On-screen text (optional)"
+            placeholder="e.g. I waited 20 minutes for this"
+            value={onScreenText}
+            onChange={(event) => setOnScreenText(event.currentTarget.value)}
+            autosize
+            minRows={1}
+            maxLength={1000}
+          />
+          <Textarea
+            label="How to film (optional)"
+            placeholder="e.g. Low angle, slow push in, 24mm"
+            value={howToFilm}
+            onChange={(event) => setHowToFilm(event.currentTarget.value)}
+            autosize
+            minRows={1}
+            maxLength={1000}
+          />
+        </>
+      )}
       <Group gap="xs" wrap="nowrap">
         <NumberInput
           aria-label={`Length of clip ${clipNumber} in seconds`}

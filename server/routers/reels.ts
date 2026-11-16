@@ -4,10 +4,15 @@ import { sql } from "kysely";
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
 import { assertCanEdit, getDb, photoKind } from "./spots";
+import { creatorSchema } from "./trialReels";
 
 const reelClipSchema = z.object({
   id: z.string(),
   description: z.string(),
+  // The text shown on screen during the clip.
+  onScreenText: z.string().nullable(),
+  // Camera notes: the move, angle, lens or settings.
+  howToFilm: z.string().nullable(),
   durationSeconds: z.number().nullable(),
   position: z.number(),
 });
@@ -17,6 +22,10 @@ const reelSchema = z.object({
   kind: z.enum(REEL_KINDS),
   title: z.string(),
   instagramUrl: z.string().nullable(),
+  // The Instagram creator the idea came from, e.g. "@someone".
+  creator: z.string().nullable(),
+  // Planned and ready to shoot.
+  ready: z.boolean(),
   position: z.number(),
   clips: z.array(reelClipSchema),
 });
@@ -38,8 +47,17 @@ export type ReelSpot = z.infer<typeof reelSpotSchema>;
 export type SpotReelClip = z.infer<typeof reelClipSchema>;
 
 const titleSchema = z.string().trim().min(1, "Give the reel a name").max(160);
+// Optional clip notes: blank saves as null.
+const clipNoteSchema = z
+  .string()
+  .trim()
+  .max(1000)
+  .nullish()
+  .transform((value) => value || null);
 const clipDetailsSchema = z.object({
   description: z.string().trim().min(1, "Describe the clip").max(1000),
+  onScreenText: clipNoteSchema,
+  howToFilm: clipNoteSchema,
   durationSeconds: z.number().int().min(1).max(600).nullable(),
 });
 const instagramUrlSchema = z
@@ -54,7 +72,7 @@ function notFound(what: string): never {
 
 export const reelsRouter = router({
   // Reel ideas for one spot, each with its clips in order. Pass `kinds` to list several reel
-  // types together (oldest first); otherwise one `kind`, in its saved order.
+  // types together (newest first); otherwise one `kind`, in its saved order.
   list: publicProcedure
     .input(
       z.object({
@@ -71,12 +89,21 @@ export const reelsRouter = router({
       const [reelRows, clipRows] = await Promise.all([
         db
           .selectFrom("photo_spot_reel")
-          .select(["id", "kind", "title", "instagram_url as instagramUrl", "position"])
+          .select([
+            "id",
+            "kind",
+            "title",
+            "instagram_url as instagramUrl",
+            "creator",
+            "ready",
+            "position",
+          ])
           .where("spot_id", "=", input.spotId)
           .where("kind", "in", kinds)
-          // Positions are per type, so a mixed list goes by when each reel was added.
-          .$if(!isMixed, (qb) => qb.orderBy("position"))
-          .orderBy("created_at")
+          // Positions are per type, so a mixed list goes by when each reel was added, newest
+          // first so a new reel sits at the top under the add form.
+          .$if(!isMixed, (qb) => qb.orderBy("position").orderBy("created_at"))
+          .$if(isMixed, (qb) => qb.orderBy("created_at", "desc"))
           .execute(),
         db
           .selectFrom("photo_spot_reel_clip as c")
@@ -85,6 +112,8 @@ export const reelsRouter = router({
             "c.id",
             "c.reel_id as reelId",
             "c.description",
+            "c.on_screen_text as onScreenText",
+            "c.how_to_film as howToFilm",
             "c.duration_seconds as durationSeconds",
             "c.position",
           ])
@@ -176,7 +205,12 @@ export const reelsRouter = router({
 
   create: publicProcedure
     .input(
-      z.object({ spotId: z.uuid(), kind: z.enum(REEL_KINDS).default("bts"), title: titleSchema }),
+      z.object({
+        spotId: z.uuid(),
+        kind: z.enum(REEL_KINDS).default("bts"),
+        title: titleSchema,
+        creator: creatorSchema.optional(),
+      }),
     )
     .mutation(async ({ input }) => {
       assertCanEdit();
@@ -184,7 +218,7 @@ export const reelsRouter = router({
       // New reels go to the end of the list.
       const created = await getDb()
         .insertInto("photo_spot_reel")
-        .columns(["spot_id", "kind", "title", "position"])
+        .columns(["spot_id", "kind", "title", "creator", "position"])
         .expression((eb) =>
           eb
             .selectFrom("photo_spot as spot")
@@ -192,6 +226,7 @@ export const reelsRouter = router({
               "spot.id",
               eb.val(input.kind).as("kind"),
               eb.val(input.title).as("title"),
+              eb.val(input.creator ?? null).as("creator"),
               eb.fn
                 .coalesce(
                   eb
@@ -251,6 +286,35 @@ export const reelsRouter = router({
       if (!updated) notFound("Reel");
     }),
 
+  setReady: publicProcedure
+    .input(z.object({ id: z.uuid(), ready: z.boolean() }))
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+
+      const updated = await getDb()
+        .updateTable("photo_spot_reel")
+        .set({ ready: input.ready })
+        .where("id", "=", input.id)
+        .returning("id")
+        .executeTakeFirst();
+      if (!updated) notFound("Reel");
+    }),
+
+  // An empty creator removes it.
+  setCreator: publicProcedure
+    .input(z.object({ id: z.uuid(), creator: creatorSchema }))
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+
+      const updated = await getDb()
+        .updateTable("photo_spot_reel")
+        .set({ creator: input.creator })
+        .where("id", "=", input.id)
+        .returning("id")
+        .executeTakeFirst();
+      if (!updated) notFound("Reel");
+    }),
+
   // Pass null to remove the link.
   setInstagramUrl: publicProcedure
     .input(z.object({ id: z.uuid(), instagramUrl: instagramUrlSchema.nullable() }))
@@ -285,13 +349,22 @@ export const reelsRouter = router({
 
       const created = await getDb()
         .insertInto("photo_spot_reel_clip")
-        .columns(["reel_id", "description", "duration_seconds", "position"])
+        .columns([
+          "reel_id",
+          "description",
+          "on_screen_text",
+          "how_to_film",
+          "duration_seconds",
+          "position",
+        ])
         .expression((eb) =>
           eb
             .selectFrom("photo_spot_reel as reel")
             .select((eb) => [
               "reel.id",
               eb.val(input.description).as("description"),
+              eb.val(input.onScreenText).as("on_screen_text"),
+              eb.val(input.howToFilm).as("how_to_film"),
               eb.val(input.durationSeconds).as("duration_seconds"),
               eb.fn
                 .coalesce(
@@ -317,7 +390,12 @@ export const reelsRouter = router({
 
       const updated = await getDb()
         .updateTable("photo_spot_reel_clip")
-        .set({ description: input.description, duration_seconds: input.durationSeconds })
+        .set({
+          description: input.description,
+          on_screen_text: input.onScreenText,
+          how_to_film: input.howToFilm,
+          duration_seconds: input.durationSeconds,
+        })
         .where("id", "=", input.id)
         .returning("id")
         .executeTakeFirst();

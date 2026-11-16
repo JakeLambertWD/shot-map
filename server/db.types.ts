@@ -5,10 +5,9 @@
 
 import type { ColumnType } from "kysely";
 
-export type Generated<T> =
-  T extends ColumnType<infer S, infer I, infer U>
-    ? ColumnType<S, I | undefined, U>
-    : ColumnType<T, T | undefined, T>;
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S, I | undefined, U>
+  : ColumnType<T, T | undefined, T>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
@@ -18,6 +17,12 @@ export interface AdminCredentials {
   password_hash: string;
   singleton_key: Generated<boolean>;
   updated_at: Generated<Timestamp>;
+}
+
+export interface AdminSessions {
+  created_at: Generated<Timestamp>;
+  expires_at: Timestamp;
+  id: string;
 }
 
 export interface CreatorShot {
@@ -79,10 +84,12 @@ export interface PhotoSpotImage {
 
 export interface PhotoSpotReel {
   created_at: Generated<Timestamp>;
+  creator: string | null;
   id: Generated<string>;
   instagram_url: string | null;
   kind: Generated<string>;
   position: Generated<number>;
+  ready: Generated<boolean>;
   spot_id: string;
   title: string;
 }
@@ -90,7 +97,9 @@ export interface PhotoSpotReel {
 export interface PhotoSpotReelClip {
   description: string;
   duration_seconds: number | null;
+  how_to_film: string | null;
   id: Generated<string>;
+  on_screen_text: string | null;
   position: Generated<number>;
   reel_id: string;
 }
@@ -136,6 +145,7 @@ export interface UpcomingPostMedia {
 
 export interface DB {
   admin_credentials: AdminCredentials;
+  admin_sessions: AdminSessions;
   creator_shot: CreatorShot;
   follower_snapshot: FollowerSnapshot;
   photo_shoot_day_spot: PhotoShootDaySpot;

@@ -25,20 +25,29 @@ export function ReelsPanel({ spotId, kinds }: ReelsPanelProps) {
   const reelsQuery = api.reels.list.useQuery({ spotId, kinds: [...kinds] });
   const [openReelId, setOpenReelId] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState<string | null>(null);
+  // The new reel's Instagram creator, without its @.
+  const [newCreator, setNewCreator] = useState("");
+
+  function closeNewReel() {
+    setNewTitle(null);
+    setNewCreator("");
+  }
 
   const createReel = api.reels.create.useMutation({
     onSuccess: async ({ id }) => {
       // The map's list counts each spot's reels for its Reels filter.
       void utils.spots.list.invalidate();
       await utils.reels.list.invalidate({ spotId });
-      setNewTitle(null);
+      closeNewReel();
       setOpenReelId(id);
     },
   });
 
   function handleCreate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (newTitle?.trim()) createReel.mutate({ spotId, kind, title: newTitle });
+    if (newTitle?.trim()) {
+      createReel.mutate({ spotId, kind, title: newTitle, creator: newCreator });
+    }
   }
 
   const reels = reelsQuery.data ?? [];
@@ -74,12 +83,23 @@ export function ReelsPanel({ spotId, kinds }: ReelsPanelProps) {
                 error={createReel.error?.message}
                 autoFocus
               />
+              <TextInput
+                label="Creator (optional)"
+                placeholder="their.handle"
+                leftSection={
+                  <Text component="span" c="brown.1" fw={700} aria-hidden>
+                    @
+                  </Text>
+                }
+                value={newCreator}
+                onChange={(event) => setNewCreator(event.currentTarget.value.replace(/^@+/, ""))}
+                autoComplete="off"
+                autoCapitalize="none"
+                spellCheck={false}
+                maxLength={60}
+              />
               <Group gap="xs" justify="flex-end">
-                <Button
-                  variant="default"
-                  onClick={() => setNewTitle(null)}
-                  disabled={createReel.isPending}
-                >
+                <Button variant="default" onClick={closeNewReel} disabled={createReel.isPending}>
                   Cancel
                 </Button>
                 <Button

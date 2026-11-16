@@ -22,7 +22,7 @@ const instagramUrlSchema = z
   .transform(cleanInstagramUrl);
 
 // "someone", "@someone " or "" → "@someone" or null.
-const creatorSchema = z
+export const creatorSchema = z
   .string()
   .trim()
   .max(60)
