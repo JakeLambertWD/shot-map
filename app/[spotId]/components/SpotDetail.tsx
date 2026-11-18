@@ -19,7 +19,12 @@ import { useState } from "react";
 import { REEL_TYPE_KINDS } from "./reels/Reels.constants";
 import { ReelsPanel } from "./reels/ReelsPanel";
 import { TrialReelsGrid } from "./reels/TrialReelsGrid";
-import { getSpotTabHref, type SpotTabId } from "./SpotContentTabs.constants";
+import {
+  getSpotTabHref,
+  SPOT_BACK_LINKS,
+  type SpotBackId,
+  type SpotTabId,
+} from "./SpotContentTabs.constants";
 import { ContentTabChips } from "./ContentTabChips";
 import { SpotActions } from "./SpotActions";
 import { ShowcaseCarousels } from "./ShowcaseCarousels";
@@ -30,16 +35,19 @@ type SpotDetailProps = {
   spotId: string;
   // The tab to open on, from the page's `?tab=` query.
   initialTab: SpotTabId;
+  // The page that linked here, from the `?from=` query; the back button returns to it.
+  from: SpotBackId;
 };
 
-export function SpotDetail({ spotId, initialTab }: SpotDetailProps) {
+export function SpotDetail({ spotId, initialTab, from }: SpotDetailProps) {
   const [activeTab, setActiveTab] = useState<SpotTabId>(initialTab);
+  const backLink = SPOT_BACK_LINKS[from];
 
   // Keeps the open tab in the URL, so a refresh or a shared link opens on it. Replacing the
   // history entry means Back still leaves the spot rather than stepping through its tabs.
   function changeTab(tab: SpotTabId) {
     setActiveTab(tab);
-    window.history.replaceState(null, "", getSpotTabHref(spotId, tab));
+    window.history.replaceState(null, "", getSpotTabHref(spotId, tab, from));
   }
 
   const spotQuery = api.spots.byId.useQuery({ id: spotId }, { retry: false });
@@ -61,8 +69,8 @@ export function SpotDetail({ spotId, initialTab }: SpotDetailProps) {
               ? "This spot doesn't exist."
               : "Couldn't load this spot."}
           </Text>
-          <Button component={Link} href="/" variant="default">
-            Back to map
+          <Button component={Link} href={backLink.href} variant="default">
+            {backLink.label}
           </Button>
         </Stack>
       </Center>
@@ -86,8 +94,8 @@ export function SpotDetail({ spotId, initialTab }: SpotDetailProps) {
       <Group justify="space-between" wrap="nowrap" px="xs" my="sm">
         <ActionIcon
           component={Link}
-          href="/"
-          aria-label="Back to map"
+          href={backLink.href}
+          aria-label={backLink.label}
           variant="subtle"
           color="brown.0"
           size={44}
@@ -120,7 +128,7 @@ export function SpotDetail({ spotId, initialTab }: SpotDetailProps) {
           />
         </Tabs.Panel>
 
-        {/* Educational, 1 Clip and BTS ideas together, each with a type pill. */}
+        {/* Every reel type's ideas together, each with a type pill. */}
         <Tabs.Panel value="reels">
           <ReelsPanel spotId={spot.id} kinds={REEL_TYPE_KINDS} />
         </Tabs.Panel>

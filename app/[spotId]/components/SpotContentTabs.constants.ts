@@ -15,7 +15,7 @@ export type ContentTabConfig = {
   tips?: string[];
 };
 
-// The chips under the spot name. Reels holds the Educational, 1 Clip and BTS ideas together.
+// The chips under the spot name. Reels holds every reel type's ideas together.
 export type SpotTabId = "showcase" | "creator" | "reels" | "pov";
 
 export const SPOT_TABS = [
@@ -33,8 +33,29 @@ export function getSpotTabFromQuery(value: string | string[] | undefined): SpotT
 }
 
 // A spot page's URL, opened on the given tab. The default tab has no `?tab=`.
-export function getSpotTabHref(spotId: string, tab: SpotTabId) {
-  return tab === DEFAULT_SPOT_TAB ? `/${spotId}` : `/${spotId}?tab=${tab}`;
+export function getSpotTabHref(spotId: string, tab: SpotTabId, from: SpotBackId = "map") {
+  const query = new URLSearchParams();
+  if (tab !== DEFAULT_SPOT_TAB) query.set("tab", tab);
+  if (from !== DEFAULT_SPOT_BACK) query.set("from", from);
+  const search = query.toString();
+  return search ? `/${spotId}?${search}` : `/${spotId}`;
+}
+
+// Where a spot page's back button goes, set by the page that linked to it with `?from=`.
+export const SPOT_BACK_LINKS = {
+  map: { href: "/", label: "Back to map" },
+  reels: { href: "/reels", label: "Back to reels" },
+} as const;
+
+export type SpotBackId = keyof typeof SPOT_BACK_LINKS;
+
+export const DEFAULT_SPOT_BACK: SpotBackId = "map";
+
+// The back destination named by a spot page's `?from=` query, or the map when it names none.
+export function getSpotBackFromQuery(value: string | string[] | undefined): SpotBackId {
+  return typeof value === "string" && value in SPOT_BACK_LINKS
+    ? (value as SpotBackId)
+    : DEFAULT_SPOT_BACK;
 }
 
 // Guide copy for each content format, used by the Shoot Day guide.

@@ -126,7 +126,7 @@ function ReelSpotRow({ spot, canReorder, onDragEnd, onMove }: ReelSpotRowProps) 
     >
       <UnstyledButton
         component={Link}
-        href={getSpotTabHref(spot.id, "reels")}
+        href={getSpotTabHref(spot.id, "reels", "reels")}
         py="sm"
         flex={1}
         miw={0}
