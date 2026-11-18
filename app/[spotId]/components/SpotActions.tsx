@@ -8,6 +8,7 @@ import {
   IconCalendarPlus,
   IconArrowsMove,
   IconDots,
+  IconListNumbers,
   IconNavigation,
   IconPencil,
   IconTrash,
@@ -15,6 +16,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTodayShoot } from "@/app/today/useTodayShoot";
+import { useUpNext } from "@/app/up-next/useUpNext";
 import { DeleteSpotModal } from "./DeleteSpotButton";
 import { EditSpotModal } from "./EditSpotButton";
 import { getDirectionsUrl } from "./SpotDetail.constants";
@@ -23,14 +25,17 @@ type SpotActionsProps = {
   spot: SpotDetail;
 };
 
-// The spot's menu, behind the ⋯ button in the header: today's shoot, directions, edit, move
-// and delete. The content tabs are the chips under the spot name.
+// The spot's menu, behind the ⋯ button in the header: today's shoot, Up next, directions, edit,
+// move and delete. The content tabs are the chips under the spot name.
 export function SpotActions({ spot }: SpotActionsProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const shoot = useTodayShoot();
   const isInShoot = shoot.has(spot.id);
-  const [toast, setToast] = useState<string | null>(null);
+  const upNext = useUpNext();
+  const isUpNext = upNext.has(spot.id);
+  // A message after adding or removing the spot, with a link to the list it changed.
+  const [toast, setToast] = useState<{ message: string; href: string } | null>(null);
 
   // The "added" message hides itself after a few seconds.
   useEffect(() => {
@@ -43,14 +48,41 @@ export function SpotActions({ spot }: SpotActionsProps) {
     try {
       if (isInShoot) {
         await shoot.remove(spot.id);
-        setToast("Removed from today's shoot");
+        setToast({ message: "Removed from today's shoot", href: "/today" });
       } else {
         await shoot.add(spot.id);
         const count = shoot.spots.length + 1;
-        setToast(`Added to today's shoot · ${count} ${count === 1 ? "spot" : "spots"}`);
+        setToast({
+          message: `Added to today's shoot · ${count} ${count === 1 ? "spot" : "spots"}`,
+          href: "/today",
+        });
       }
     } catch (error) {
-      setToast(error instanceof Error ? error.message : "Couldn't update today's shoot");
+      setToast({
+        message: error instanceof Error ? error.message : "Couldn't update today's shoot",
+        href: "/today",
+      });
+    }
+  }
+
+  async function toggleUpNext() {
+    try {
+      if (isUpNext) {
+        await upNext.remove(spot.id);
+        setToast({ message: "Removed from Up next", href: "/up-next" });
+      } else {
+        await upNext.add(spot.id);
+        const count = upNext.spots.length + 1;
+        setToast({
+          message: `Added to Up next · ${count} ${count === 1 ? "spot" : "spots"}`,
+          href: "/up-next",
+        });
+      }
+    } catch (error) {
+      setToast({
+        message: error instanceof Error ? error.message : "Couldn't update Up next",
+        href: "/up-next",
+      });
     }
   }
 
@@ -85,6 +117,19 @@ export function SpotActions({ spot }: SpotActionsProps) {
               onClick={toggleShoot}
             >
               {isInShoot ? "Remove from today's shoot" : "Add to today's shoot"}
+            </Menu.Item>
+          )}
+          {CAN_EDIT_SPOTS && upNext.list.isSuccess && (
+            <Menu.Item
+              leftSection={
+                <IconListNumbers
+                  size={20}
+                  color={isUpNext ? undefined : "var(--mantine-color-yellow-5)"}
+                />
+              }
+              onClick={toggleUpNext}
+            >
+              {isUpNext ? "Remove from Up next" : "Add to Up next"}
             </Menu.Item>
           )}
           <Menu.Item
@@ -139,9 +184,9 @@ export function SpotActions({ spot }: SpotActionsProps) {
         >
           <Group justify="space-between" wrap="nowrap" gap="sm">
             <Text fz="sm" fw={700} c="brown.9">
-              {toast}
+              {toast.message}
             </Text>
-            <Button component={Link} href="/today" radius="sm" autoContrast size="sm">
+            <Button component={Link} href={toast.href} radius="sm" autoContrast size="sm">
               View
             </Button>
           </Group>

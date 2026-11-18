@@ -45,6 +45,7 @@ export function getSpotTabHref(spotId: string, tab: SpotTabId, from: SpotBackId 
 export const SPOT_BACK_LINKS = {
   map: { href: "/", label: "Back to map" },
   reels: { href: "/reels", label: "Back to reels" },
+  "up-next": { href: "/up-next", label: "Back to Up next" },
 } as const;
 
 export type SpotBackId = keyof typeof SPOT_BACK_LINKS;
