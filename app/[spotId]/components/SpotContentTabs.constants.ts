@@ -19,9 +19,9 @@ export type ContentTabConfig = {
 export type SpotTabId = "showcase" | "creator" | "reels" | "pov";
 
 export const SPOT_TABS = [
-  { id: "showcase", label: "Showcase" },
-  { id: "creator", label: "Creator Shots" },
+  { id: "showcase", label: "Carousel" },
   { id: "reels", label: "Reels" },
+  { id: "creator", label: "Creator Shots" },
   { id: "pov", label: "Trial Reels" },
 ] as const satisfies readonly { id: SpotTabId; label: string }[];
 

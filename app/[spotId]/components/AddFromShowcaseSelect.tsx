@@ -66,13 +66,13 @@ export function AddFromShowcaseSelect({
   return (
     <Select
       size="md"
-      label="Add from Showcase"
+      label="Add from Carousel"
       placeholder={
         isFull
           ? `The Editing tab is full (${MAX_SPOT_PHOTOS} photos)`
           : options.length === 0
-            ? "All Showcase photos are already here"
-            : "Choose a Showcase photo"
+            ? "All Carousel photos are already here"
+            : "Choose a Carousel photo"
       }
       data={options.map(({ value, label }) => ({ value, label }))}
       value={null}
