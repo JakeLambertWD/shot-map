@@ -1,9 +1,9 @@
-import { cleanInstagramUrl, isInstagramUrl, REEL_KINDS } from "@/lib/photo-spots";
+import { REEL_KINDS } from "@/lib/photo-spots";
 import { TRPCError } from "@trpc/server";
 import { sql } from "kysely";
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import { assertCanEdit, creatorSchema, getDb, photoKind } from "./spots";
+import { assertCanEdit, creatorSchema, getDb, instagramUrlSchema, photoKind } from "./spots";
 
 const reelClipSchema = z.object({
   id: z.string(),
@@ -59,11 +59,6 @@ const clipDetailsSchema = z.object({
   howToFilm: clipNoteSchema,
   durationSeconds: z.number().int().min(1).max(600).nullable(),
 });
-const instagramUrlSchema = z
-  .string()
-  .trim()
-  .refine(isInstagramUrl, "Paste a link from instagram.com, like a reel or post.")
-  .transform(cleanInstagramUrl);
 
 function notFound(what: string): never {
   throw new TRPCError({ code: "NOT_FOUND", message: `${what} not found.` });

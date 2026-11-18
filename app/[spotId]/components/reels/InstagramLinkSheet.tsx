@@ -6,7 +6,8 @@ import { IconBrandInstagram, IconCheck } from "@tabler/icons-react";
 import { useState } from "react";
 
 type InstagramLinkSheetProps = {
-  reelTitle: string;
+  // The reel idea or carousel the link is for.
+  title: string;
   currentUrl: string | null;
   opened: boolean;
   onClose: () => void;
@@ -32,7 +33,7 @@ export function InstagramLinkSheet(props: InstagramLinkSheetProps) {
             Instagram inspo
           </Text>
           <Text component="span" fz="sm" c="teal.1">
-            For “{props.reelTitle}”
+            For “{props.title}”
           </Text>
         </Stack>
       }

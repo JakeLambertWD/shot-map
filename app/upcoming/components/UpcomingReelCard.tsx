@@ -300,7 +300,7 @@ export function UpcomingReelCard({
 
       {CAN_EDIT_SPOTS && (
         <InstagramLinkSheet
-          reelTitle={post.title}
+          title={post.title}
           currentUrl={post.instagramUrl}
           opened={linkSheetOpen}
           onClose={() => setLinkSheetOpen(false)}

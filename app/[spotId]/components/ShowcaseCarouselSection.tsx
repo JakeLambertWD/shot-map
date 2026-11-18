@@ -18,6 +18,7 @@ import {
 } from "@mantine/core";
 import { IconChevronDown, IconDots, IconPencil, IconTrash } from "@tabler/icons-react";
 import { useState, type ReactNode } from "react";
+import { CarouselInstagramLink } from "./CarouselInstagramLink";
 import { SpotPhotoTab } from "./SpotPhotoTab";
 
 type ShowcaseCarouselSectionProps = {
@@ -27,7 +28,7 @@ type ShowcaseCarouselSectionProps = {
   canDelete: boolean;
 };
 
-// One named carousel on the Showcase tab: its title and menu, then its photos and notes.
+// One named carousel on the Carousel tab: its title, Instagram link and menu, then its photos and notes.
 // Tapping the title collapses or expands the photos.
 export function ShowcaseCarouselSection({
   spot,
@@ -111,6 +112,8 @@ export function ShowcaseCarouselSection({
             </Text>
           </UnstyledButton>
         )}
+
+        {titleDraft === null && <CarouselInstagramLink spotId={spot.id} carousel={carousel} />}
 
         {CAN_EDIT_SPOTS && carouselId && titleDraft === null && (
           <Menu position="bottom-end" width={180} radius="md">

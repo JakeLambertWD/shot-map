@@ -1,7 +1,13 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import { assertCanEdit, deleteSpotPhotoFiles, getDb } from "./spots";
+import {
+  assertCanEdit,
+  deleteSpotPhotoFiles,
+  getDb,
+  instagramUrlSchema,
+  resolveCarouselId,
+} from "./spots";
 
 const titleSchema = z.string().trim().min(1, "Give the carousel a name").max(80);
 
@@ -94,6 +100,26 @@ export const carouselsRouter = router({
         .returning("id")
         .executeTakeFirst();
       if (!updated) notFound("Carousel");
+    }),
+
+  // Saves the carousel's Instagram inspo link, or removes it with null. A spot with no carousel
+  // saved yet (its placeholder "Carousel 1") gets one first.
+  setInstagramUrl: publicProcedure
+    .input(
+      z.object({
+        spotId: z.uuid(),
+        carouselId: z.uuid().nullable(),
+        instagramUrl: instagramUrlSchema.nullable(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+      const carouselId = await resolveCarouselId(input.spotId, input.carouselId);
+      await getDb()
+        .updateTable("photo_spot_carousel")
+        .set({ instagram_url: input.instagramUrl })
+        .where("id", "=", carouselId)
+        .execute();
     }),
 
   // Deletes the carousel and its photos. Files still used elsewhere (e.g. the Editing tab) are kept.

@@ -1,5 +1,7 @@
 import {
   CAN_EDIT_SPOTS,
+  cleanInstagramUrl,
+  isInstagramUrl,
   isSpotPhotoUrl,
   MAX_SPOT_PHOTOS,
   MAX_SPOT_TAGS,
@@ -45,6 +47,8 @@ const spotPhotoSchema = z.object({
 const spotCarouselSchema = z.object({
   id: z.string().nullable(),
   title: z.string(),
+  // An Instagram link for inspo, as reel ideas have.
+  instagramUrl: z.string().nullable(),
   photos: z.array(spotPhotoSchema),
 });
 
@@ -65,6 +69,13 @@ const spotPhotoInputSchema = z.object({
   imageUrl: z.string().refine(isSpotPhotoUrl, "Photos must be uploaded to Vercel Blob."),
   caption: z.string().trim().max(2000),
 });
+
+// An Instagram inspo link for a reel idea or carousel, tidied up for saving.
+export const instagramUrlSchema = z
+  .string()
+  .trim()
+  .refine(isInstagramUrl, "Paste a link from instagram.com, like a reel or post.")
+  .transform(cleanInstagramUrl);
 
 // "someone", "@someone " or "" → "@someone" or null.
 export const creatorSchema = z
@@ -134,13 +145,18 @@ export const photoKind = (eb: ExpressionBuilder<DB, "photo_spot_image">) =>
 // Puts each Showcase photo in its carousel. Photos without one go in the first carousel,
 // which is a placeholder "Carousel 1" (id null) if the spot has none saved yet.
 function groupIntoCarousels<Photo extends { carouselId: string | null }>(
-  carouselRows: { id: string; title: string }[],
+  carouselRows: { id: string; title: string; instagramUrl: string | null }[],
   photoRows: Photo[],
 ) {
-  const carousels: { id: string | null; title: string; photos: Photo[] }[] = carouselRows.map(
-    (row) => ({ id: row.id, title: row.title, photos: [] }),
-  );
-  if (carousels.length === 0) carousels.push({ id: null, title: "Carousel 1", photos: [] });
+  const carousels: {
+    id: string | null;
+    title: string;
+    instagramUrl: string | null;
+    photos: Photo[];
+  }[] = carouselRows.map((row) => ({ ...row, photos: [] }));
+  if (carousels.length === 0) {
+    carousels.push({ id: null, title: "Carousel 1", instagramUrl: null, photos: [] });
+  }
 
   for (const photo of photoRows) {
     const carousel = carousels.find((c) => c.id && c.id === photo.carouselId) ?? carousels[0];
@@ -152,7 +168,7 @@ function groupIntoCarousels<Photo extends { carouselId: string | null }>(
 
 // Checks the carousel belongs to the spot, or falls back to the spot's first carousel,
 // creating "Carousel 1" if it has none yet.
-async function resolveCarouselId(spotId: string, carouselId?: string | null) {
+export async function resolveCarouselId(spotId: string, carouselId?: string | null) {
   const db = getDb();
 
   if (carouselId) {
@@ -296,7 +312,7 @@ export const spotsRouter = router({
         .execute(),
       db
         .selectFrom("photo_spot_carousel")
-        .select(["id", "title"])
+        .select(["id", "title", "instagram_url as instagramUrl"])
         .where("spot_id", "=", input.id)
         .orderBy("position")
         .orderBy("created_at")

@@ -66,6 +66,7 @@ export interface PhotoSpot {
 export interface PhotoSpotCarousel {
   created_at: Generated<Timestamp>;
   id: Generated<string>;
+  instagram_url: string | null;
   position: Generated<number>;
   spot_id: string;
   title: string;

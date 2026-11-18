@@ -18,9 +18,10 @@ import {
   UnstyledButton,
   useMantineTheme,
 } from "@mantine/core";
-import { IconBrandInstagram, IconChevronDown, IconChevronUp, IconPlus } from "@tabler/icons-react";
+import { IconChevronDown, IconChevronUp, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import { formatReelSummary, REEL_CARD_BORDER } from "./Reels.constants";
+import { InstagramInspoButton } from "./InstagramInspoButton";
 import { InstagramLinkSheet } from "./InstagramLinkSheet";
 import { ReelClipEditor, type ReelClipDraft } from "./ReelClipEditor";
 import { ReelClipRow } from "./ReelClipRow";
@@ -164,34 +165,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
           </Stack>
         )}
 
-        {reel.instagramUrl ? (
-          <ActionIcon
-            component="a"
-            href={reel.instagramUrl}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Open Instagram inspo"
-            variant="default"
-            radius="xl"
-            size={32}
-            bg="teal.5"
-          >
-            <IconBrandInstagram size={17} color="var(--mantine-color-amber-5)" />
-          </ActionIcon>
-        ) : (
-          CAN_EDIT_SPOTS && (
-            <ActionIcon
-              aria-label="Add Instagram inspo link"
-              variant="transparent"
-              radius="xl"
-              size={32}
-              onClick={() => setLinkSheetOpen(true)}
-              style={{ border: "1.5px dashed var(--mantine-color-teal-2)" }}
-            >
-              <IconBrandInstagram size={17} color="var(--mantine-color-teal-2)" />
-            </ActionIcon>
-          )
-        )}
+        <InstagramInspoButton url={reel.instagramUrl} onAdd={() => setLinkSheetOpen(true)} />
 
         <ActionIcon
           aria-label={expanded ? "Collapse reel" : "Expand reel"}
@@ -328,7 +302,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
 
       {CAN_EDIT_SPOTS && (
         <InstagramLinkSheet
-          reelTitle={reel.title}
+          title={reel.title}
           currentUrl={reel.instagramUrl}
           opened={linkSheetOpen}
           onClose={() => setLinkSheetOpen(false)}
