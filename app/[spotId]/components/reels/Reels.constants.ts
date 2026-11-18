@@ -36,6 +36,14 @@ export const REEL_KIND_COPY: Record<ReelKind, { emptyText: string; placeholder: 
     emptyText: "No cinema reel ideas yet",
     placeholder: "e.g. A slow cinematic walk through the station",
   },
+  location_reveal: {
+    emptyText: "No location reveal reel ideas yet",
+    placeholder: "e.g. Guess where this is, then pull back to show the station",
+  },
+  series: {
+    emptyText: "No series reel ideas yet",
+    placeholder: "e.g. Hidden London spots #03",
+  },
   pov: {
     emptyText: "No trial reel ideas yet",
     placeholder: "e.g. POV: you wait 20 mins for one train",
@@ -50,6 +58,8 @@ export const REEL_TYPE_KINDS = [
   "bts",
   "humour",
   "cinema",
+  "location_reveal",
+  "series",
 ] as const satisfies readonly ReelKind[];
 
 // Label and colours for each reel type's pill. Colours differ in lightness as well as hue.
@@ -81,6 +91,18 @@ export const REEL_TYPE_STYLES: Record<
     color: "#6cc59b",
     text: "#97d8b8",
     tint: "rgba(108, 197, 155, 0.12)",
+  },
+  location_reveal: {
+    label: "Location Reveal",
+    color: "#e07a9a",
+    text: "#eea6bd",
+    tint: "rgba(224, 122, 154, 0.12)",
+  },
+  series: {
+    label: "Series",
+    color: "#5fc4cc",
+    text: "#8fd9de",
+    tint: "rgba(95, 196, 204, 0.12)",
   },
 };
 

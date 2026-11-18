@@ -95,7 +95,16 @@ export function isUpcomingMediaUrl(value: string) {
 }
 
 // Saved ids for the reel tabs. "technique" shows as "1 Clip" and "pov" as "Trial Reels".
-export const REEL_KINDS = ["bts", "educational", "technique", "humour", "cinema", "pov"] as const;
+export const REEL_KINDS = [
+  "bts",
+  "educational",
+  "technique",
+  "humour",
+  "cinema",
+  "location_reveal",
+  "series",
+  "pov",
+] as const;
 export type ReelKind = (typeof REEL_KINDS)[number];
 
 // Reel inspo links must point at Instagram (a reel, post, etc.).
