@@ -110,6 +110,12 @@ export interface PhotoSpotTrialReel {
   trial_reel_id: string;
 }
 
+export interface PhotoSpotUpNext {
+  created_at: Generated<Timestamp>;
+  position: Generated<number>;
+  spot_id: string;
+}
+
 export interface TrialReel {
   created_at: Generated<Timestamp>;
   creator: string | null;
@@ -155,6 +161,7 @@ export interface DB {
   photo_spot_reel: PhotoSpotReel;
   photo_spot_reel_clip: PhotoSpotReelClip;
   photo_spot_trial_reel: PhotoSpotTrialReel;
+  photo_spot_up_next: PhotoSpotUpNext;
   trial_reel: TrialReel;
   upcoming_post: UpcomingPost;
   upcoming_post_media: UpcomingPostMedia;
