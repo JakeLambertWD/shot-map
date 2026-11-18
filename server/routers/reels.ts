@@ -3,8 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { sql } from "kysely";
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import { assertCanEdit, getDb, photoKind } from "./spots";
-import { creatorSchema } from "./trialReels";
+import { assertCanEdit, creatorSchema, getDb, photoKind } from "./spots";
 
 const reelClipSchema = z.object({
   id: z.string(),

@@ -107,6 +107,9 @@ export const REEL_KINDS = [
 ] as const;
 export type ReelKind = (typeof REEL_KINDS)[number];
 
+// Reel ideas that can be added along with a new spot.
+export const MAX_SPOT_REELS = 20;
+
 // Reel inspo links must point at Instagram (a reel, post, etc.).
 export function isInstagramUrl(value: string) {
   try {

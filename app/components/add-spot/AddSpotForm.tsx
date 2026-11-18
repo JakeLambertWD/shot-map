@@ -31,6 +31,7 @@ import {
 } from "@mantine/core";
 import { IconMapPin, IconPhotoPlus, IconTrash } from "@tabler/icons-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { AddSpotReels, type DraftReel } from "./AddSpotReels";
 import { SpotFormStatus } from "./SpotFormModalTitle";
 import { SpotToggle } from "./SpotToggle";
 import { WeatherPill } from "./WeatherPill";
@@ -75,6 +76,7 @@ export function AddSpotForm({
   const [gear, setGear] = useState<SpotGear>(DEFAULT_SPOT_GEAR);
   const [tags, setTags] = useState<string[]>([]);
   const [photos, setPhotos] = useState<DraftPhoto[]>([]);
+  const [reels, setReels] = useState<DraftReel[]>([]);
   const [progress, setProgress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -175,8 +177,13 @@ export function AddSpotForm({
         gear,
         tags,
         photos: uploadedPhotos,
+        reels: reels
+          .filter((reel) => reel.title.trim())
+          .map(({ kind, title, creator }) => ({ kind, title, creator })),
       });
 
+      // The Reels page lists spots that have reel ideas.
+      void utils.reels.spots.invalidate();
       await utils.spots.list.invalidate();
       onCreated(id);
     } catch (submitError) {
@@ -297,6 +304,8 @@ export function AddSpotForm({
             </FileButton>
           </Stack>
         </Input.Wrapper>
+
+        <AddSpotReels reels={reels} onChange={setReels} disabled={isSaving} />
       </Stack>
     </form>
   );

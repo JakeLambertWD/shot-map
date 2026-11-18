@@ -3,7 +3,9 @@ import {
   isSpotPhotoUrl,
   MAX_SPOT_PHOTOS,
   MAX_SPOT_TAGS,
+  MAX_SPOT_REELS,
   PHOTO_KINDS,
+  REEL_KINDS,
   SPOT_GEAR,
   SPOT_STATUSES,
 } from "@/lib/photo-spots";
@@ -64,6 +66,23 @@ const spotPhotoInputSchema = z.object({
   caption: z.string().trim().max(2000),
 });
 
+// "someone", "@someone " or "" → "@someone" or null.
+export const creatorSchema = z
+  .string()
+  .trim()
+  .max(60)
+  .transform((value) => {
+    const handle = value.replace(/^@+/, "").trim();
+    return handle ? `@${handle}` : null;
+  });
+
+// A reel idea added with a new spot.
+const spotReelInputSchema = z.object({
+  kind: z.enum(REEL_KINDS),
+  title: z.string().trim().min(1, "Give the reel a name").max(160),
+  creator: creatorSchema,
+});
+
 const spotDetailsInputSchema = z.object({
   title: z.string().trim().min(1).max(120),
   postcode: z.string().trim().max(10),
@@ -78,6 +97,7 @@ const createSpotInputSchema = spotDetailsInputSchema.omit({ posted: true }).exte
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
   photos: z.array(spotPhotoInputSchema).max(MAX_SPOT_PHOTOS),
+  reels: z.array(spotReelInputSchema).max(MAX_SPOT_REELS).default([]),
 });
 
 export type CreateSpotInput = z.infer<typeof createSpotInputSchema>;
@@ -362,6 +382,30 @@ export const spotsRouter = router({
                 position: index,
                 carousel_id: carouselId,
               })),
+            )
+            .execute();
+        }
+
+        if (input.reels.length > 0) {
+          // Positions count up within each reel type, as reels.create does. The Reels tab lists
+          // newest first, so each reel is stamped a moment before the last to keep the form's order.
+          const nextPosition = new Map<string, number>();
+          const now = Date.now();
+          await trx
+            .insertInto("photo_spot_reel")
+            .values(
+              input.reels.map((reel, index) => {
+                const position = nextPosition.get(reel.kind) ?? 0;
+                nextPosition.set(reel.kind, position + 1);
+                return {
+                  spot_id: id,
+                  kind: reel.kind,
+                  title: reel.title,
+                  creator: reel.creator,
+                  position,
+                  created_at: new Date(now - index),
+                };
+              }),
             )
             .execute();
         }

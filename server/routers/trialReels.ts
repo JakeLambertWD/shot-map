@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { sql } from "kysely";
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import { assertCanEdit, getDb } from "./spots";
+import { assertCanEdit, creatorSchema, getDb } from "./spots";
 
 const trialReelSchema = z.object({
   id: z.string(),
@@ -20,16 +20,6 @@ const instagramUrlSchema = z
   .trim()
   .refine(isInstagramUrl, "Paste a link from instagram.com, like a reel.")
   .transform(cleanInstagramUrl);
-
-// "someone", "@someone " or "" → "@someone" or null.
-export const creatorSchema = z
-  .string()
-  .trim()
-  .max(60)
-  .transform((value) => {
-    const handle = value.replace(/^@+/, "").trim();
-    return handle ? `@${handle}` : null;
-  });
 
 const isoDate = (column: string) =>
   sql<string>`to_char(${sql.ref(column)} at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"')`;
