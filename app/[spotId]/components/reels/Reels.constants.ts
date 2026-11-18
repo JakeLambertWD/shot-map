@@ -24,17 +24,13 @@ export const REEL_KIND_COPY: Record<ReelKind, { emptyText: string; placeholder: 
     emptyText: "No educational reel ideas yet",
     placeholder: "e.g. 3 tips for shooting this spot at night",
   },
-  technique: {
-    emptyText: "No 1 clip reel ideas yet",
-    placeholder: "e.g. 1 Clip #01: the puddle reflection",
-  },
   humour: {
     emptyText: "No humour reel ideas yet",
     placeholder: "e.g. Things photographers say at blue hour",
   },
-  cinema: {
-    emptyText: "No cinema reel ideas yet",
-    placeholder: "e.g. A slow cinematic walk through the station",
+  still_frames: {
+    emptyText: "No still frames reel ideas yet",
+    placeholder: "e.g. 8 still frames from one night at the station",
   },
   location_reveal: {
     emptyText: "No location reveal reel ideas yet",
@@ -43,6 +39,10 @@ export const REEL_KIND_COPY: Record<ReelKind, { emptyText: string; placeholder: 
   series: {
     emptyText: "No series reel ideas yet",
     placeholder: "e.g. Hidden London spots #03",
+  },
+  showcase: {
+    emptyText: "No showcase reel ideas yet",
+    placeholder: "e.g. The best 6 shots from this spot, cut to the beat",
   },
   pov: {
     emptyText: "No trial reel ideas yet",
@@ -54,12 +54,12 @@ export const REEL_KIND_COPY: Record<ReelKind, { emptyText: string; placeholder: 
 // there start as the first one.
 export const REEL_TYPE_KINDS = [
   "educational",
-  "technique",
   "bts",
   "humour",
-  "cinema",
+  "still_frames",
   "location_reveal",
   "series",
+  "showcase",
 ] as const satisfies readonly ReelKind[];
 
 // Label and colours for each reel type's pill. Colours differ in lightness as well as hue.
@@ -73,12 +73,6 @@ export const REEL_TYPE_STYLES: Record<
     text: "#9cc4f0",
     tint: "rgba(116, 169, 232, 0.12)",
   },
-  technique: {
-    label: "1 Clip",
-    color: "#e7ba3d",
-    text: "#f4d05f",
-    tint: "rgba(231, 186, 61, 0.14)",
-  },
   bts: { label: "BTS", color: "#e8916a", text: "#f0ad8e", tint: "rgba(232, 145, 106, 0.12)" },
   humour: {
     label: "Humour",
@@ -86,8 +80,8 @@ export const REEL_TYPE_STYLES: Record<
     text: "#d9b1ee",
     tint: "rgba(196, 139, 224, 0.12)",
   },
-  cinema: {
-    label: "Cinema",
+  still_frames: {
+    label: "Still Frames",
     color: "#6cc59b",
     text: "#97d8b8",
     tint: "rgba(108, 197, 155, 0.12)",
@@ -103,6 +97,12 @@ export const REEL_TYPE_STYLES: Record<
     color: "#5fc4cc",
     text: "#8fd9de",
     tint: "rgba(95, 196, 204, 0.12)",
+  },
+  showcase: {
+    label: "Showcase",
+    color: "#e7ba3d",
+    text: "#f4d05f",
+    tint: "rgba(231, 186, 61, 0.14)",
   },
 };
 

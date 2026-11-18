@@ -94,15 +94,15 @@ export function isUpcomingMediaUrl(value: string) {
   }
 }
 
-// Saved ids for the reel tabs. "technique" shows as "1 Clip" and "pov" as "Trial Reels".
+// Saved ids for the reel tabs. "pov" shows as "Trial Reels".
 export const REEL_KINDS = [
   "bts",
   "educational",
-  "technique",
   "humour",
-  "cinema",
+  "still_frames",
   "location_reveal",
   "series",
+  "showcase",
   "pov",
 ] as const;
 export type ReelKind = (typeof REEL_KINDS)[number];

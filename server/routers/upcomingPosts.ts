@@ -15,12 +15,12 @@ export const UPCOMING_POST_KINDS = ["carousel", "single", "reel"] as const;
 export type UpcomingPostKind = (typeof UPCOMING_POST_KINDS)[number];
 export const UPCOMING_REEL_TYPES = [
   "educational",
-  "technique",
   "bts",
   "humour",
-  "cinema",
+  "still_frames",
   "location_reveal",
   "series",
+  "showcase",
 ] as const;
 export type UpcomingReelType = (typeof UPCOMING_REEL_TYPES)[number];
 

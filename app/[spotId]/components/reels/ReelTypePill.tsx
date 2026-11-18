@@ -11,8 +11,7 @@ type ReelTypePillProps = {
   isSaving?: boolean;
 };
 
-// A reel's type as a coloured pill. Tapping it opens a menu to switch between Educational,
-// 1 Clip and BTS.
+// A reel's type as a coloured pill. Tapping it opens a menu to switch to another reel type.
 export function ReelTypePill({ kind, onChange, isSaving }: ReelTypePillProps) {
   const style = REEL_TYPE_STYLES[kind as keyof typeof REEL_TYPE_STYLES];
   if (!style) return null;
