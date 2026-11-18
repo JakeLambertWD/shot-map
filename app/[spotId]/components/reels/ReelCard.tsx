@@ -25,6 +25,7 @@ import { InstagramInspoButton } from "./InstagramInspoButton";
 import { InstagramLinkSheet } from "./InstagramLinkSheet";
 import { ReelClipEditor, type ReelClipDraft } from "./ReelClipEditor";
 import { ReelClipRow } from "./ReelClipRow";
+import { ReelHooks } from "./ReelHooks";
 import { ReelTypePill } from "./ReelTypePill";
 
 type ReelCardProps = {
@@ -68,8 +69,15 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
   const setKind = api.reels.setKind.useMutation({ onSuccess: refresh });
   const setInstagramUrl = api.reels.setInstagramUrl.useMutation({ onSuccess: refresh });
 
-  // "@someone · 7 clips · ~21s", or just the clips when no creator was given.
-  const summary = [reel.creator, formatReelSummary(reel.clips)].filter(Boolean).join(" · ");
+  // "@someone · 2 more hooks · 7 clips · ~21s", leaving out a missing creator or hooks.
+  const hookCount = reel.hooks.length;
+  const summary = [
+    reel.creator,
+    hookCount > 0 && `${hookCount} more ${hookCount === 1 ? "hook" : "hooks"}`,
+    formatReelSummary(reel.clips),
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   const isSavingClip = addClip.isPending || updateClip.isPending || deleteClip.isPending;
   const clipError =
@@ -180,6 +188,8 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
 
       <Collapse expanded={expanded}>
         <Box px="sm" pb="sm">
+          <ReelHooks spotId={spotId} reel={reel} />
+
           <Box component="ol" m={0} p={0} style={{ listStyle: "none" }}>
             {reel.clips.map((clip, index) =>
               clipEditing === clip.id ? (

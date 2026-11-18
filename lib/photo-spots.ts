@@ -107,6 +107,9 @@ export const REEL_KINDS = [
 ] as const;
 export type ReelKind = (typeof REEL_KINDS)[number];
 
+// Alternative hooks a reel idea can have, beside its name.
+export const MAX_REEL_HOOKS = 10;
+
 // Reel ideas that can be added along with a new spot.
 export const MAX_SPOT_REELS = 20;
 

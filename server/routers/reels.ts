@@ -1,4 +1,4 @@
-import { REEL_KINDS } from "@/lib/photo-spots";
+import { MAX_REEL_HOOKS, REEL_KINDS } from "@/lib/photo-spots";
 import { TRPCError } from "@trpc/server";
 import { sql } from "kysely";
 import { z } from "zod";
@@ -20,6 +20,8 @@ const reelSchema = z.object({
   id: z.string(),
   kind: z.enum(REEL_KINDS),
   title: z.string(),
+  // Alternative hooks to try, beside the title (the main hook).
+  hooks: z.array(z.string()),
   instagramUrl: z.string().nullable(),
   // The Instagram creator the idea came from, e.g. "@someone".
   creator: z.string().nullable(),
@@ -46,6 +48,7 @@ export type ReelSpot = z.infer<typeof reelSpotSchema>;
 export type SpotReelClip = z.infer<typeof reelClipSchema>;
 
 const titleSchema = z.string().trim().min(1, "Give the reel a name").max(160);
+const hookSchema = z.string().trim().min(1, "Write the hook").max(160);
 // Optional clip notes: blank saves as null.
 const clipNoteSchema = z
   .string()
@@ -87,6 +90,7 @@ export const reelsRouter = router({
             "id",
             "kind",
             "title",
+            "hooks",
             "instagram_url as instagramUrl",
             "creator",
             "ready",
@@ -288,6 +292,21 @@ export const reelsRouter = router({
       const updated = await getDb()
         .updateTable("photo_spot_reel")
         .set({ ready: input.ready })
+        .where("id", "=", input.id)
+        .returning("id")
+        .executeTakeFirst();
+      if (!updated) notFound("Reel");
+    }),
+
+  // Saves the reel's alternative hooks, in order, replacing the ones saved before.
+  setHooks: publicProcedure
+    .input(z.object({ id: z.uuid(), hooks: z.array(hookSchema).max(MAX_REEL_HOOKS) }))
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+
+      const updated = await getDb()
+        .updateTable("photo_spot_reel")
+        .set({ hooks: input.hooks })
         .where("id", "=", input.id)
         .returning("id")
         .executeTakeFirst();

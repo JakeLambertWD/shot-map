@@ -86,6 +86,7 @@ export interface PhotoSpotImage {
 export interface PhotoSpotReel {
   created_at: Generated<Timestamp>;
   creator: string | null;
+  hooks: Generated<string[]>;
   id: Generated<string>;
   instagram_url: string | null;
   kind: Generated<string>;
