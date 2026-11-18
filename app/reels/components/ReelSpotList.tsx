@@ -41,14 +41,14 @@ export function ReelSpotList({ spots, canReorder, onReorder }: ReelSpotListProps
 
           <Stack gap={6} flex={1} miw={0}>
             <Group justify="space-between" align="baseline" wrap="nowrap" gap="sm">
-              <Text fw={700} c="brown.0" truncate>
+              <Text fw={700} c="teal.0" truncate>
                 {spot.title}
               </Text>
-              <Text fz="xs" c="brown.1" style={{ flexShrink: 0 }}>
+              <Text fz="xs" c="teal.1" style={{ flexShrink: 0 }}>
                 {formatReelCount(spot.reelCount)}
               </Text>
             </Group>
-            <Group gap={4} wrap="nowrap" c="brown.1">
+            <Group gap={4} wrap="nowrap" c="teal.1">
               <IconMapPin size={14} aria-hidden style={{ flexShrink: 0 }} />
               <Text fz="xs" truncate>
                 {formatSpotLocation(spot)}
@@ -64,7 +64,7 @@ export function ReelSpotList({ spots, canReorder, onReorder }: ReelSpotListProps
           {showChevron && (
             <IconChevronRight
               size={18}
-              color="var(--mantine-color-brown-2)"
+              color="var(--mantine-color-teal-2)"
               aria-hidden
               style={{ flexShrink: 0 }}
             />

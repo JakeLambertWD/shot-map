@@ -59,7 +59,7 @@ export function UpcomingPostSheet(props: UpcomingPostSheetProps) {
         },
       }}
       title={
-        <Text component="span" ff="heading" fz="lg" fw={600} c="brown.0">
+        <Text component="span" ff="heading" fz="lg" fw={600} c="teal.0">
           {props.post ? "Edit upcoming post" : "Add an upcoming post"}
         </Text>
       }
@@ -198,7 +198,7 @@ function PostForm({ post, defaultKind, onClose }: UpcomingPostSheetProps) {
   if (post && isConfirmingDelete) {
     return (
       <Stack gap="md" pb="md">
-        <Text fz="sm" c="brown.1" lh={1.45}>
+        <Text fz="sm" c="teal.1" lh={1.45}>
           Posted it, or dropping the idea? This deletes “{post.title}” and its{" "}
           {post.media.length === 1 ? "file" : `${post.media.length} files`}. This can&apos;t be
           undone.
@@ -273,7 +273,7 @@ function PostForm({ post, defaultKind, onClose }: UpcomingPostSheetProps) {
             picked.forEach((item) => URL.revokeObjectURL(item.previewUrl));
             setPicked([]);
           }}
-          color="yellow"
+          color="amber"
           autoContrast
           styles={{ label: { fontWeight: 700 } }}
           disabled={isBusy}
@@ -293,7 +293,7 @@ function PostForm({ post, defaultKind, onClose }: UpcomingPostSheetProps) {
 
       {!isEditing && kind === "reel" && (
         <Stack gap={6} role="group" aria-label="Reel type">
-          <Text fz="sm" fw={500} c="brown.0">
+          <Text fz="sm" fw={500} c="teal.0">
             Reel type
           </Text>
           <Group gap={6}>
@@ -311,9 +311,9 @@ function PostForm({ post, defaultKind, onClose }: UpcomingPostSheetProps) {
                   fw={isActive ? 900 : 700}
                   style={{
                     borderRadius: 18,
-                    border: `1px solid ${isActive ? style.color : theme.colors.brown[4]}`,
+                    border: `1px solid ${isActive ? style.color : theme.colors.teal[4]}`,
                     backgroundColor: isActive ? style.tint : "transparent",
-                    color: isActive ? style.text : theme.colors.brown[0],
+                    color: isActive ? style.text : theme.colors.teal[0],
                   }}
                 >
                   {style.label}
@@ -326,7 +326,7 @@ function PostForm({ post, defaultKind, onClose }: UpcomingPostSheetProps) {
 
       {showMedia && (
         <Stack gap={6}>
-          <Text fz="sm" fw={500} c="brown.0">
+          <Text fz="sm" fw={500} c="teal.0">
             {kind === "reel"
               ? "Clips · each becomes a numbered clip you can describe"
               : kind === "single"
@@ -341,7 +341,7 @@ function PostForm({ post, defaultKind, onClose }: UpcomingPostSheetProps) {
                 w={kind === "reel" ? 54 : 72}
                 h={kind === "reel" ? 96 : 90}
                 style={{ borderRadius: 6, overflow: "hidden", flex: "none" }}
-                bg="brown.6"
+                bg="teal.6"
               >
                 {thumb.isVideo ? (
                   <>
@@ -360,7 +360,7 @@ function PostForm({ post, defaultKind, onClose }: UpcomingPostSheetProps) {
                       />
                     )}
                     <Center pos="absolute" inset={0} aria-hidden>
-                      <IconPlayerPlayFilled size={16} color={theme.colors.brown[0]} />
+                      <IconPlayerPlayFilled size={16} color={theme.colors.teal[0]} />
                     </Center>
                   </>
                 ) : (
@@ -378,7 +378,7 @@ function PostForm({ post, defaultKind, onClose }: UpcomingPostSheetProps) {
                   variant="filled"
                   color="rgba(0, 0, 0, 0.65)"
                 >
-                  <IconX size={14} color={theme.colors.brown[0]} />
+                  <IconX size={14} color={theme.colors.teal[0]} />
                 </ActionIcon>
               </Box>
             ))}
@@ -397,18 +397,18 @@ function PostForm({ post, defaultKind, onClose }: UpcomingPostSheetProps) {
                     h={kind === "reel" ? 96 : 90}
                     style={{
                       borderRadius: 6,
-                      border: `1.5px dashed ${theme.colors.brown[2]}`,
+                      border: `1.5px dashed ${theme.colors.teal[2]}`,
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
                       gap: 4,
-                      color: theme.colors.brown[1],
+                      color: theme.colors.teal[1],
                       fontSize: 12,
                       fontWeight: 700,
                     }}
                   >
-                    <IconUpload size={20} color={theme.colors.yellow[5]} />
+                    <IconUpload size={20} color={theme.colors.amber[5]} />
                     {kind !== "reel" && "Upload"}
                   </UnstyledButton>
                 )}

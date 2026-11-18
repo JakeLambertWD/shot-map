@@ -19,15 +19,15 @@ export function ClusterMarker({ count, onSelect }: ClusterMarkerProps) {
       w={size}
       h={size}
       bdrs="50%"
-      bg="brown.7"
-      c="brown.0"
+      bg="teal.7"
+      c="teal.0"
       ff="monospace"
       fw={700}
       fz={count >= 10 ? "lg" : "md"}
       ta="center"
       style={{
-        border: `2px solid ${theme.colors.yellow[5]}`,
-        boxShadow: `0 0 0 6px color-mix(in srgb, ${theme.colors.yellow[5]} 16%, transparent)`,
+        border: `2px solid ${theme.colors.amber[5]}`,
+        boxShadow: `0 0 0 6px color-mix(in srgb, ${theme.colors.amber[5]} 16%, transparent)`,
       }}
     >
       {count}

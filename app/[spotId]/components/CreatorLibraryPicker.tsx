@@ -166,7 +166,7 @@ function PickerBody({
           display: "grid",
           gridTemplateColumns: "1fr auto 1fr",
           alignItems: "center",
-          borderBottom: `1px solid ${theme.colors.brown[5]}`,
+          borderBottom: `1px solid ${theme.colors.teal[5]}`,
         }}
       >
         <UnstyledButton
@@ -175,12 +175,12 @@ function PickerBody({
           px={8}
           fz={15}
           fw={700}
-          c="brown.0"
+          c="teal.0"
           style={{ justifySelf: "start" }}
         >
           Cancel
         </UnstyledButton>
-        <Title order={2} fz={16} fw={600} c="brown.0">
+        <Title order={2} fz={16} fw={600} c="teal.0">
           Creator shots
         </Title>
         <Button
@@ -210,16 +210,16 @@ function PickerBody({
               variant="default"
               leftSection={
                 progress ? (
-                  <Loader size="xs" color="yellow" />
+                  <Loader size="xs" color="amber" />
                 ) : (
-                  <IconUpload size={18} color={theme.colors.yellow[5]} />
+                  <IconUpload size={18} color={theme.colors.amber[5]} />
                 )
               }
               styles={{
                 root: {
-                  backgroundColor: theme.colors.brown[6],
-                  borderColor: theme.colors.brown[4],
-                  color: theme.colors.brown[0],
+                  backgroundColor: theme.colors.teal[6],
+                  borderColor: theme.colors.teal[4],
+                  color: theme.colors.teal[0],
                 },
               }}
             >
@@ -237,16 +237,16 @@ function PickerBody({
       <Box px="md" pb="xl" style={{ flex: 1, minHeight: 0, overflowY: "auto" }}>
         {libraryQuery.isPending ? (
           <Center h={160}>
-            <Loader color="yellow" size="sm" />
+            <Loader color="amber" size="sm" />
           </Center>
         ) : months.length === 0 ? (
-          <Center h={160} c="brown.1" fz="sm" ta="center">
+          <Center h={160} c="teal.1" fz="sm" ta="center">
             No creator shots yet. Upload your first one above.
           </Center>
         ) : (
           months.map((month) => (
             <Box component="section" key={month.label} aria-label={month.label}>
-              <Text component="h3" fz={13} fw={900} c="brown.1" mt="md" mb={8}>
+              <Text component="h3" fz={13} fw={900} c="teal.1" mt="md" mb={8}>
                 {month.label}
               </Text>
               <SimpleGrid cols={4} spacing={4}>
@@ -281,7 +281,7 @@ function PickerBody({
                           inset={0}
                           style={{
                             borderRadius: 4,
-                            boxShadow: `inset 0 0 0 3px ${theme.colors.yellow[5]}`,
+                            boxShadow: `inset 0 0 0 3px ${theme.colors.amber[5]}`,
                           }}
                         />
                       )}
@@ -293,7 +293,7 @@ function PickerBody({
                           bottom={4}
                           fz={10}
                           fw={700}
-                          c="brown.0"
+                          c="teal.0"
                           px={6}
                           style={{ borderRadius: 8, backgroundColor: "rgba(0, 0, 0, 0.7)" }}
                         >
@@ -309,14 +309,14 @@ function PickerBody({
                           h={22}
                           fz={11}
                           fw={900}
-                          c="brown.9"
+                          c="teal.9"
                           style={{
                             borderRadius: "50%",
                             boxSizing: "border-box",
                             backgroundColor: isSelected
-                              ? theme.colors.yellow[5]
+                              ? theme.colors.amber[5]
                               : "rgba(0, 0, 0, 0.35)",
-                            border: isSelected ? "none" : `1.5px solid ${theme.colors.brown[0]}`,
+                            border: isSelected ? "none" : `1.5px solid ${theme.colors.teal[0]}`,
                           }}
                         >
                           {isSelected &&

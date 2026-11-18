@@ -367,8 +367,8 @@ export function PhotoSpotsMap() {
                 w={16}
                 h={16}
                 bdrs="50%"
-                bg="brown.6"
-                style={{ border: `1.5px solid ${theme.colors.brown[2]}`, pointerEvents: "none" }}
+                bg="teal.6"
+                style={{ border: `1.5px solid ${theme.colors.teal[2]}`, pointerEvents: "none" }}
               />
             </Marker>
           ))}
@@ -430,8 +430,8 @@ export function PhotoSpotsMap() {
                 w={18}
                 h={18}
                 bdrs="50%"
-                bg="blue.4"
-                style={{ border: `3px solid ${theme.colors.brown[0]}` }}
+                bg={theme.other!.colors.teal}
+                style={{ border: `3px solid ${theme.colors.teal[0]}` }}
               />
             </Marker>
           )}
@@ -466,9 +466,9 @@ export function PhotoSpotsMap() {
                 style={{ flex: "none", overflow: "visible" }}
                 styles={{
                   root: {
-                    backgroundColor: theme.colors.brown[7],
+                    backgroundColor: theme.colors.teal[7],
                     border: `${activeFilterCount > 0 ? 1.5 : 1}px solid ${
-                      activeFilterCount > 0 ? theme.colors.yellow[5] : theme.colors.brown[4]
+                      activeFilterCount > 0 ? theme.colors.amber[5] : theme.colors.teal[4]
                     }`,
                     boxShadow: "0 6px 16px rgba(0, 0, 0, 0.45)",
                   },
@@ -476,7 +476,7 @@ export function PhotoSpotsMap() {
               >
                 <IconAdjustmentsHorizontal
                   size={20}
-                  color={activeFilterCount > 0 ? theme.colors.yellow[5] : theme.colors.brown[0]}
+                  color={activeFilterCount > 0 ? theme.colors.amber[5] : theme.colors.teal[0]}
                 />
                 {activeFilterCount > 0 && (
                   <Center
@@ -486,8 +486,8 @@ export function PhotoSpotsMap() {
                     right={-4}
                     w={20}
                     h={20}
-                    bg="yellow.5"
-                    c="brown.9"
+                    bg="amber.5"
+                    c="teal.9"
                     fz={11}
                     fw={900}
                     style={{ borderRadius: "50%" }}
@@ -503,19 +503,19 @@ export function PhotoSpotsMap() {
               px="md"
               py="sm"
               radius="md"
-              bg="brown.7"
+              bg="teal.7"
               style={{
-                border: `1px solid ${theme.colors.yellow[5]}`,
+                border: `1px solid ${theme.colors.amber[5]}`,
                 boxShadow: "0 6px 16px rgba(0, 0, 0, 0.45)",
               }}
             >
               <Group gap="sm" wrap="nowrap">
-                <IconArrowsMove size={20} color={theme.colors.yellow[5]} style={{ flex: "none" }} />
+                <IconArrowsMove size={20} color={theme.colors.amber[5]} style={{ flex: "none" }} />
                 <Box miw={0}>
-                  <Text fz="sm" fw={700} c="brown.0" truncate>
+                  <Text fz="sm" fw={700} c="teal.0" truncate>
                     Moving {movingSpot?.title ?? "spot"}
                   </Text>
-                  <Text fz="xs" c="brown.1">
+                  <Text fz="xs" c="teal.1">
                     Drag the map so the crosshair sits on the new position.
                   </Text>
                 </Box>
@@ -528,13 +528,13 @@ export function PhotoSpotsMap() {
       {(spotsQuery.isPending || spotsQuery.isError) && (
         <Center pos="absolute" inset={0} style={{ pointerEvents: "none" }}>
           {spotsQuery.isPending ? (
-            <Loader color="yellow" />
+            <Loader color="amber" />
           ) : (
-            <Paper p="md" maw="20rem" bg="brown.7" withBorder style={{ pointerEvents: "auto" }}>
-              <Text fw={600} c="brown.0">
+            <Paper p="md" maw="20rem" bg="teal.7" withBorder style={{ pointerEvents: "auto" }}>
+              <Text fw={600} c="teal.0">
                 Couldn&apos;t load your spots
               </Text>
-              <Text fz="sm" c="brown.1">
+              <Text fz="sm" c="teal.1">
                 {spotsQuery.error?.message}
               </Text>
             </Paper>
@@ -564,9 +564,9 @@ export function PhotoSpotsMap() {
                 size="lg"
                 radius="sm"
                 variant="outline"
-                color={theme.colors.brown[3]}
-                c="brown.0"
-                bg="brown.7"
+                color={theme.colors.teal[3]}
+                c="teal.0"
+                bg="teal.7"
                 onClick={leaveMoveMode}
                 disabled={isSavingMove}
               >
@@ -600,13 +600,13 @@ export function PhotoSpotsMap() {
                   radius="sm"
                   styles={{
                     root: {
-                      backgroundColor: theme.colors.brown[7],
-                      borderColor: theme.colors.brown[4],
+                      backgroundColor: theme.colors.teal[7],
+                      borderColor: theme.colors.teal[4],
                       pointerEvents: "auto",
                     },
                   }}
                 >
-                  <IconCurrentLocation size={22} color={theme.colors.brown[0]} />
+                  <IconCurrentLocation size={22} color={theme.colors.teal[0]} />
                 </ActionIcon>
               </Tooltip>
             </Group>
@@ -619,15 +619,15 @@ export function PhotoSpotsMap() {
                 px="sm"
                 radius="sm"
                 variant="default"
-                leftSection={<IconLibraryPhoto size={18} color={theme.colors.yellow[5]} />}
+                leftSection={<IconLibraryPhoto size={18} color={theme.colors.amber[5]} />}
                 rightSection={
                   upcomingCount > 0 ? (
                     <Text
                       component="span"
                       fz="xs"
                       fw={900}
-                      c="brown.9"
-                      bg="yellow.5"
+                      c="teal.9"
+                      bg="amber.5"
                       px={6}
                       miw={22}
                       ta="center"
@@ -639,9 +639,9 @@ export function PhotoSpotsMap() {
                 }
                 styles={{
                   root: {
-                    backgroundColor: theme.colors.brown[7],
-                    borderColor: theme.colors.brown[4],
-                    color: theme.colors.brown[0],
+                    backgroundColor: theme.colors.teal[7],
+                    borderColor: theme.colors.teal[4],
+                    color: theme.colors.teal[0],
                   },
                   section: { marginInlineStart: 8 },
                 }}
@@ -656,15 +656,15 @@ export function PhotoSpotsMap() {
                 px="sm"
                 radius="sm"
                 variant="default"
-                leftSection={<IconCalendar size={18} color={theme.colors.yellow[5]} />}
+                leftSection={<IconCalendar size={18} color={theme.colors.amber[5]} />}
                 rightSection={
                   shoot.spots.length > 0 ? (
                     <Text
                       component="span"
                       fz="xs"
                       fw={900}
-                      c="brown.9"
-                      bg="yellow.5"
+                      c="teal.9"
+                      bg="amber.5"
                       px={6}
                       miw={22}
                       ta="center"
@@ -676,10 +676,10 @@ export function PhotoSpotsMap() {
                 }
                 styles={{
                   root: {
-                    backgroundColor: theme.colors.brown[7],
+                    backgroundColor: theme.colors.teal[7],
                     borderColor:
-                      shoot.spots.length > 0 ? theme.colors.yellow[5] : theme.colors.brown[4],
-                    color: theme.colors.brown[0],
+                      shoot.spots.length > 0 ? theme.colors.amber[5] : theme.colors.teal[4],
+                    color: theme.colors.teal[0],
                   },
                 }}
               >
@@ -692,9 +692,9 @@ export function PhotoSpotsMap() {
                     onClick={confirmPlacement}
                     size={56}
                     radius="sm"
-                    color="yellow.5"
+                    color="amber.5"
                   >
-                    <IconPlus size={24} stroke={2.6} color={theme.colors.brown[9]} />
+                    <IconPlus size={24} stroke={2.6} color={theme.colors.teal[9]} />
                   </ActionIcon>
                 </Tooltip>
               )}

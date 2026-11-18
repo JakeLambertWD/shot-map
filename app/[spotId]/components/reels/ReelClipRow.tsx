@@ -18,8 +18,8 @@ export function ReelClipRow({ clip, clipNumber, onEdit }: ReelClipRowProps) {
         w={22}
         h={22}
         bdrs="xl"
-        bg="brown.4"
-        c="yellow.5"
+        bg="teal.4"
+        c="amber.5"
         fz={11}
         fw={700}
         style={{ flexShrink: 0 }}
@@ -27,14 +27,14 @@ export function ReelClipRow({ clip, clipNumber, onEdit }: ReelClipRowProps) {
         {clipNumber}
       </Center>
       <Stack gap={6} flex={1} miw={0}>
-        <Text fz="sm" lh={1.35} c="brown.0" style={{ whiteSpace: "pre-line" }}>
+        <Text fz="sm" lh={1.35} c="teal.0" style={{ whiteSpace: "pre-line" }}>
           {clip.description}
         </Text>
         {clip.onScreenText && <ClipNote label="Text" text={clip.onScreenText} />}
         {clip.howToFilm && <ClipNote label="Film" text={clip.howToFilm} />}
       </Stack>
       {clip.durationSeconds && (
-        <Text ff="monospace" fz={11} c="brown.1" pt={3}>
+        <Text ff="monospace" fz={11} c="teal.1" pt={3}>
           {clip.durationSeconds}s
         </Text>
       )}
@@ -60,7 +60,7 @@ function ClipNote({ label, text }: { label: string; text: string }) {
         ff="monospace"
         fz={10}
         fw={700}
-        c="yellow.5"
+        c="amber.5"
         tt="uppercase"
         lts="0.08em"
         w={32}
@@ -68,7 +68,7 @@ function ClipNote({ label, text }: { label: string; text: string }) {
       >
         {label}
       </Text>
-      <Text fz="xs" lh={1.4} c="brown.1" style={{ whiteSpace: "pre-line" }}>
+      <Text fz="xs" lh={1.4} c="teal.1" style={{ whiteSpace: "pre-line" }}>
         {text}
       </Text>
     </Group>

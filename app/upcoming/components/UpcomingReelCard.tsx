@@ -110,7 +110,7 @@ export function UpcomingReelCard({
   }
 
   return (
-    <Paper pos="relative" bg="brown.6" radius="md" style={{ border: REEL_CARD_BORDER }}>
+    <Paper pos="relative" bg="teal.6" radius="md" style={{ border: REEL_CARD_BORDER }}>
       {post.media.length > 0 && (
         <Group
           gap={6}
@@ -143,7 +143,7 @@ export function UpcomingReelCard({
       >
         <Stack gap={6} flex={1} miw={0}>
           <UnstyledButton onClick={onToggle} aria-expanded={expanded}>
-            <Title order={3} fz={expanded ? 16 : 15} lh={1.3} c="brown.0">
+            <Title order={3} fz={expanded ? 16 : 15} lh={1.3} c="teal.0">
               <VisuallyHidden>{`${number}. `}</VisuallyHidden>
               {post.title}
             </Title>
@@ -161,7 +161,7 @@ export function UpcomingReelCard({
                 }
               />
             )}
-            <Text fz="xs" c="brown.1" truncate>
+            <Text fz="xs" c="teal.1" truncate>
               {formatReelPostSummary(post)}
             </Text>
           </Group>
@@ -177,9 +177,9 @@ export function UpcomingReelCard({
             variant="default"
             radius="xl"
             size={ICON_SIZE}
-            bg="brown.5"
+            bg="teal.5"
           >
-            <IconBrandInstagram size={17} color="var(--mantine-color-yellow-5)" />
+            <IconBrandInstagram size={17} color="var(--mantine-color-amber-5)" />
           </ActionIcon>
         ) : (
           CAN_EDIT_SPOTS && (
@@ -189,9 +189,9 @@ export function UpcomingReelCard({
               radius="xl"
               size={ICON_SIZE}
               onClick={() => setLinkSheetOpen(true)}
-              style={{ border: "1.5px dashed var(--mantine-color-brown-2)" }}
+              style={{ border: "1.5px dashed var(--mantine-color-teal-2)" }}
             >
-              <IconBrandInstagram size={17} color="var(--mantine-color-brown-2)" />
+              <IconBrandInstagram size={17} color="var(--mantine-color-teal-2)" />
             </ActionIcon>
           )
         )}
@@ -199,7 +199,7 @@ export function UpcomingReelCard({
         <ActionIcon
           aria-label={expanded ? "Collapse reel" : "Expand reel"}
           variant="transparent"
-          color="brown.1"
+          color="teal.1"
           size={ICON_SIZE}
           onClick={onToggle}
         >
@@ -248,10 +248,10 @@ export function UpcomingReelCard({
                   h={44}
                   mt="xs"
                   variant="transparent"
-                  color="brown.1"
+                  color="teal.1"
                   loading={progress !== null}
                   leftSection={<IconPlus size={16} stroke={2.5} />}
-                  style={{ border: "1.5px dashed var(--mantine-color-brown-2)" }}
+                  style={{ border: "1.5px dashed var(--mantine-color-teal-2)" }}
                 >
                   Add clip
                 </Button>
@@ -261,7 +261,7 @@ export function UpcomingReelCard({
           {(progress || uploadError) && (
             <Text
               fz="xs"
-              c={uploadError ? "red.4" : "brown.1"}
+              c={uploadError ? "red.4" : "teal.1"}
               mt={6}
               role={uploadError ? "alert" : undefined}
             >
@@ -271,13 +271,13 @@ export function UpcomingReelCard({
 
           {CAN_EDIT_SPOTS && (
             <Group gap={0} mt="xs">
-              <Button variant="subtle" color="brown.1" size="compact-sm" onClick={onEditDetails}>
+              <Button variant="subtle" color="teal.1" size="compact-sm" onClick={onEditDetails}>
                 Edit details
               </Button>
               {post.instagramUrl && (
                 <Button
                   variant="subtle"
-                  color="brown.1"
+                  color="teal.1"
                   size="compact-sm"
                   onClick={() => setLinkSheetOpen(true)}
                 >
@@ -348,13 +348,13 @@ function ClipRow({
         flex={1}
         fz="sm"
         lh={1.35}
-        c={clip.description ? "brown.0" : "brown.2"}
+        c={clip.description ? "teal.0" : "teal.2"}
         style={{ whiteSpace: "pre-line" }}
       >
         {clip.description || (CAN_EDIT_SPOTS ? "Describe this clip" : "No description")}
       </Text>
       {clip.durationSeconds && (
-        <Text ff="monospace" fz={11} c="brown.1" pt={3}>
+        <Text ff="monospace" fz={11} c="teal.1" pt={3}>
           {clip.durationSeconds}s
         </Text>
       )}
@@ -374,8 +374,8 @@ function ClipRow({
         w={22}
         h={22}
         bdrs="xl"
-        bg="brown.4"
-        c="yellow.5"
+        bg="teal.4"
+        c="amber.5"
         fz={11}
         fw={700}
         style={{ flexShrink: 0 }}
@@ -388,7 +388,7 @@ function ClipRow({
         pos="relative"
         w={36}
         h={64}
-        bg="brown.5"
+        bg="teal.5"
         style={{ borderRadius: 4, overflow: "hidden", flex: "none" }}
       >
         {clip.posterUrl && (
@@ -403,7 +403,7 @@ function ClipRow({
           />
         )}
         <Center pos="absolute" inset={0} aria-hidden>
-          <IconPlayerPlayFilled size={14} color="var(--mantine-color-brown-0)" />
+          <IconPlayerPlayFilled size={14} color="var(--mantine-color-teal-0)" />
         </Center>
       </UnstyledButton>
       {CAN_EDIT_SPOTS ? (

@@ -19,6 +19,7 @@ import {
   ThemeIcon,
   Title,
   UnstyledButton,
+  useMantineTheme,
 } from "@mantine/core";
 import {
   IconCalendarPlus,
@@ -39,7 +40,7 @@ import {
   getRouteUrl,
 } from "./TodayShoot.constants";
 
-const CARD_BORDER = "1px solid var(--mantine-color-brown-7)";
+const CARD_BORDER = "1px solid var(--mantine-color-teal-7)";
 
 // The Today's shoot page: the day's spots as a numbered route, ticked off as they're shot.
 export function TodayShoot() {
@@ -57,17 +58,17 @@ export function TodayShoot() {
           href="/"
           aria-label="Back to map"
           variant="subtle"
-          color="brown.0"
+          color="teal.0"
           size={44}
         >
           <IconChevronLeft size={24} />
         </ActionIcon>
         <Group gap={6} align="baseline" wrap="nowrap">
-          <Title order={1} fz="lg" c="brown.0">
+          <Title order={1} fz="lg" c="teal.0">
             Today&apos;s shoot
           </Title>
           {shoot.isReady && (
-            <Text fz="sm" c="brown.1">
+            <Text fz="sm" c="teal.1">
               · {formatShootDay(shoot.date)}
             </Text>
           )}
@@ -77,7 +78,7 @@ export function TodayShoot() {
 
       {!shoot.isReady ? (
         <Center mih="50vh">
-          <Loader color="yellow" />
+          <Loader color="amber" />
         </Center>
       ) : shoot.list.isError ? (
         <Text c="red.5" px="md" role="alert">
@@ -134,10 +135,10 @@ function Chip({ children }: { children: string }) {
     <Text
       component="span"
       fz="sm"
-      c="brown.0"
+      c="teal.0"
       px="sm"
       py={4}
-      bg="brown.8"
+      bg="teal.8"
       style={{ border: CARD_BORDER, borderRadius: 999 }}
     >
       {children}
@@ -157,6 +158,7 @@ type ShootStopProps = {
 
 // One stop on the route: its number (or a tick once shot), its card and the distance to the next.
 function ShootStop({ spot, number, isUpNext, next, isSaving, onShot, onRemove }: ShootStopProps) {
+  const theme = useMantineTheme();
   const isShot = Boolean(spot.shotAt);
   const gear = getSpotGearOption(spot.gear);
 
@@ -174,10 +176,10 @@ function ShootStop({ spot, number, isUpNext, next, isSaving, onShot, onRemove }:
             w={32}
             h={32}
             bdrs="50%"
-            bg="yellow.5"
+            bg="amber.5"
             style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
           >
-            <IconCheck size={16} stroke={3} color="var(--mantine-color-brown-9)" />
+            <IconCheck size={16} stroke={3} color="var(--mantine-color-teal-9)" />
           </UnstyledButton>
         ) : (
           <Center
@@ -185,10 +187,10 @@ function ShootStop({ spot, number, isUpNext, next, isSaving, onShot, onRemove }:
             h={32}
             fz="sm"
             fw={900}
-            c={isUpNext ? "yellow.5" : "brown.1"}
+            c={isUpNext ? "amber.5" : "teal.1"}
             style={{
               borderRadius: "50%",
-              border: `2px solid var(--mantine-color-${isUpNext ? "yellow-5" : "brown-6"})`,
+              border: `2px solid var(--mantine-color-${isUpNext ? "amber-5" : "teal-6"})`,
             }}
           >
             {number}
@@ -201,7 +203,7 @@ function ShootStop({ spot, number, isUpNext, next, isSaving, onShot, onRemove }:
             mih={20}
             style={{
               flex: 1,
-              background: isShot ? "var(--mantine-color-yellow-5)" : "var(--mantine-color-brown-7)",
+              background: isShot ? "var(--mantine-color-amber-5)" : "var(--mantine-color-teal-7)",
             }}
           />
         )}
@@ -211,9 +213,9 @@ function ShootStop({ spot, number, isUpNext, next, isSaving, onShot, onRemove }:
         <Paper
           p="sm"
           radius="md"
-          bg="brown.8"
+          bg="teal.8"
           style={{
-            border: isUpNext ? "1.5px solid var(--mantine-color-yellow-5)" : CARD_BORDER,
+            border: isUpNext ? "1.5px solid var(--mantine-color-amber-5)" : CARD_BORDER,
             opacity: isShot ? 0.6 : 1,
           }}
         >
@@ -228,34 +230,34 @@ function ShootStop({ spot, number, isUpNext, next, isSaving, onShot, onRemove }:
                   w={64}
                   h={64}
                   bdrs="sm"
-                  bg="brown.7"
+                  bg="teal.7"
                   style={{ flexShrink: 0, overflow: "hidden" }}
                 >
                   {spot.coverImageUrl ? (
                     <Image src={spot.coverImageUrl} alt="" w={64} h={64} fit="cover" />
                   ) : (
                     <Center h="100%">
-                      <IconPhoto size={20} color="var(--mantine-color-brown-1)" />
+                      <IconPhoto size={20} color="var(--mantine-color-teal-1)" />
                     </Center>
                   )}
                 </Box>
                 <Stack gap={2} miw={0}>
                   {isUpNext && (
-                    <Text fz={11} fw={900} c="yellow.5" lts="0.06em">
+                    <Text fz={11} fw={900} c="amber.5" lts="0.06em">
                       UP NEXT
                     </Text>
                   )}
-                  <Text ff="Poppins, sans-serif" fw={600} c="brown.0" lineClamp={2}>
+                  <Text ff="Poppins, sans-serif" fw={600} c="teal.0" lineClamp={2}>
                     {spot.title}
                   </Text>
-                  <Text fz="xs" c="brown.1">
+                  <Text fz="xs" c="teal.1">
                     {spot.shotAt ? `Shot at ${formatShotTime(spot.shotAt)}` : gear.label}
                   </Text>
                 </Stack>
               </UnstyledButton>
               <ActionIcon
                 variant="subtle"
-                color="brown.1"
+                color="teal.1"
                 size={36}
                 aria-label={`Remove ${spot.title} from today's shoot`}
                 onClick={onRemove}
@@ -273,12 +275,12 @@ function ShootStop({ spot, number, isUpNext, next, isSaving, onShot, onRemove }:
                   target="_blank"
                   rel="noreferrer"
                   variant="filled"
-                  color="#2a241f"
-                  c="#f2ece4"
-                  style={{ border: "1px solid #4d433b" }}
+                  color="teal.5"
+                  c="teal.0"
+                  style={{ border: `1px solid ${theme.colors.teal[3]}` }}
                   radius="sm"
                   h={40}
-                  leftSection={<IconNavigation size={16} color="var(--mantine-color-blue-4)" />}
+                  leftSection={<IconNavigation size={16} color={theme.other!.colors.teal} />}
                 >
                   Directions
                 </Button>
@@ -298,7 +300,7 @@ function ShootStop({ spot, number, isUpNext, next, isSaving, onShot, onRemove }:
         </Paper>
 
         {next && (
-          <Text fz="xs" c="brown.1" pl={4}>
+          <Text fz="xs" c="teal.1" pl={4}>
             {formatDistance(getDistanceKm(spot, next))} to the next spot
           </Text>
         )}
@@ -320,15 +322,15 @@ function EmptyShoot({ today }: { today: string }) {
   return (
     <Stack gap="xl" px="md" pt="xl">
       <Stack align="center" gap="md" ta="center" px="lg">
-        <ThemeIcon size={88} radius={44} color="brown.8" style={{ border: CARD_BORDER }}>
-          <IconCalendarPlus size={38} color="var(--mantine-color-yellow-5)" stroke={1.6} />
+        <ThemeIcon size={88} radius={44} color="teal.8" style={{ border: CARD_BORDER }}>
+          <IconCalendarPlus size={38} color="var(--mantine-color-amber-5)" stroke={1.6} />
         </ThemeIcon>
-        <Title order={2} fz="xl" c="brown.0">
+        <Title order={2} fz="xl" c="teal.0">
           Nothing planned for today
         </Title>
-        <Text c="brown.1">
+        <Text c="teal.1">
           Open a spot and choose{" "}
-          <Text component="strong" c="brown.0" fw={700}>
+          <Text component="strong" c="teal.0" fw={700}>
             Add to today&apos;s shoot
           </Text>{" "}
           from its ☰ menu to build your list.
@@ -339,13 +341,13 @@ function EmptyShoot({ today }: { today: string }) {
       </Stack>
 
       {leftover.length > 0 && (
-        <Paper p="md" radius="md" bg="brown.8" style={{ border: CARD_BORDER }}>
+        <Paper p="md" radius="md" bg="teal.8" style={{ border: CARD_BORDER }}>
           <Group justify="space-between" wrap="nowrap" gap="sm">
             <Stack gap={2}>
-              <Text fz="xs" c="brown.1">
+              <Text fz="xs" c="teal.1">
                 {formatShootDay(yesterday)}
               </Text>
-              <Text fz="sm" fw={700} c="brown.0">
+              <Text fz="sm" fw={700} c="teal.0">
                 {leftover.length === 1
                   ? "1 spot wasn't shot"
                   : `${leftover.length} spots weren't shot`}
@@ -353,8 +355,8 @@ function EmptyShoot({ today }: { today: string }) {
             </Stack>
             <Button
               variant="outline"
-              color="#4d433b"
-              c="#f2ece4"
+              color="teal.3"
+              c="teal.0"
               radius="sm"
               loading={moveUnshot.isPending}
               onClick={() => moveUnshot.mutate({ fromDate: yesterday, toDate: today })}

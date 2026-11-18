@@ -55,7 +55,7 @@ export function ReelsPanel({ spotId, kinds }: ReelsPanelProps) {
   return (
     <Stack gap="sm" px="md" pt="xs" pb="xxl">
       <Group justify="space-between" mih={36}>
-        <Text component="h2" ff="monospace" fz="xs" c="brown.1" tt="uppercase" lts="0.08em">
+        <Text component="h2" ff="monospace" fz="xs" c="teal.1" tt="uppercase" lts="0.08em">
           Reel ideas · {reels.length}
         </Text>
         {CAN_EDIT_SPOTS && newTitle === null && (
@@ -71,7 +71,7 @@ export function ReelsPanel({ spotId, kinds }: ReelsPanelProps) {
       </Group>
 
       {newTitle !== null && (
-        <Paper bg="brown.6" radius="md" p="sm" style={{ border: REEL_CARD_BORDER }}>
+        <Paper bg="teal.6" radius="md" p="sm" style={{ border: REEL_CARD_BORDER }}>
           <form onSubmit={handleCreate}>
             <Stack gap="xs">
               <TextInput
@@ -87,7 +87,7 @@ export function ReelsPanel({ spotId, kinds }: ReelsPanelProps) {
                 label="Creator (optional)"
                 placeholder="their.handle"
                 leftSection={
-                  <Text component="span" c="brown.1" fw={700} aria-hidden>
+                  <Text component="span" c="teal.1" fw={700} aria-hidden>
                     @
                   </Text>
                 }
@@ -118,14 +118,14 @@ export function ReelsPanel({ spotId, kinds }: ReelsPanelProps) {
 
       {reelsQuery.isPending ? (
         <Center h={120}>
-          <Loader color="yellow" size="sm" />
+          <Loader color="amber" size="sm" />
         </Center>
       ) : reelsQuery.isError ? (
         <Text fz="sm" c="red.5" role="alert">
           Couldn&apos;t load reel ideas.
         </Text>
       ) : reels.length === 0 && newTitle === null ? (
-        <Center h={120} bg="brown.7" bdrs="md" c="brown.1" fz="sm" ta="center" px="md">
+        <Center h={120} bg="teal.7" bdrs="md" c="teal.1" fz="sm" ta="center" px="md">
           {copy.emptyText}
         </Center>
       ) : (

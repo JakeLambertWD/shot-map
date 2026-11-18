@@ -80,14 +80,14 @@ export function AddPhotosTile({
             aspectRatio: "1",
             alignItems: "center",
             justifyContent: "center",
-            border: `1.5px dashed ${theme.colors.brown[2]}`,
+            border: `1.5px dashed ${theme.colors.teal[2]}`,
             opacity: room <= 0 ? 0.4 : 1,
           }}
         >
           {isUploading ? (
-            <Loader size="sm" color="yellow" />
+            <Loader size="sm" color="amber" />
           ) : (
-            <IconPlus size={22} color={theme.colors.brown[1]} />
+            <IconPlus size={22} color={theme.colors.teal[1]} />
           )}
         </UnstyledButton>
       )}

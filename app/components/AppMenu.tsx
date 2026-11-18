@@ -30,13 +30,13 @@ export function AppMenu() {
           style={{ flex: "none" }}
           styles={{
             root: {
-              backgroundColor: theme.colors.brown[7],
-              border: `1px solid ${theme.colors.brown[4]}`,
+              backgroundColor: theme.colors.teal[7],
+              border: `1px solid ${theme.colors.teal[4]}`,
               boxShadow: "0 6px 16px rgba(0, 0, 0, 0.45)",
             },
           }}
         >
-          <IconMenu2 size={20} color={theme.colors.brown[0]} />
+          <IconMenu2 size={20} color={theme.colors.teal[0]} />
         </ActionIcon>
       </Menu.Target>
       <Menu.Dropdown>
@@ -45,7 +45,7 @@ export function AppMenu() {
             key={href}
             component={Link}
             href={href}
-            leftSection={<Icon size={20} color="var(--mantine-color-yellow-5)" />}
+            leftSection={<Icon size={20} color="var(--mantine-color-amber-5)" />}
           >
             {label}
           </Menu.Item>

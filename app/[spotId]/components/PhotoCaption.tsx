@@ -35,10 +35,10 @@ export function PhotoCaption({ spotId, photoId, photoIndex, caption }: PhotoCapt
   });
 
   const label = `Note for photo ${photoIndex + 1}`;
-  // The same yellow box while reading and typing, so the note doesn't shift when tapped.
+  // The same amber box while reading and typing, so the note doesn't shift when tapped.
   const fieldBox = {
     padding: "10px 12px",
-    border: "1px solid var(--mantine-color-yellow-5)",
+    border: "1px solid var(--mantine-color-amber-5)",
     borderRadius: "var(--mantine-radius-sm)",
     boxSizing: "border-box" as const,
     minHeight: fillHeight,
@@ -49,7 +49,7 @@ export function PhotoCaption({ spotId, photoId, photoIndex, caption }: PhotoCapt
       fz={18}
       fw={500}
       lh={1.45}
-      c={caption ? "brown.0" : "brown.1"}
+      c={caption ? "teal.0" : "teal.1"}
       // Keep the line breaks and blank lines exactly as typed.
       style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}
     >
@@ -105,12 +105,12 @@ export function PhotoCaption({ spotId, photoId, photoIndex, caption }: PhotoCapt
       styles={{
         input: {
           ...fieldBox,
-          // The yellow border plus Mantine's own focus ring would double up.
+          // The amber border plus Mantine's own focus ring would double up.
           outline: "none",
           display: "block",
           fontWeight: 500,
           lineHeight: 1.45,
-          color: "var(--mantine-color-brown-0)",
+          color: "var(--mantine-color-teal-0)",
         },
         error: { marginTop: 4 },
       }}

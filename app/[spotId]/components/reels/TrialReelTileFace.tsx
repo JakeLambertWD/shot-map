@@ -6,7 +6,7 @@ import { IconBrandInstagram } from "@tabler/icons-react";
 
 // Instagram doesn't share reel covers, so each tile gets one of these, picked from its id so
 // it's the same on every spot.
-const TILE_COLORS = ["#5b3a3a", "#3d3330", "#4a3f35", "#2f3238", "#6b4a2a", "#2e3a44", "#43382f"];
+const TILE_COLORS = ["#1f3b38", "#4a3510", "#24433f", "#3a2c14", "#183230", "#5a3f0c", "#2b4a46"];
 
 function tileColor(id: string) {
   let hash = 0;
@@ -31,7 +31,7 @@ export function TrialReelTileFace({ reel }: { reel: TrialReel }) {
         left="50%"
         style={{ transform: "translate(-50%, -50%)", opacity: 0.85 }}
       >
-        <IconBrandInstagram size={30} stroke={1.6} color="var(--mantine-color-brown-0)" />
+        <IconBrandInstagram size={30} stroke={1.6} color="var(--mantine-color-teal-0)" />
       </Center>
       <Text
         component="span"
@@ -45,7 +45,7 @@ export function TrialReelTileFace({ reel }: { reel: TrialReel }) {
         pb={6}
         fz={11}
         fw={700}
-        c="brown.0"
+        c="teal.0"
         truncate
         style={{ background: "linear-gradient(transparent, rgba(0, 0, 0, 0.75))" }}
       >

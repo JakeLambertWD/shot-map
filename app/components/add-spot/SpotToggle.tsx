@@ -22,7 +22,7 @@ export function SpotToggle<Value extends string>({
         size="md"
         fullWidth
         radius="xl"
-        color="yellow"
+        color="amber"
         autoContrast
         data={[...options]}
         value={value}

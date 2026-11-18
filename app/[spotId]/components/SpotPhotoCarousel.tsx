@@ -152,7 +152,7 @@ export function SpotPhotoCarousel({
                       px={10}
                       fz={13}
                       fw={700}
-                      c="brown.0"
+                      c="teal.0"
                       style={{
                         borderRadius: 13,
                         backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -181,9 +181,9 @@ export function SpotPhotoCarousel({
                     radius="xl"
                     variant="filled"
                     color="rgba(0, 0, 0, 0.6)"
-                    style={{ border: `1.5px solid ${theme.colors.brown[1]}` }}
+                    style={{ border: `1.5px solid ${theme.colors.teal[1]}` }}
                   >
-                    <IconTrash size={17} color={theme.colors.brown[0]} />
+                    <IconTrash size={17} color={theme.colors.teal[0]} />
                   </ActionIcon>
                 )}
               </Box>
@@ -288,12 +288,12 @@ export function SpotPhotoCarousel({
               px={12}
               radius="sm"
               variant="default"
-              leftSection={<IconLayoutGrid size={16} color={theme.colors.yellow[5]} />}
+              leftSection={<IconLayoutGrid size={16} color={theme.colors.amber[5]} />}
               styles={{
                 root: {
-                  backgroundColor: theme.colors.brown[6],
-                  borderColor: theme.colors.brown[4],
-                  color: theme.colors.brown[0],
+                  backgroundColor: theme.colors.teal[6],
+                  borderColor: theme.colors.teal[4],
+                  color: theme.colors.teal[0],
                 },
                 section: { marginInlineEnd: 6 },
               }}
@@ -312,10 +312,10 @@ export function SpotPhotoCarousel({
         keepMounted
         title={
           <Stack gap={2}>
-            <Text component="span" ff="heading" fz={18} fw={600} c="brown.0">
+            <Text component="span" ff="heading" fz={18} fw={600} c="teal.0">
               {photos.length} {photos.length === 1 ? "photo" : "photos"}
             </Text>
-            <Text component="span" fz="sm" c="brown.1">
+            <Text component="span" fz="sm" c="teal.1">
               {onReorder && photos.length > 1
                 ? "Tap to view · hold and drag to reorder"
                 : "Tap a photo to view it"}
@@ -326,8 +326,8 @@ export function SpotPhotoCarousel({
         closeButtonProps={{ "aria-label": "Close all photos", size: "lg" }}
         styles={{
           content: {
-            backgroundColor: theme.colors.brown[7],
-            borderTop: `1px solid ${theme.colors.brown[4]}`,
+            backgroundColor: theme.colors.teal[7],
+            borderTop: `1px solid ${theme.colors.teal[4]}`,
             borderRadius: "20px 20px 0 0",
             maxWidth: "36rem",
             margin: "0 auto",
@@ -336,7 +336,7 @@ export function SpotPhotoCarousel({
             flex: "none",
             width: "100%",
           },
-          header: { backgroundColor: theme.colors.brown[7], alignItems: "flex-start" },
+          header: { backgroundColor: theme.colors.teal[7], alignItems: "flex-start" },
           // Room above the first row so the selected photo's outline and a lifted (dragged)
           // photo aren't clipped by the sheet's scroll area.
           body: { paddingTop: 8, paddingBottom: "var(--mantine-spacing-xl)" },

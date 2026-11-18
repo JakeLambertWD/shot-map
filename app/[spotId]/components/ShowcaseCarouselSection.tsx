@@ -96,17 +96,17 @@ export function ShowcaseCarouselSection({
           >
             <IconChevronDown
               size={18}
-              color="var(--mantine-color-brown-1)"
+              color="var(--mantine-color-teal-1)"
               style={{
                 flexShrink: 0,
                 transform: isExpanded ? undefined : "rotate(-90deg)",
                 transition: "transform 150ms ease",
               }}
             />
-            <Title order={2} fz="md" c="brown.0" lineClamp={1}>
+            <Title order={2} fz="md" c="teal.0" lineClamp={1}>
               {carousel.title}
             </Title>
-            <Text ff="monospace" fz="xs" c="brown.1" style={{ flexShrink: 0 }}>
+            <Text ff="monospace" fz="xs" c="teal.1" style={{ flexShrink: 0 }}>
               · {photoCount}
             </Text>
           </UnstyledButton>
@@ -117,7 +117,7 @@ export function ShowcaseCarouselSection({
             <Menu.Target>
               <ActionIcon
                 variant="subtle"
-                color="brown.1"
+                color="teal.1"
                 aria-label={`Options for ${carousel.title}`}
               >
                 <IconDots size={18} />

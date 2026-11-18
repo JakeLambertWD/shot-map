@@ -32,18 +32,18 @@ export function UpcomingPhotoPostCard({
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
 
   return (
-    <Paper pos="relative" bg="brown.6" radius="md" p="sm" style={{ border: REEL_CARD_BORDER }}>
+    <Paper pos="relative" bg="teal.6" radius="md" p="sm" style={{ border: REEL_CARD_BORDER }}>
       <Stack gap="sm">
         <Group gap={6} wrap="nowrap" style={{ overflowX: "auto", scrollbarWidth: "none" }}>
           {post.media.length === 0 ? (
             <Center
               w={100}
               h={125}
-              bg="brown.5"
+              bg="teal.5"
               aria-hidden
               style={{ borderRadius: 6, flex: "none" }}
             >
-              <IconPhoto size={24} color="var(--mantine-color-brown-2)" />
+              <IconPhoto size={24} color="var(--mantine-color-teal-2)" />
             </Center>
           ) : (
             post.media.map((media, index) => (
@@ -66,14 +66,14 @@ export function UpcomingPhotoPostCard({
           aria-label={`${number}. ${post.title}, ${formatPhotoPostSummary(post)}. Edit`}
         >
           <Stack gap={4} miw={0}>
-            <Text ff="heading" fz={15} fw={600} lh={1.3} c="brown.0">
+            <Text ff="heading" fz={15} fw={600} lh={1.3} c="teal.0">
               {post.title}
             </Text>
-            <Text fz="xs" c="brown.1">
+            <Text fz="xs" c="teal.1">
               {formatPhotoPostSummary(post)}
             </Text>
             {post.caption && (
-              <Text fz="sm" lh={1.35} c="brown.0" lineClamp={2} style={{ whiteSpace: "pre-line" }}>
+              <Text fz="sm" lh={1.35} c="teal.0" lineClamp={2} style={{ whiteSpace: "pre-line" }}>
                 {post.caption}
               </Text>
             )}

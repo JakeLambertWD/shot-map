@@ -1,4 +1,4 @@
-export const SPOT_ROW_DIVIDER = "1px solid var(--mantine-color-brown-4)";
+export const SPOT_ROW_DIVIDER = "1px solid var(--mantine-color-teal-4)";
 
 export const SPOT_THUMBNAIL_SIZE = 56;
 

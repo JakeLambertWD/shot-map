@@ -1,8 +1,8 @@
 import type { ReelKind } from "@/lib/photo-spots";
 import type { SpotReelClip } from "@/server/routers/reels";
 
-export const REEL_CARD_BORDER = "1px solid var(--mantine-color-brown-4)";
-export const CLIP_DIVIDER = "1px solid var(--mantine-color-brown-4)";
+export const REEL_CARD_BORDER = "1px solid var(--mantine-color-teal-4)";
+export const CLIP_DIVIDER = "1px solid var(--mantine-color-teal-4)";
 
 // "7 clips · ~21s", or "No clips yet".
 export function formatReelSummary(clips: SpotReelClip[]) {

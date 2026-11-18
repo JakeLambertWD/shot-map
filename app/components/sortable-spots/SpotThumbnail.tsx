@@ -9,7 +9,7 @@ export function SpotThumbnail({ coverImageUrl }: { coverImageUrl: string | null 
       w={SPOT_THUMBNAIL_SIZE}
       h={SPOT_THUMBNAIL_SIZE}
       bdrs="sm"
-      bg="brown.4"
+      bg="teal.4"
       style={{ flexShrink: 0, overflow: "hidden" }}
     >
       {coverImageUrl ? (
@@ -22,7 +22,7 @@ export function SpotThumbnail({ coverImageUrl }: { coverImageUrl: string | null 
         />
       ) : (
         <Center h="100%">
-          <IconPhoto size={22} color="var(--mantine-color-brown-2)" />
+          <IconPhoto size={22} color="var(--mantine-color-teal-2)" />
         </Center>
       )}
     </Box>

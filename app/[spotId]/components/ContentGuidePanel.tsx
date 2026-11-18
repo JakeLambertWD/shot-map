@@ -32,14 +32,14 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
       <Stack gap="lg" px="md" pt="xs" pb="xl">
         <Box>
           <Group gap="xs" mb={4}>
-            <Badge color="yellow" variant="light" size="sm" radius="xs">
+            <Badge color="amber" variant="light" size="sm" radius="xs">
               On-Location Checklist
             </Badge>
           </Group>
-          <Title order={2} fz="xl" c="brown.0">
+          <Title order={2} fz="xl" c="teal.0">
             What to capture at {spotTitle}
           </Title>
-          <Text fz="sm" c="brown.1" mt={4}>
+          <Text fz="sm" c="teal.1" mt={4}>
             Complete checklist on shoot day to feed all 6 content formats.
           </Text>
         </Box>
@@ -47,15 +47,15 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
         <Paper
           p="md"
           radius="sm"
-          bg="brown.8"
+          bg="teal.8"
           withBorder
-          style={{ borderColor: "var(--mantine-color-brown-7)" }}
+          style={{ borderColor: "var(--mantine-color-teal-7)" }}
         >
           <Group gap="xs" mb="sm">
-            <ThemeIcon color="yellow" variant="light" size="md" radius="sm">
+            <ThemeIcon color="amber" variant="light" size="md" radius="sm">
               <IconListCheck size={18} />
             </ThemeIcon>
-            <Text fw={600} fz="sm" c="brown.0">
+            <Text fw={600} fz="sm" c="teal.0">
               Capture Checklist
             </Text>
           </Group>
@@ -63,14 +63,14 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
             spacing="sm"
             size="sm"
             icon={
-              <ThemeIcon color="yellow" size={20} radius="xl" variant="subtle">
+              <ThemeIcon color="amber" size={20} radius="xl" variant="subtle">
                 <IconCheck size={14} />
               </ThemeIcon>
             }
           >
             {config.captureOnDay.map((item, index) => (
               <List.Item key={index}>
-                <Text fz="sm" c="brown.0" lh={1.4}>
+                <Text fz="sm" c="teal.0" lh={1.4}>
                   {item}
                 </Text>
               </List.Item>
@@ -80,14 +80,14 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
 
         <Box>
           <Group gap="xs" mb="xs">
-            <ThemeIcon color="yellow" variant="light" size="md" radius="sm">
+            <ThemeIcon color="amber" variant="light" size="md" radius="sm">
               <IconClock size={18} />
             </ThemeIcon>
-            <Text fw={600} fz="md" c="brown.0">
+            <Text fw={600} fz="md" c="teal.0">
               Posting order (3–4 weeks schedule)
             </Text>
           </Group>
-          <Text fz="xs" c="brown.1" mb="md">
+          <Text fz="xs" c="teal.1" mb="md">
             Release cadence for this location, mixed with your other spot content.
           </Text>
 
@@ -97,24 +97,24 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
                 key={post.step}
                 p="sm"
                 radius="sm"
-                bg="brown.8"
+                bg="teal.8"
                 withBorder
-                style={{ borderColor: "var(--mantine-color-brown-7)" }}
+                style={{ borderColor: "var(--mantine-color-teal-7)" }}
               >
                 <Group justify="space-between" align="center" mb={4}>
                   <Group gap="xs">
-                    <Badge color="yellow" variant="filled" size="sm" radius="xs" c="dark.9">
+                    <Badge color="amber" variant="filled" size="sm" radius="xs" c="dark.9">
                       Post #{post.step}
                     </Badge>
-                    <Text fw={600} fz="sm" c="brown.0">
+                    <Text fw={600} fz="sm" c="teal.0">
                       {post.title}
                     </Text>
                   </Group>
-                  <Text fz="xs" c="brown.1" fw={500}>
+                  <Text fz="xs" c="teal.1" fw={500}>
                     {post.timing}
                   </Text>
                 </Group>
-                <Text fz="xs" c="brown.1" lh={1.4}>
+                <Text fz="xs" c="teal.1" lh={1.4}>
                   {post.note}
                 </Text>
               </Card>
@@ -123,24 +123,24 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
             <Card
               p="sm"
               radius="sm"
-              bg="brown.8"
+              bg="teal.8"
               withBorder
-              style={{ borderColor: "var(--mantine-color-brown-7)" }}
+              style={{ borderColor: "var(--mantine-color-teal-7)" }}
             >
               <Group justify="space-between" align="center" mb={4}>
                 <Group gap="xs">
-                  <Badge color="yellow" variant="outline" size="sm" radius="xs">
+                  <Badge color="amber" variant="outline" size="sm" radius="xs">
                     Trial Reels
                   </Badge>
-                  <Text fw={600} fz="sm" c="brown.0">
+                  <Text fw={600} fz="sm" c="teal.0">
                     Trial reel variants (3–4)
                   </Text>
                 </Group>
-                <Text fz="xs" c="brown.1" fw={500}>
+                <Text fz="xs" c="teal.1" fw={500}>
                   Any time
                 </Text>
               </Group>
-              <Text fz="xs" c="brown.1" lh={1.4}>
+              <Text fz="xs" c="teal.1" lh={1.4}>
                 Non-follower tests; share only the winning hook to your main grid.
               </Text>
             </Card>
@@ -155,18 +155,18 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
       <Box>
         <Group gap="xs" mb={4}>
           {config.orderBadge && (
-            <Badge color="yellow" variant="light" size="sm" radius="xs">
+            <Badge color="amber" variant="light" size="sm" radius="xs">
               {config.orderBadge}
             </Badge>
           )}
-          <Badge variant="outline" color="brown.2" size="sm" radius="xs">
+          <Badge variant="outline" color="teal.2" size="sm" radius="xs">
             {config.type}
           </Badge>
         </Group>
-        <Title order={2} fz="xl" c="brown.0">
+        <Title order={2} fz="xl" c="teal.0">
           {config.title}
         </Title>
-        <Text fz="sm" c="brown.1" mt={4} lh={1.4}>
+        <Text fz="sm" c="teal.1" mt={4} lh={1.4}>
           {config.summary}
         </Text>
       </Box>
@@ -175,15 +175,15 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
       <Paper
         p="md"
         radius="sm"
-        bg="brown.8"
+        bg="teal.8"
         withBorder
-        style={{ borderColor: "var(--mantine-color-brown-7)" }}
+        style={{ borderColor: "var(--mantine-color-teal-7)" }}
       >
         <Group gap="xs" mb="xs">
-          <ThemeIcon color="yellow" variant="light" size="md" radius="sm">
+          <ThemeIcon color="amber" variant="light" size="md" radius="sm">
             <IconCamera size={18} />
           </ThemeIcon>
-          <Text fw={600} fz="sm" c="brown.0">
+          <Text fw={600} fz="sm" c="teal.0">
             What to capture on the day
           </Text>
         </Group>
@@ -191,14 +191,14 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
           spacing="xs"
           size="sm"
           icon={
-            <ThemeIcon color="yellow" size={18} radius="xl" variant="subtle">
+            <ThemeIcon color="amber" size={18} radius="xl" variant="subtle">
               <IconCheck size={12} />
             </ThemeIcon>
           }
         >
           {config.captureOnDay.map((item, idx) => (
             <List.Item key={idx}>
-              <Text fz="sm" c="brown.0" lh={1.4}>
+              <Text fz="sm" c="teal.0" lh={1.4}>
                 {item}
               </Text>
             </List.Item>
@@ -209,7 +209,7 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
       {/* Structure / Breakdown */}
       {config.structure && config.structure.length > 0 && (
         <Box>
-          <Text fw={600} fz="sm" c="brown.0" mb="xs">
+          <Text fw={600} fz="sm" c="teal.0" mb="xs">
             Format Structure & Breakdown
           </Text>
           <Stack gap="xs">
@@ -218,14 +218,14 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
                 key={idx}
                 p="sm"
                 radius="sm"
-                bg="brown.8"
+                bg="teal.8"
                 withBorder
-                style={{ borderColor: "var(--mantine-color-brown-7)" }}
+                style={{ borderColor: "var(--mantine-color-teal-7)" }}
               >
-                <Text fw={600} fz="xs" c="yellow.5" tt="uppercase" lts="0.05em" mb={2}>
+                <Text fw={600} fz="xs" c="amber.5" tt="uppercase" lts="0.05em" mb={2}>
                   {item.label}
                 </Text>
-                <Text fz="sm" c="brown.0" lh={1.4}>
+                <Text fz="sm" c="teal.0" lh={1.4}>
                   {item.text}
                 </Text>
               </Card>
@@ -238,10 +238,10 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
       {config.options && config.options.length > 0 && (
         <Box>
           <Group gap="xs" mb="xs">
-            <ThemeIcon color="yellow" variant="subtle" size="sm">
+            <ThemeIcon color="amber" variant="subtle" size="sm">
               <IconSparkles size={16} />
             </ThemeIcon>
-            <Text fw={600} fz="sm" c="brown.0">
+            <Text fw={600} fz="sm" c="teal.0">
               1 Clip options for this scene
             </Text>
           </Group>
@@ -251,11 +251,11 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
                 key={idx}
                 p="sm"
                 radius="sm"
-                bg="brown.8"
+                bg="teal.8"
                 withBorder
-                style={{ borderColor: "var(--mantine-color-brown-7)" }}
+                style={{ borderColor: "var(--mantine-color-teal-7)" }}
               >
-                <Text fz="sm" c="brown.0" lh={1.4}>
+                <Text fz="sm" c="teal.0" lh={1.4}>
                   {option}
                 </Text>
               </Card>
@@ -267,16 +267,16 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
       {/* Strategy and Key Rules */}
       <Box>
         <Group gap="xs" mb="xs">
-          <ThemeIcon color="yellow" variant="subtle" size="sm">
+          <ThemeIcon color="amber" variant="subtle" size="sm">
             <IconInfoCircle size={16} />
           </ThemeIcon>
-          <Text fw={600} fz="sm" c="brown.0">
+          <Text fw={600} fz="sm" c="teal.0">
             Strategy & Execution
           </Text>
         </Group>
         <Stack gap="xs">
           {config.description.map((desc, idx) => (
-            <Text key={idx} fz="sm" c="brown.1" lh={1.45}>
+            <Text key={idx} fz="sm" c="teal.1" lh={1.45}>
               • {desc}
             </Text>
           ))}
@@ -288,21 +288,21 @@ export function ContentGuidePanel({ tabId, spotTitle }: ContentGuidePanelProps) 
         <Paper
           p="sm"
           radius="sm"
-          bg="brown.8"
+          bg="teal.8"
           withBorder
-          style={{ borderColor: "var(--mantine-color-yellow-8)" }}
+          style={{ borderColor: "var(--mantine-color-amber-8)" }}
         >
           <Group gap="xs" mb="xs">
-            <ThemeIcon color="yellow" variant="light" size="sm" radius="xs">
+            <ThemeIcon color="amber" variant="light" size="sm" radius="xs">
               <IconFlame size={14} />
             </ThemeIcon>
-            <Text fw={600} fz="xs" c="yellow.5" tt="uppercase" lts="0.05em">
+            <Text fw={600} fz="xs" c="amber.5" tt="uppercase" lts="0.05em">
               Pro Execution Tips
             </Text>
           </Group>
           <Stack gap="xs">
             {config.tips.map((tip, idx) => (
-              <Text key={idx} fz="xs" c="brown.0" lh={1.4}>
+              <Text key={idx} fz="xs" c="teal.0" lh={1.4}>
                 {tip}
               </Text>
             ))}

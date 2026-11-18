@@ -38,7 +38,7 @@ export function SpotTitle({ title }: SpotTitleProps) {
         ref={titleRef}
         order={1}
         fz="lg"
-        c="brown.0"
+        c="teal.0"
         miw={0}
         tabIndex={isTruncated ? 0 : undefined}
         style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}

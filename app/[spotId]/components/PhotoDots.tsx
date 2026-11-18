@@ -48,10 +48,10 @@ export function PhotoDots({ count, activeIndex }: { count: number; activeIndex: 
               borderRadius: "50%",
               flex: "none",
               backgroundColor: isActive
-                ? theme.colors.yellow[5]
+                ? theme.colors.amber[5]
                 : size < 8
-                  ? theme.colors.brown[3]
-                  : theme.colors.brown[2],
+                  ? theme.colors.teal[3]
+                  : theme.colors.teal[2],
               transition: "width 150ms ease, height 150ms ease, background-color 150ms ease",
             }}
           />

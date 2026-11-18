@@ -1,8 +1,9 @@
 import { createTheme } from "@mantine/core";
 import { Bodoni_Moda, Lato, Poppins } from "next/font/google";
 
-export const DEFAULT_BLACK = "#181818";
-export const PRIMARY_COLOR = "#e7ba3d";
+// The app only uses teal and amber: dark teal for surfaces, borders and text, amber for accents.
+export const DEFAULT_BLACK = "#121a19";
+export const PRIMARY_COLOR = "#f59e0b";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -96,38 +97,66 @@ export const theme = createTheme({
   },
   // COLORS
   black: DEFAULT_BLACK,
-  primaryColor: "yellow",
+  primaryColor: "amber",
   primaryShade: 5,
   colors: {
-    yellow: [
-      "#fff8e1",
-      "#ffefb3",
-      "#fce28a",
-      "#f4d05f",
-      "#edc34b",
+    // Accents: buttons, active chips, loaders, ticks.
+    amber: [
+      "#fff8e6",
+      "#ffecbf",
+      "#fddc8f",
+      "#fbc95c",
+      "#f8b530",
       PRIMARY_COLOR,
-      "#c99d24",
-      "#a77f14",
-      "#805f0b",
-      "#5b4205",
+      "#d98806",
+      "#b26b05",
+      "#8a5207",
+      "#5e3806",
     ],
-    brown: [
-      "#f2ece4",
-      "#a89a8c",
-      "#665b52",
-      "#4d433b",
-      "#332c26",
-      "#2a211d",
-      "#221d19",
-      "#1b1815",
-      "#1a1210",
-      "#141110",
+    // Surfaces and text, light to dark: 0 is body text, 1 muted text, 4 borders, 5–9 surfaces.
+    teal: [
+      "#e4f1ef",
+      "#8fa9a5",
+      "#546b67",
+      "#3c504d",
+      "#263533",
+      "#1d2b29",
+      "#182422",
+      "#141d1c",
+      "#111918",
+      "#0d1413",
+    ],
+    // Mantine's own components (menus, modals, inputs) use these in dark mode, so they're teal too.
+    dark: [
+      "#d3e2df",
+      "#b1c6c2",
+      "#8aa29e",
+      "#627a76",
+      "#3c504d",
+      "#2b3b39",
+      "#1f2c2a",
+      "#172221",
+      "#121a19",
+      "#0d1413",
+    ],
+    // And these in light mode.
+    gray: [
+      "#f4f8f7",
+      "#e9f0ef",
+      "#dce6e4",
+      "#cad7d5",
+      "#aabcb9",
+      "#8aa09c",
+      "#627a76",
+      "#4a605c",
+      "#334643",
+      "#1f2e2c",
     ],
   },
   other: {
     colors: {
       teal: "#5eb8b0",
-      amber: "#d97706",
+      amber: PRIMARY_COLOR,
     },
     fonts: {
       display: bodoniModa.style.fontFamily,

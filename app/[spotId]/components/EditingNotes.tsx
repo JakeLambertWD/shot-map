@@ -36,14 +36,14 @@ export function EditingNotes({ spotId, notes }: EditingNotesProps) {
   }
 
   const text = (
-    <Text c={notes ? "brown.0" : "brown.1"} style={{ whiteSpace: "pre-line" }}>
+    <Text c={notes ? "teal.0" : "teal.1"} style={{ whiteSpace: "pre-line" }}>
       {notes ?? "Add Lightroom settings or edit steps…"}
     </Text>
   );
 
   return (
     <Stack gap="xs" component="section">
-      <Text component="h2" ff="monospace" fz="xs" c="brown.1" tt="uppercase" lts="0.08em">
+      <Text component="h2" ff="monospace" fz="xs" c="teal.1" tt="uppercase" lts="0.08em">
         Editing notes
       </Text>
 
@@ -62,7 +62,7 @@ export function EditingNotes({ spotId, notes }: EditingNotesProps) {
         <Textarea
           variant="unstyled"
           aria-label="Editing notes"
-          styles={{ input: { padding: 0, minHeight: 0, color: "var(--mantine-color-brown-0)" } }}
+          styles={{ input: { padding: 0, minHeight: 0, color: "var(--mantine-color-teal-0)" } }}
           value={draft}
           onChange={(event) => setDraft(event.currentTarget.value)}
           onBlur={save}

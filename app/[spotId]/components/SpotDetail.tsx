@@ -55,7 +55,7 @@ export function SpotDetail({ spotId, initialTab, from }: SpotDetailProps) {
   if (spotQuery.isPending) {
     return (
       <Center mih="60vh">
-        <Loader color="yellow" />
+        <Loader color="amber" />
       </Center>
     );
   }
@@ -64,7 +64,7 @@ export function SpotDetail({ spotId, initialTab, from }: SpotDetailProps) {
     return (
       <Center mih="60vh">
         <Stack align="center" gap="sm">
-          <Text c="brown.0" fw={600}>
+          <Text c="teal.0" fw={600}>
             {spotQuery.error.data?.code === "NOT_FOUND"
               ? "This spot doesn't exist."
               : "Couldn't load this spot."}
@@ -97,7 +97,7 @@ export function SpotDetail({ spotId, initialTab, from }: SpotDetailProps) {
           href={backLink.href}
           aria-label={backLink.label}
           variant="subtle"
-          color="brown.0"
+          color="teal.0"
           size={44}
         >
           <IconChevronLeft size={24} />

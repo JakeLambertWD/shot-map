@@ -10,7 +10,7 @@ const TICK_GAP = 2;
 // The map moves underneath it, and the centre dot marks exactly where the spot goes.
 export function PlacementCrosshair() {
   const theme = useMantineTheme();
-  const accent = theme.colors.yellow[5];
+  const accent = theme.colors.amber[5];
   const outline = "rgba(0, 0, 0, 0.6)";
 
   const centre = RETICLE_SIZE / 2;

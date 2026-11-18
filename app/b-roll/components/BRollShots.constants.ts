@@ -1,6 +1,6 @@
 // Camera moves and angles to capture as b-roll at a spot.
 export const B_ROLL_SHOTS = [
-    { name: "Walk in", description: "Camera locked off on a tripod, you walk into the empty frame" },
+  { name: "Walk in", description: "Camera locked off on a tripod, you walk into the empty frame" },
   { name: "Reveal", description: "Start blocked by something, move to uncover the subject" },
   { name: "Push in", description: "Move slowly towards the subject" },
   { name: "Pull out", description: "Start tight and move back to show the whole scene" },

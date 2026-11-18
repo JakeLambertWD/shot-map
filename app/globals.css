@@ -1,6 +1,7 @@
 :root {
-  --background: #181818;
-  --foreground: #f2ece4;
+  /* DEFAULT_BLACK and teal.0 in styles/theme.ts. */
+  --background: #121a19;
+  --foreground: #e4f1ef;
 }
 
 html {

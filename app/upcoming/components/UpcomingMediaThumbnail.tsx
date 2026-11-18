@@ -29,13 +29,13 @@ export function UpcomingMediaThumbnail({
       pos="relative"
       w={w}
       h={h}
-      bg="brown.5"
+      bg="teal.5"
       style={{ borderRadius: 6, overflow: "hidden", flex: "none" }}
     >
       {src && <Image src={src} alt="" loading="lazy" w="100%" h="100%" fit="cover" />}
       {isVideo && (
         <Center pos="absolute" inset={0} aria-hidden>
-          <IconPlayerPlayFilled size={18} color="var(--mantine-color-brown-0)" />
+          <IconPlayerPlayFilled size={18} color="var(--mantine-color-teal-0)" />
         </Center>
       )}
     </UnstyledButton>

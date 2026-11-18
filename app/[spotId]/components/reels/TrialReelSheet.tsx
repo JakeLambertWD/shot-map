@@ -34,10 +34,10 @@ export function TrialReelSheet(props: TrialReelSheetProps) {
       }}
       title={
         <Stack gap={2}>
-          <Text component="span" ff="heading" fz="lg" fw={600} c="brown.0">
+          <Text component="span" ff="heading" fz="lg" fw={600} c="teal.0">
             {props.reel ? "Edit trial reel" : "Add a trial reel idea"}
           </Text>
-          <Text component="span" fz="sm" c="brown.1">
+          <Text component="span" fz="sm" c="teal.1">
             {props.reel
               ? "Changes it on every spot that uses it."
               : "It joins your library, ready for any spot."}
@@ -103,7 +103,7 @@ function TrialReelForm({ reel, onClose, onSaved }: TrialReelSheetProps) {
           size="md"
           label="Reel link"
           placeholder="https://www.instagram.com/reel/…"
-          leftSection={<IconBrandInstagram size={18} color="var(--mantine-color-yellow-5)" />}
+          leftSection={<IconBrandInstagram size={18} color="var(--mantine-color-amber-5)" />}
           rightSection={
             <Button size="compact-sm" variant="default" onClick={paste}>
               Paste
@@ -120,8 +120,8 @@ function TrialReelForm({ reel, onClose, onSaved }: TrialReelSheetProps) {
         />
         {trimmed && isValid && (
           <Group gap={6}>
-            <IconCheck size={14} color="var(--mantine-color-yellow-5)" />
-            <Text fz="xs" c="brown.1">
+            <IconCheck size={14} color="var(--mantine-color-amber-5)" />
+            <Text fz="xs" c="teal.1">
               Looks like an Instagram link
             </Text>
           </Group>
@@ -133,7 +133,7 @@ function TrialReelForm({ reel, onClose, onSaved }: TrialReelSheetProps) {
         label="Creator (optional)"
         placeholder="their.handle"
         leftSection={
-          <Text component="span" c="brown.1" fw={700} aria-hidden>
+          <Text component="span" c="teal.1" fw={700} aria-hidden>
             @
           </Text>
         }

@@ -111,7 +111,7 @@ export function SpotPhotoTab({
         />
       ) : (
         <>
-          <Center h={200} bg="brown.7" c="brown.1" fz="sm">
+          <Center h={200} bg="teal.7" c="teal.1" fz="sm">
             No photos yet
           </Center>
           {addPhotosTile && (
@@ -171,7 +171,7 @@ export function SpotPhotoTab({
         <Text
           fz="sm"
           px="md"
-          c={uploadError ? "red.5" : "brown.1"}
+          c={uploadError ? "red.5" : "teal.1"}
           role={uploadError ? "alert" : "status"}
         >
           {uploadError ?? progress}

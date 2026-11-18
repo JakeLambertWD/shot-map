@@ -28,10 +28,10 @@ export function InstagramLinkSheet(props: InstagramLinkSheetProps) {
       }}
       title={
         <Stack gap={2}>
-          <Text component="span" ff="heading" fz="lg" fw={600} c="brown.0">
+          <Text component="span" ff="heading" fz="lg" fw={600} c="teal.0">
             Instagram inspo
           </Text>
-          <Text component="span" fz="sm" c="brown.1">
+          <Text component="span" fz="sm" c="teal.1">
             For “{props.reelTitle}”
           </Text>
         </Stack>
@@ -92,7 +92,7 @@ function InstagramLinkForm({ currentUrl, onClose, onSave }: InstagramLinkSheetPr
           size="md"
           label="Reel or post link"
           placeholder="https://www.instagram.com/reel/…"
-          leftSection={<IconBrandInstagram size={18} color="var(--mantine-color-yellow-5)" />}
+          leftSection={<IconBrandInstagram size={18} color="var(--mantine-color-amber-5)" />}
           rightSection={
             <Button size="compact-sm" variant="default" onClick={paste}>
               Paste
@@ -109,8 +109,8 @@ function InstagramLinkForm({ currentUrl, onClose, onSave }: InstagramLinkSheetPr
         />
         {trimmed && isValid && (
           <Group gap={6}>
-            <IconCheck size={14} color="var(--mantine-color-yellow-5)" />
-            <Text fz="xs" c="brown.1">
+            <IconCheck size={14} color="var(--mantine-color-amber-5)" />
+            <Text fz="xs" c="teal.1">
               Looks like an Instagram link
             </Text>
           </Group>

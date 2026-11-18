@@ -10,7 +10,7 @@ const PhotoSpotsMap = dynamic(
     ssr: false,
     loading: () => (
       <Center pos="fixed" inset={0}>
-        <Loader color="yellow" />
+        <Loader color="amber" />
       </Center>
     ),
   },

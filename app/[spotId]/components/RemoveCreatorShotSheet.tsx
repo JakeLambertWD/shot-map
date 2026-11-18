@@ -28,8 +28,8 @@ export function RemoveCreatorShotSheet({ photo, spotTitle, onClose }: RemoveCrea
       overlayProps={{ backgroundOpacity: 0.6 }}
       styles={{
         content: {
-          backgroundColor: theme.colors.brown[7],
-          borderTop: `1px solid ${theme.colors.brown[4]}`,
+          backgroundColor: theme.colors.teal[7],
+          borderTop: `1px solid ${theme.colors.teal[4]}`,
           borderRadius: "20px 20px 0 0",
           maxWidth: "36rem",
           margin: "0 auto",
@@ -90,20 +90,20 @@ function SheetBody({
         </Box>
         {isConfirmingDelete ? (
           <Stack gap={4}>
-            <Text component="h2" ff="heading" fz={17} fw={600} c="brown.0" m={0}>
+            <Text component="h2" ff="heading" fz={17} fw={600} c="teal.0" m={0}>
               Delete this shot everywhere?
             </Text>
-            <Text fz="sm" c="brown.1" lh={1.4}>
+            <Text fz="sm" c="teal.1" lh={1.4}>
               It comes off {otherSpots + 1 === 1 ? "this spot" : `all ${otherSpots + 1} spots`}, out
               of your library, and the photo is deleted. This can&apos;t be undone.
             </Text>
           </Stack>
         ) : (
           <Stack gap={4}>
-            <Text component="h2" ff="heading" fz={17} fw={600} c="brown.0" m={0}>
+            <Text component="h2" ff="heading" fz={17} fw={600} c="teal.0" m={0}>
               Remove from {spotTitle}?
             </Text>
-            <Text fz="sm" c="brown.1" lh={1.4}>
+            <Text fz="sm" c="teal.1" lh={1.4}>
               {elsewhere} Its note here is removed.
             </Text>
           </Stack>
@@ -133,8 +133,8 @@ function SheetBody({
             h={44}
             radius="sm"
             variant="outline"
-            color={theme.colors.brown[3]}
-            c="brown.0"
+            color={theme.colors.teal[3]}
+            c="teal.0"
             disabled={isBusy}
             onClick={() => setIsConfirmingDelete(false)}
           >
@@ -159,8 +159,8 @@ function SheetBody({
             h={44}
             radius="sm"
             variant="outline"
-            color={theme.colors.brown[3]}
-            c="brown.0"
+            color={theme.colors.teal[3]}
+            c="teal.0"
             disabled={isBusy}
             onClick={onClose}
           >

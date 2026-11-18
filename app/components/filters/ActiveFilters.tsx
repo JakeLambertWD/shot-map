@@ -22,17 +22,17 @@ export function FilterResultCount({
       h={36}
       pl={14}
       pr={6}
-      bg="brown.7"
+      bg="teal.7"
       mx="auto"
       w="fit-content"
       style={{
         borderRadius: 18,
-        border: `1px solid ${theme.colors.brown[4]}`,
+        border: `1px solid ${theme.colors.teal[4]}`,
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.35)",
         whiteSpace: "nowrap",
       }}
     >
-      <Text fz={13} c="brown.0">
+      <Text fz={13} c="teal.0">
         <Text component="strong" fz={13} fw={900} inherit>
           {shown}
         </Text>{" "}
@@ -44,8 +44,8 @@ export function FilterResultCount({
         px={10}
         fz={12}
         fw={700}
-        c="yellow.5"
-        bg="brown.5"
+        c="amber.5"
+        bg="teal.5"
         style={{ borderRadius: 14 }}
       >
         Clear

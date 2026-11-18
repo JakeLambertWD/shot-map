@@ -66,7 +66,7 @@ export function TabChips<Id extends string>({ tabs, value, ariaLabel }: TabChips
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      backgroundColor: isActive ? "rgba(0, 0, 0, 0.18)" : theme.colors.brown[4],
+                      backgroundColor: isActive ? "rgba(0, 0, 0, 0.18)" : theme.colors.teal[4],
                     }}
                   >
                     {count}
@@ -79,9 +79,9 @@ export function TabChips<Id extends string>({ tabs, value, ariaLabel }: TabChips
                   height: 36,
                   padding: "0 14px",
                   borderRadius: 18,
-                  border: isActive ? "none" : `1px solid ${theme.colors.brown[4]}`,
-                  backgroundColor: isActive ? theme.colors.yellow[5] : theme.colors.brown[6],
-                  color: isActive ? theme.colors.brown[9] : theme.colors.brown[0],
+                  border: isActive ? "none" : `1px solid ${theme.colors.teal[4]}`,
+                  backgroundColor: isActive ? theme.colors.amber[5] : theme.colors.teal[6],
+                  color: isActive ? theme.colors.teal[9] : theme.colors.teal[0],
                   fontSize: 13,
                   fontWeight: isActive ? 900 : 700,
                   whiteSpace: "nowrap",

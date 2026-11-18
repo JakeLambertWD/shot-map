@@ -97,12 +97,12 @@ export function ReelSpots() {
           href="/"
           aria-label="Back to map"
           variant="subtle"
-          color="brown.0"
+          color="teal.0"
           size={44}
         >
           <IconChevronLeft size={24} />
         </ActionIcon>
-        <Title order={1} fz="lg" c="brown.0">
+        <Title order={1} fz="lg" c="teal.0">
           Reels
         </Title>
         <Box w={44} />
@@ -110,7 +110,7 @@ export function ReelSpots() {
 
       {isPending ? (
         <Center mih="50vh">
-          <Loader color="yellow" />
+          <Loader color="amber" />
         </Center>
       ) : isError ? (
         <Text c="red.5" px="md" role="alert">
@@ -118,11 +118,11 @@ export function ReelSpots() {
         </Text>
       ) : allSpots.length === 0 ? (
         <Stack mih="60vh" align="center" justify="center" gap="sm" px="xl" ta="center">
-          <IconMovie size={40} stroke={1.5} color="var(--mantine-color-brown-2)" />
-          <Text fw={700} c="brown.0">
+          <IconMovie size={40} stroke={1.5} color="var(--mantine-color-teal-2)" />
+          <Text fw={700} c="teal.0">
             No reel ideas yet
           </Text>
-          <Text fz="sm" c="brown.1">
+          <Text fz="sm" c="teal.1">
             Add a reel on a spot’s Reels tab and it’ll show up here.
           </Text>
         </Stack>
@@ -136,21 +136,12 @@ export function ReelSpots() {
 
           <Tabs.Panel value={activeTab}>
             {tabSpots.length === 0 ? (
-              <Center
-                h={120}
-                mx="md"
-                bg="brown.7"
-                bdrs="md"
-                c="brown.1"
-                fz="sm"
-                ta="center"
-                px="md"
-              >
+              <Center h={120} mx="md" bg="teal.7" bdrs="md" c="teal.1" fz="sm" ta="center" px="md">
                 {activeTab === "all" ? "No reel ideas yet" : REEL_KIND_COPY[activeTab].emptyText}
               </Center>
             ) : (
               <>
-                <Text fz="sm" c="brown.1" px="md" pb="sm">
+                <Text fz="sm" c="teal.1" px="md" pb="sm">
                   {tabSpots.length} {tabSpots.length === 1 ? "spot" : "spots"} · {tabReelCount} reel{" "}
                   {tabReelCount === 1 ? "idea" : "ideas"}
                 </Text>

@@ -52,19 +52,19 @@ export function UpNextSpots() {
           href="/"
           aria-label="Back to map"
           variant="subtle"
-          color="brown.0"
+          color="teal.0"
           size={44}
         >
           <IconChevronLeft size={24} />
         </ActionIcon>
-        <Title order={1} fz="lg" c="brown.0">
+        <Title order={1} fz="lg" c="teal.0">
           Up next
         </Title>
         {CAN_EDIT_SPOTS ? (
           <ActionIcon
             aria-label="Add spots to Up next"
             variant="subtle"
-            color="yellow.5"
+            color="amber.5"
             size={44}
             onClick={() => setIsAdding(true)}
           >
@@ -77,7 +77,7 @@ export function UpNextSpots() {
 
       {isPending ? (
         <Center mih="50vh">
-          <Loader color="yellow" />
+          <Loader color="amber" />
         </Center>
       ) : isError ? (
         <Text c="red.5" px="md" role="alert">
@@ -85,11 +85,11 @@ export function UpNextSpots() {
         </Text>
       ) : spots.length === 0 ? (
         <Stack mih="60vh" align="center" justify="center" gap="sm" px="xl" ta="center">
-          <IconListNumbers size={40} stroke={1.5} color="var(--mantine-color-brown-2)" />
-          <Text fw={700} c="brown.0">
+          <IconListNumbers size={40} stroke={1.5} color="var(--mantine-color-teal-2)" />
+          <Text fw={700} c="teal.0">
             Nothing up next yet
           </Text>
-          <Text fz="sm" c="brown.1">
+          <Text fz="sm" c="teal.1">
             Add the spots you want to shoot soon, then drag them into order.
           </Text>
           {CAN_EDIT_SPOTS && (
@@ -105,7 +105,7 @@ export function UpNextSpots() {
         </Stack>
       ) : (
         <>
-          <Text fz="sm" c="brown.1" px="md" pb="sm">
+          <Text fz="sm" c="teal.1" px="md" pb="sm">
             {spots.length} {spots.length === 1 ? "spot" : "spots"} to shoot
           </Text>
           {removeError && (
@@ -132,10 +132,10 @@ export function UpNextSpots() {
                 >
                   <SpotThumbnail coverImageUrl={spot.coverImageUrl} />
                   <Stack gap={6} flex={1} miw={0}>
-                    <Text fw={700} c="brown.0" truncate>
+                    <Text fw={700} c="teal.0" truncate>
                       {spot.title}
                     </Text>
-                    <Text fz="xs" c="brown.1" truncate>
+                    <Text fz="xs" c="teal.1" truncate>
                       {formatSpotLocation(spot)}
                     </Text>
                     <Text fz="sm" lh={1}>
@@ -147,7 +147,7 @@ export function UpNextSpots() {
                   <ActionIcon
                     aria-label={`Remove ${spot.title} from Up next`}
                     variant="subtle"
-                    color="brown.1"
+                    color="teal.1"
                     size={44}
                     onClick={() => remove(spot.id)}
                     loading={upNext.removingSpotId === spot.id}

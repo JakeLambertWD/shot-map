@@ -29,8 +29,8 @@ export function RemoveTrialReelSheet(props: RemoveTrialReelSheetProps) {
       overlayProps={{ backgroundOpacity: 0.6 }}
       styles={{
         content: {
-          backgroundColor: theme.colors.brown[7],
-          borderTop: `1px solid ${theme.colors.brown[4]}`,
+          backgroundColor: theme.colors.teal[7],
+          borderTop: `1px solid ${theme.colors.teal[4]}`,
           borderRadius: "20px 20px 0 0",
           maxWidth: "30rem",
           margin: "0 auto",
@@ -83,8 +83,8 @@ function SheetBody({
     h: 44,
     radius: "sm",
     variant: "outline",
-    color: theme.colors.brown[3],
-    c: "brown.0",
+    color: theme.colors.teal[3],
+    c: "teal.0",
     disabled: isBusy,
   } as const;
 
@@ -100,10 +100,10 @@ function SheetBody({
           <TrialReelTileFace reel={reel} />
         </Box>
         <Stack gap={4} miw={0}>
-          <Text component="h2" ff="heading" fz={17} fw={600} c="brown.0" m={0}>
+          <Text component="h2" ff="heading" fz={17} fw={600} c="teal.0" m={0}>
             {isConfirmingDelete ? "Delete this link everywhere?" : getTrialReelLabel(reel)}
           </Text>
-          <Text fz="sm" c="brown.1" lh={1.4}>
+          <Text fz="sm" c="teal.1" lh={1.4}>
             {isConfirmingDelete
               ? `It comes off ${spotCount === 1 ? "this spot" : `all ${spotCount} spots`} and out of your library. This can't be undone.`
               : reel.instagramUrl.replace("https://www.", "")}
@@ -149,7 +149,7 @@ function SheetBody({
             >
               Remove from {spotTitle}
             </Button>
-            <Text fz="xs" c="brown.1" ta="center">
+            <Text fz="xs" c="teal.1" ta="center">
               {elsewhere}
             </Text>
           </Stack>

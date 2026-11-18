@@ -15,12 +15,12 @@ export function BRollShots() {
           href="/"
           aria-label="Back to map"
           variant="subtle"
-          color="brown.0"
+          color="teal.0"
           size={44}
         >
           <IconChevronLeft size={24} />
         </ActionIcon>
-        <Title order={1} fz="lg" c="brown.0">
+        <Title order={1} fz="lg" c="teal.0">
           B-roll shots
         </Title>
         <Box w={44} />
@@ -33,12 +33,12 @@ export function BRollShots() {
             component="li"
             gap={2}
             py="sm"
-            style={{ borderBottom: "1px solid var(--mantine-color-brown-6)" }}
+            style={{ borderBottom: "1px solid var(--mantine-color-teal-6)" }}
           >
-            <Text fw={700} c="brown.0">
+            <Text fw={700} c="teal.0">
               {shot.name}
             </Text>
-            <Text fz="sm" c="brown.1">
+            <Text fz="sm" c="teal.1">
               {shot.description}
             </Text>
           </Stack>

@@ -4,7 +4,7 @@ import { getSpotStatusLabel, type SpotStatus } from "@/lib/photo-spots";
 import { Center, Tooltip, useMantineTheme } from "@mantine/core";
 import { IconCheck, IconPencil } from "@tabler/icons-react";
 
-// A spot's status as a small round icon: a pencil while planning, a yellow tick once ready.
+// A spot's status as a small round icon: a pencil while planning, an amber tick once ready.
 // Built to sit on top of a photo, so the planning icon has a dark backing to stay visible.
 export function SpotStatusIcon({
   status,
@@ -32,15 +32,15 @@ export function SpotStatusIcon({
         flex: "none",
         borderRadius: "50%",
         boxSizing: "border-box",
-        backgroundColor: isReady ? theme.colors.yellow[5] : "rgba(0, 0, 0, 0.6)",
-        border: isReady ? "none" : `1.5px solid ${theme.colors.brown[1]}`,
+        backgroundColor: isReady ? theme.colors.amber[5] : "rgba(0, 0, 0, 0.6)",
+        border: isReady ? "none" : `1.5px solid ${theme.colors.teal[1]}`,
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
       }}
     >
       {isReady ? (
-        <IconCheck size={size * 0.55} stroke={3} color={theme.colors.brown[9]} aria-hidden />
+        <IconCheck size={size * 0.55} stroke={3} color={theme.colors.teal[9]} aria-hidden />
       ) : (
-        <IconPencil size={size * 0.5} stroke={2.2} color={theme.colors.brown[0]} aria-hidden />
+        <IconPencil size={size * 0.5} stroke={2.2} color={theme.colors.teal[0]} aria-hidden />
       )}
     </Center>
   );

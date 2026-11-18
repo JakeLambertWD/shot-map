@@ -223,7 +223,7 @@ export function PhotoThumbnails({
             style={{
               aspectRatio: "1",
               overflow: "hidden",
-              outline: isActive || isDragged ? `2px solid ${theme.colors.yellow[5]}` : "none",
+              outline: isActive || isDragged ? `2px solid ${theme.colors.amber[5]}` : "none",
               outlineOffset: 2,
               transform: isDragged ? "scale(1.06)" : undefined,
               boxShadow: isDragged ? "0 10px 24px rgba(0, 0, 0, 0.6)" : undefined,
@@ -255,7 +255,7 @@ export function PhotoThumbnails({
               px={5}
               fz={11}
               fw={900}
-              c="brown.0"
+              c="teal.0"
               style={{
                 borderRadius: 10,
                 backgroundColor: "rgba(0, 0, 0, 0.6)",

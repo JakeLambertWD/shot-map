@@ -60,8 +60,8 @@ export function SpotFilterSheet({
       closeButtonProps={{ "aria-label": "Close filters", size: "lg" }}
       styles={{
         content: {
-          backgroundColor: theme.colors.brown[7],
-          borderTop: `1px solid ${theme.colors.brown[4]}`,
+          backgroundColor: theme.colors.teal[7],
+          borderTop: `1px solid ${theme.colors.teal[4]}`,
           borderRadius: "20px 20px 0 0",
           maxWidth: "36rem",
           margin: "0 auto",
@@ -70,12 +70,12 @@ export function SpotFilterSheet({
           flex: "none",
           width: "100%",
         },
-        header: { backgroundColor: theme.colors.brown[7], paddingBottom: 4 },
+        header: { backgroundColor: theme.colors.teal[7], paddingBottom: 4 },
         title: {
           fontFamily: "var(--mantine-font-family-headings)",
           fontSize: 18,
           fontWeight: 600,
-          color: theme.colors.brown[0],
+          color: theme.colors.teal[0],
         },
         body: { padding: 0 },
       }}
@@ -130,14 +130,14 @@ function FilterSheetBody({
   }
 
   const idle = {
-    backgroundColor: theme.colors.brown[5],
-    border: `1px solid ${theme.colors.brown[4]}`,
-    color: theme.colors.brown[0],
+    backgroundColor: theme.colors.teal[5],
+    border: `1px solid ${theme.colors.teal[4]}`,
+    color: theme.colors.teal[0],
   };
   const active = {
-    backgroundColor: theme.colors.yellow[5],
-    border: `1px solid ${theme.colors.yellow[5]}`,
-    color: theme.colors.brown[9],
+    backgroundColor: theme.colors.amber[5],
+    border: `1px solid ${theme.colors.amber[5]}`,
+    color: theme.colors.teal[9],
     fontWeight: 900,
   };
 
@@ -214,13 +214,13 @@ function FilterSheetBody({
                   h={56}
                   fz="md"
                   fw={700}
-                  c="brown.0"
-                  bg="brown.5"
+                  c="teal.0"
+                  bg="teal.5"
                   style={{
                     borderRadius: 10,
                     border: isOn
-                      ? `1.5px solid ${theme.colors.yellow[5]}`
-                      : `1px solid ${theme.colors.brown[4]}`,
+                      ? `1.5px solid ${theme.colors.amber[5]}`
+                      : `1px solid ${theme.colors.teal[4]}`,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -229,7 +229,7 @@ function FilterSheetBody({
                 >
                   <Icon
                     size={20}
-                    color={isOn ? theme.colors.yellow[5] : theme.colors.brown[1]}
+                    color={isOn ? theme.colors.amber[5] : theme.colors.teal[1]}
                     aria-hidden
                   />
                   {option.label}
@@ -246,12 +246,12 @@ function FilterSheetBody({
         px="lg"
         pt="md"
         pb="lg"
-        style={{ borderTop: `1px solid ${theme.colors.brown[5]}` }}
+        style={{ borderTop: `1px solid ${theme.colors.teal[5]}` }}
       >
         <Button
           variant="outline"
-          color={theme.colors.brown[3]}
-          c="brown.0"
+          color={theme.colors.teal[3]}
+          c="teal.0"
           size="lg"
           radius="sm"
           fz="md"
@@ -300,8 +300,8 @@ function FilterSegments<Value>({
       p={4}
       style={{
         borderRadius: 10,
-        backgroundColor: theme.colors.brown[5],
-        border: `1px solid ${theme.colors.brown[4]}`,
+        backgroundColor: theme.colors.teal[5],
+        border: `1px solid ${theme.colors.teal[4]}`,
       }}
     >
       {options.map((option) => {
@@ -317,12 +317,12 @@ function FilterSegments<Value>({
             ta="center"
             style={{
               borderRadius: 7,
-              backgroundColor: isOn ? theme.colors.yellow[5] : "transparent",
+              backgroundColor: isOn ? theme.colors.amber[5] : "transparent",
               color: isOn
-                ? theme.colors.brown[9]
+                ? theme.colors.teal[9]
                 : option.value === null
-                  ? theme.colors.brown[1]
-                  : theme.colors.brown[0],
+                  ? theme.colors.teal[1]
+                  : theme.colors.teal[0],
             }}
           >
             {option.label}
@@ -340,7 +340,7 @@ function FilterSection({ label, children }: { label: string; children: ReactNode
         component="legend"
         fz={12}
         fw={900}
-        c="brown.1"
+        c="teal.1"
         pb={10}
         style={{ letterSpacing: "0.08em" }}
       >

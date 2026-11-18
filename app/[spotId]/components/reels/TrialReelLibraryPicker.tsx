@@ -84,7 +84,7 @@ function PickerBody({ onClose, spotId, usedIds }: Omit<TrialReelLibraryPickerPro
           display: "grid",
           gridTemplateColumns: "1fr auto 1fr",
           alignItems: "center",
-          borderBottom: `1px solid ${theme.colors.brown[5]}`,
+          borderBottom: `1px solid ${theme.colors.teal[5]}`,
         }}
       >
         <UnstyledButton
@@ -93,12 +93,12 @@ function PickerBody({ onClose, spotId, usedIds }: Omit<TrialReelLibraryPickerPro
           px={8}
           fz={15}
           fw={700}
-          c="brown.0"
+          c="teal.0"
           style={{ justifySelf: "start" }}
         >
           Cancel
         </UnstyledButton>
-        <Title order={2} fz={16} fw={600} c="brown.0">
+        <Title order={2} fz={16} fw={600} c="teal.0">
           Trial reels
         </Title>
         <Button
@@ -123,13 +123,13 @@ function PickerBody({ onClose, spotId, usedIds }: Omit<TrialReelLibraryPickerPro
           h={44}
           radius="sm"
           variant="default"
-          leftSection={<IconPlus size={18} color={theme.colors.yellow[5]} />}
+          leftSection={<IconPlus size={18} color={theme.colors.amber[5]} />}
           onClick={() => setIsAddingNew(true)}
           styles={{
             root: {
-              backgroundColor: theme.colors.brown[6],
-              borderColor: theme.colors.brown[4],
-              color: theme.colors.brown[0],
+              backgroundColor: theme.colors.teal[6],
+              borderColor: theme.colors.teal[4],
+              color: theme.colors.teal[0],
             },
           }}
         >
@@ -145,10 +145,10 @@ function PickerBody({ onClose, spotId, usedIds }: Omit<TrialReelLibraryPickerPro
       <Box px="md" pt="sm" pb="xl" style={{ flex: 1, minHeight: 0, overflowY: "auto" }}>
         {libraryQuery.isPending ? (
           <Center h={160}>
-            <Loader color="yellow" size="sm" />
+            <Loader color="amber" size="sm" />
           </Center>
         ) : library.length === 0 ? (
-          <Center h={160} c="brown.1" fz="sm" ta="center">
+          <Center h={160} c="teal.1" fz="sm" ta="center">
             No trial reel links yet. Paste your first one above.
           </Center>
         ) : (
@@ -180,7 +180,7 @@ function PickerBody({ onClose, spotId, usedIds }: Omit<TrialReelLibraryPickerPro
                       inset={0}
                       style={{
                         borderRadius: 4,
-                        boxShadow: `inset 0 0 0 3px ${theme.colors.yellow[5]}`,
+                        boxShadow: `inset 0 0 0 3px ${theme.colors.amber[5]}`,
                       }}
                     />
                   )}
@@ -192,7 +192,7 @@ function PickerBody({ onClose, spotId, usedIds }: Omit<TrialReelLibraryPickerPro
                       top={4}
                       fz={10}
                       fw={700}
-                      c="brown.0"
+                      c="teal.0"
                       px={6}
                       style={{ borderRadius: 8, backgroundColor: "rgba(0, 0, 0, 0.7)" }}
                     >
@@ -208,14 +208,12 @@ function PickerBody({ onClose, spotId, usedIds }: Omit<TrialReelLibraryPickerPro
                       h={22}
                       fz={11}
                       fw={900}
-                      c="brown.9"
+                      c="teal.9"
                       style={{
                         borderRadius: "50%",
                         boxSizing: "border-box",
-                        backgroundColor: isSelected
-                          ? theme.colors.yellow[5]
-                          : "rgba(0, 0, 0, 0.35)",
-                        border: isSelected ? "none" : `1.5px solid ${theme.colors.brown[0]}`,
+                        backgroundColor: isSelected ? theme.colors.amber[5] : "rgba(0, 0, 0, 0.35)",
+                        border: isSelected ? "none" : `1.5px solid ${theme.colors.teal[0]}`,
                       }}
                     >
                       {isSelected &&

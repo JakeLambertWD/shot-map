@@ -32,7 +32,7 @@ type UpcomingPostNumberProps = {
 // dragging the post into a new place.
 export function UpcomingPostNumber({ postId, number, dragHandle }: UpcomingPostNumberProps) {
   const label = (
-    <Center w={SIZE} h={SIZE} c="yellow.5" fz={11} fw={900}>
+    <Center w={SIZE} h={SIZE} c="amber.5" fz={11} fw={900}>
       {number}
     </Center>
   );
@@ -68,7 +68,7 @@ export function UpcomingPostNumber({ postId, number, dragHandle }: UpcomingPostN
       style={{ cursor: "grab", touchAction: "none", WebkitTouchCallout: "none" }}
     >
       <Group gap={0} justify="flex-end" wrap="nowrap" aria-hidden>
-        <IconGripVertical size={14} color="var(--mantine-color-brown-2)" />
+        <IconGripVertical size={14} color="var(--mantine-color-teal-2)" />
         {label}
       </Group>
     </UnstyledButton>

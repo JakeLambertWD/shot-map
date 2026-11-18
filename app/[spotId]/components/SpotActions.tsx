@@ -2,7 +2,7 @@
 
 import { CAN_EDIT_SPOTS } from "@/lib/photo-spots";
 import type { SpotDetail } from "@/server/routers/spots";
-import { ActionIcon, Button, Group, Menu, Paper, Text } from "@mantine/core";
+import { ActionIcon, Button, Group, Menu, Paper, Text, useMantineTheme } from "@mantine/core";
 import {
   IconCalendarMinus,
   IconCalendarPlus,
@@ -28,6 +28,7 @@ type SpotActionsProps = {
 // The spot's menu, behind the ⋯ button in the header: today's shoot, Up next, directions, edit,
 // move and delete. The content tabs are the chips under the spot name.
 export function SpotActions({ spot }: SpotActionsProps) {
+  const theme = useMantineTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const shoot = useTodayShoot();
@@ -100,7 +101,7 @@ export function SpotActions({ spot }: SpotActionsProps) {
         }}
       >
         <Menu.Target>
-          <ActionIcon aria-label="Spot options" variant="subtle" color="brown.0" size={44}>
+          <ActionIcon aria-label="Spot options" variant="subtle" color="teal.0" size={44}>
             <IconDots size={22} />
           </ActionIcon>
         </Menu.Target>
@@ -111,7 +112,7 @@ export function SpotActions({ spot }: SpotActionsProps) {
                 isInShoot ? (
                   <IconCalendarMinus size={20} />
                 ) : (
-                  <IconCalendarPlus size={20} color="var(--mantine-color-yellow-5)" />
+                  <IconCalendarPlus size={20} color="var(--mantine-color-amber-5)" />
                 )
               }
               onClick={toggleShoot}
@@ -124,7 +125,7 @@ export function SpotActions({ spot }: SpotActionsProps) {
               leftSection={
                 <IconListNumbers
                   size={20}
-                  color={isUpNext ? undefined : "var(--mantine-color-yellow-5)"}
+                  color={isUpNext ? undefined : "var(--mantine-color-amber-5)"}
                 />
               }
               onClick={toggleUpNext}
@@ -137,7 +138,7 @@ export function SpotActions({ spot }: SpotActionsProps) {
             href={getDirectionsUrl(spot.latitude, spot.longitude)}
             target="_blank"
             rel="noreferrer"
-            leftSection={<IconNavigation size={20} color="var(--mantine-color-blue-4)" />}
+            leftSection={<IconNavigation size={20} color={theme.other!.colors.teal} />}
           >
             Directions
           </Menu.Item>
@@ -178,12 +179,12 @@ export function SpotActions({ spot }: SpotActionsProps) {
           p="xs"
           pl="md"
           radius="md"
-          bg="brown.0"
+          bg="teal.0"
           shadow="lg"
           style={{ zIndex: 300 }}
         >
           <Group justify="space-between" wrap="nowrap" gap="sm">
-            <Text fz="sm" fw={700} c="brown.9">
+            <Text fz="sm" fw={700} c="teal.9">
               {toast.message}
             </Text>
             <Button component={Link} href={toast.href} radius="sm" autoContrast size="sm">

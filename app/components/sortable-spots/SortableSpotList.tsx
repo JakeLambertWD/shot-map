@@ -161,7 +161,7 @@ function SortableSpotRow({
             WebkitTouchCallout: "none",
           }}
         >
-          <IconGripVertical size={18} color="var(--mantine-color-brown-2)" aria-hidden />
+          <IconGripVertical size={18} color="var(--mantine-color-teal-2)" aria-hidden />
         </UnstyledButton>
       )}
     </Reorder.Item>

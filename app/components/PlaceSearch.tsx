@@ -175,7 +175,7 @@ export function PlaceSearch({
           leftSection={<IconSearch size={18} />}
           rightSection={
             isSearching ? (
-              <Loader size="xs" color="yellow" />
+              <Loader size="xs" color="amber" />
             ) : search && !isListening ? (
               <CloseButton aria-label="Clear search" onClick={clear} />
             ) : canListen ? (
@@ -183,7 +183,7 @@ export function PlaceSearch({
                 aria-label={isListening ? "Stop voice search" : "Search by voice"}
                 aria-pressed={isListening}
                 variant={isListening ? "filled" : "subtle"}
-                color={isListening ? "red" : "brown.0"}
+                color={isListening ? "red" : "teal.0"}
                 radius="xl"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={toggleListening}
@@ -196,9 +196,9 @@ export function PlaceSearch({
           radius="xl"
           styles={{
             input: {
-              backgroundColor: theme.colors.brown[7],
-              borderColor: theme.colors.brown[4],
-              color: theme.colors.brown[0],
+              backgroundColor: theme.colors.teal[7],
+              borderColor: theme.colors.teal[4],
+              color: theme.colors.teal[0],
               boxShadow: "0 6px 16px rgba(0, 0, 0, 0.45)",
             },
           }}
@@ -212,7 +212,7 @@ export function PlaceSearch({
               {matchingSpots.map((spot) => (
                 <Combobox.Option key={spot.id} value={`spot:${spot.id}`}>
                   <Group gap="sm" wrap="nowrap">
-                    <IconPhoto size={18} color={theme.colors.yellow[5]} aria-hidden />
+                    <IconPhoto size={18} color={theme.colors.amber[5]} aria-hidden />
                     <div>
                       <Text fz="sm" fw={500}>
                         {spot.title}

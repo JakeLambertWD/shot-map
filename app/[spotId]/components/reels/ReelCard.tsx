@@ -102,7 +102,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
 
   return (
     <Paper
-      bg="brown.6"
+      bg="teal.6"
       radius="md"
       style={{ border: isReady ? `1px solid ${readyColor}` : REEL_CARD_BORDER }}
     >
@@ -138,11 +138,11 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
           <Stack gap={6} flex={1} miw={0}>
             <UnstyledButton onClick={onToggle} aria-expanded={expanded}>
               <Stack gap={4}>
-                <Title order={3} fz={expanded ? 16 : 15} lh={1.3} c="brown.0">
+                <Title order={3} fz={expanded ? 16 : 15} lh={1.3} c="teal.0">
                   {reel.title}
                 </Title>
                 {!showType && (
-                  <Text fz="xs" c="brown.1">
+                  <Text fz="xs" c="teal.1">
                     {summary}
                   </Text>
                 )}
@@ -156,7 +156,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
                   isSaving={setKind.isPending}
                   onChange={(kind) => setKind.mutate({ id: reel.id, kind })}
                 />
-                <Text fz="xs" c="brown.1" truncate>
+                <Text fz="xs" c="teal.1" truncate>
                   {summary}
                 </Text>
               </Group>
@@ -174,9 +174,9 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
             variant="default"
             radius="xl"
             size={32}
-            bg="brown.5"
+            bg="teal.5"
           >
-            <IconBrandInstagram size={17} color="var(--mantine-color-yellow-5)" />
+            <IconBrandInstagram size={17} color="var(--mantine-color-amber-5)" />
           </ActionIcon>
         ) : (
           CAN_EDIT_SPOTS && (
@@ -186,9 +186,9 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
               radius="xl"
               size={32}
               onClick={() => setLinkSheetOpen(true)}
-              style={{ border: "1.5px dashed var(--mantine-color-brown-2)" }}
+              style={{ border: "1.5px dashed var(--mantine-color-teal-2)" }}
             >
-              <IconBrandInstagram size={17} color="var(--mantine-color-brown-2)" />
+              <IconBrandInstagram size={17} color="var(--mantine-color-teal-2)" />
             </ActionIcon>
           )
         )}
@@ -196,7 +196,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
         <ActionIcon
           aria-label={expanded ? "Collapse reel" : "Expand reel"}
           variant="transparent"
-          color="brown.1"
+          color="teal.1"
           size={32}
           onClick={onToggle}
         >
@@ -248,10 +248,10 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
                 h={44}
                 mt="xs"
                 variant="transparent"
-                color="brown.1"
+                color="teal.1"
                 leftSection={<IconPlus size={16} stroke={2.5} />}
                 onClick={() => setClipEditing("new")}
-                style={{ border: "1.5px dashed var(--mantine-color-brown-2)" }}
+                style={{ border: "1.5px dashed var(--mantine-color-teal-2)" }}
               >
                 Add clip
               </Button>
@@ -263,7 +263,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
               label="Creator"
               placeholder="their.handle"
               leftSection={
-                <Text component="span" c="brown.1" fw={700} aria-hidden>
+                <Text component="span" c="teal.1" fw={700} aria-hidden>
                   @
                 </Text>
               }
@@ -288,7 +288,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
             <Group gap={0} mt="xs" justify="flex-end">
               <Button
                 variant="subtle"
-                color="brown.1"
+                color="teal.1"
                 size="compact-sm"
                 onClick={() => setTitleDraft(reel.title)}
               >
@@ -296,7 +296,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
               </Button>
               <Button
                 variant="subtle"
-                color="brown.1"
+                color="teal.1"
                 size="compact-sm"
                 onClick={() => setCreatorDraft(reel.creator?.replace(/^@/, "") ?? "")}
               >
@@ -305,7 +305,7 @@ export function ReelCard({ spotId, reel, expanded, onToggle, showType }: ReelCar
               {reel.instagramUrl && (
                 <Button
                   variant="subtle"
-                  color="brown.1"
+                  color="teal.1"
                   size="compact-sm"
                   onClick={() => setLinkSheetOpen(true)}
                 >

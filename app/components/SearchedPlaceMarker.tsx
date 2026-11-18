@@ -15,7 +15,7 @@ export function SearchedPlaceMarker({ place }: SearchedPlaceMarkerProps) {
   return (
     <IconMapPinFilled
       size={36}
-      color={theme.colors.brown[0]}
+      color={theme.colors.teal[0]}
       aria-label={`Search result: ${place.name}`}
       style={{ filter: "drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5))" }}
     />

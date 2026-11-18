@@ -65,12 +65,12 @@ export function UpcomingPosts() {
           href="/"
           aria-label="Back to map"
           variant="subtle"
-          color="brown.0"
+          color="teal.0"
           size={44}
         >
           <IconChevronLeft size={24} />
         </ActionIcon>
-        <Title order={1} fz="lg" c="brown.0">
+        <Title order={1} fz="lg" c="teal.0">
           Upcoming
         </Title>
         {CAN_EDIT_SPOTS ? (
@@ -80,8 +80,8 @@ export function UpcomingPosts() {
             size={44}
             variant="transparent"
           >
-            <Center w={32} h={32} bg="yellow.5" style={{ borderRadius: 16 }}>
-              <IconPlus size={18} stroke={2.8} color="var(--mantine-color-brown-9)" />
+            <Center w={32} h={32} bg="amber.5" style={{ borderRadius: 16 }}>
+              <IconPlus size={18} stroke={2.8} color="var(--mantine-color-teal-9)" />
             </Center>
           </ActionIcon>
         ) : (
@@ -91,7 +91,7 @@ export function UpcomingPosts() {
 
       {isPending ? (
         <Center mih="50vh">
-          <Loader color="yellow" />
+          <Loader color="amber" />
         </Center>
       ) : isError ? (
         <Text c="red.5" px="md" role="alert">
@@ -120,7 +120,7 @@ export function UpcomingPosts() {
                         px={5}
                         fz={11}
                         fw={900}
-                        bg={isActive ? "rgba(0, 0, 0, 0.18)" : "brown.4"}
+                        bg={isActive ? "rgba(0, 0, 0, 0.18)" : "teal.4"}
                         style={{ borderRadius: 9, boxSizing: "border-box" }}
                       >
                         {count}
@@ -132,9 +132,9 @@ export function UpcomingPosts() {
                       height: 36,
                       padding: "0 14px",
                       borderRadius: 18,
-                      border: isActive ? "none" : `1px solid ${theme.colors.brown[4]}`,
-                      backgroundColor: isActive ? theme.colors.yellow[5] : theme.colors.brown[6],
-                      color: isActive ? theme.colors.brown[9] : theme.colors.brown[0],
+                      border: isActive ? "none" : `1px solid ${theme.colors.teal[4]}`,
+                      backgroundColor: isActive ? theme.colors.amber[5] : theme.colors.teal[6],
+                      color: isActive ? theme.colors.teal[9] : theme.colors.teal[0],
                       fontSize: 13,
                       fontWeight: isActive ? 900 : 700,
                     },
@@ -153,10 +153,10 @@ export function UpcomingPosts() {
               <Tabs.Panel key={tab.id} value={tab.id}>
                 {tabPosts.length === 0 ? (
                   <Stack align="center" gap="sm" px="lg" pt="xl" ta="center">
-                    <Text c="brown.0" fw={700}>
+                    <Text c="teal.0" fw={700}>
                       {tab.emptyTitle}
                     </Text>
-                    <Text c="brown.1" fz="sm" maw={300}>
+                    <Text c="teal.1" fz="sm" maw={300}>
                       After a shoot, add the {tab.id} you&apos;re planning so it doesn&apos;t get
                       forgotten.
                     </Text>

@@ -71,14 +71,14 @@ export function AddUpNextSpotsModal({
 
         {isPending ? (
           <Center h={120}>
-            <Loader color="yellow" size="sm" />
+            <Loader color="amber" size="sm" />
           </Center>
         ) : isError ? (
           <Text fz="sm" c="red.5" role="alert">
             Couldn&apos;t load spots.
           </Text>
         ) : spots.length === 0 ? (
-          <Center h={120} c="brown.1" fz="sm" ta="center" px="md">
+          <Center h={120} c="teal.1" fz="sm" ta="center" px="md">
             {search.trim() ? "No spots match that search" : "Every spot is already on Up next"}
           </Center>
         ) : (
@@ -95,18 +95,18 @@ export function AddUpNextSpotsModal({
                 >
                   <SpotThumbnail coverImageUrl={spot.coverImageUrl} />
                   <Stack gap={4} flex={1} miw={0}>
-                    <Text fw={700} c="brown.0" truncate>
+                    <Text fw={700} c="teal.0" truncate>
                       {spot.title}
                     </Text>
-                    <Text fz="xs" c="brown.1" truncate>
+                    <Text fz="xs" c="teal.1" truncate>
                       {formatSpotLocation(spot)}
                     </Text>
                   </Stack>
                   <Center w={32} style={{ flexShrink: 0 }}>
                     {addingSpotId === spot.id ? (
-                      <Loader color="yellow" size="xs" />
+                      <Loader color="amber" size="xs" />
                     ) : (
-                      <IconPlus size={20} color="var(--mantine-color-yellow-5)" aria-hidden />
+                      <IconPlus size={20} color="var(--mantine-color-amber-5)" aria-hidden />
                     )}
                   </Center>
                 </UnstyledButton>

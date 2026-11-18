@@ -39,7 +39,7 @@ export function TrialReelsGrid({ spotId, spotTitle }: TrialReelsGridProps) {
   return (
     <Stack gap="sm" px="md" pt="xs" pb="xxl">
       <Group justify="space-between" mih={36}>
-        <Text component="h2" ff="monospace" fz="xs" c="brown.1" tt="uppercase" lts="0.08em">
+        <Text component="h2" ff="monospace" fz="xs" c="teal.1" tt="uppercase" lts="0.08em">
           Trial reel ideas · {reels.length}
         </Text>
         {CAN_EDIT_SPOTS && (
@@ -56,14 +56,14 @@ export function TrialReelsGrid({ spotId, spotTitle }: TrialReelsGridProps) {
 
       {reelsQuery.isPending ? (
         <Center h={160}>
-          <Loader color="yellow" size="sm" />
+          <Loader color="amber" size="sm" />
         </Center>
       ) : reelsQuery.isError ? (
         <Text fz="sm" c="red.4" role="alert">
           Couldn&apos;t load the trial reels.
         </Text>
       ) : reels.length === 0 ? (
-        <Center h={160} c="brown.1" fz="sm" ta="center">
+        <Center h={160} c="teal.1" fz="sm" ta="center">
           No trial reel ideas yet. Add one from your library, or paste a new link.
         </Center>
       ) : (
@@ -101,7 +101,7 @@ export function TrialReelsGrid({ spotId, spotTitle }: TrialReelsGridProps) {
                     variant="filled"
                     color="rgba(0, 0, 0, 0.55)"
                   >
-                    <IconDots size={18} color="var(--mantine-color-brown-0)" />
+                    <IconDots size={18} color="var(--mantine-color-teal-0)" />
                   </ActionIcon>
                 )}
               </Box>
