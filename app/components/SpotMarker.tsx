@@ -2,27 +2,21 @@
 
 import type { SpotSummary } from "@/server/routers/spots";
 import { Center, Image, UnstyledButton, useMantineTheme } from "@mantine/core";
-import { IconCheck, IconPhoto } from "@tabler/icons-react";
+import { IconPhoto } from "@tabler/icons-react";
 
 type SpotMarkerProps = {
   spot: SpotSummary;
   onSelect: (spot: SpotSummary) => void;
-  // Its stop number when the spot is on today's shoot; shown as a badge (a tick once shot).
-  shootNumber?: number;
-  isShot?: boolean;
 };
 
-export function SpotMarker({ spot, onSelect, shootNumber, isShot }: SpotMarkerProps) {
+export function SpotMarker({ spot, onSelect }: SpotMarkerProps) {
   const theme = useMantineTheme();
   const ringColor = theme.colors.amber[5];
 
   return (
     <UnstyledButton
-      aria-label={`${spot.title}, ${spot.photoCount} ${spot.photoCount === 1 ? "photo" : "photos"}${
-        shootNumber ? `, stop ${shootNumber} on today's shoot` : ""
-      }`}
+      aria-label={`${spot.title}, ${spot.photoCount} ${spot.photoCount === 1 ? "photo" : "photos"}`}
       onClick={() => onSelect(spot)}
-      pos="relative"
       w={46}
       h={46}
       bdrs="50%"
@@ -37,23 +31,6 @@ export function SpotMarker({ spot, onSelect, shootNumber, isShot }: SpotMarkerPr
       ) : (
         <Center h="100%">
           <IconPhoto size={18} color={theme.colors.teal[1]} />
-        </Center>
-      )}
-      {shootNumber && (
-        <Center
-          aria-hidden
-          pos="absolute"
-          top={-8}
-          right={-8}
-          w={20}
-          h={20}
-          bg="amber.5"
-          c="teal.9"
-          fz={11}
-          fw={900}
-          style={{ borderRadius: "50%", boxShadow: "0 2px 6px rgba(0, 0, 0, 0.5)" }}
-        >
-          {isShot ? <IconCheck size={12} stroke={3.5} /> : shootNumber}
         </Center>
       )}
     </UnstyledButton>

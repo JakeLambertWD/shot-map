@@ -150,20 +150,3 @@ export function applySpotTitleCase(input: HTMLInputElement) {
   }
   return formatted;
 }
-
-// A day as YYYY-MM-DD in the viewer's own time zone, for Today's shoot.
-export function toShootDate(date: Date) {
-  return date.toLocaleDateString("en-CA");
-}
-
-export function getTodayShootDate() {
-  return toShootDate(new Date());
-}
-
-export function getYesterdayShootDate() {
-  const date = new Date();
-  date.setDate(date.getDate() - 1);
-  return toShootDate(date);
-}
-
-export const SHOOT_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;

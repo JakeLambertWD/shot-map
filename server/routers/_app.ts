@@ -3,7 +3,6 @@ import { placesRouter } from "./places";
 import { carouselsRouter } from "./carousels";
 import { creatorShotsRouter } from "./creatorShots";
 import { reelsRouter } from "./reels";
-import { shootRouter } from "./shoot";
 import { spotsRouter } from "./spots";
 import { trialReelsRouter } from "./trialReels";
 import { upNextRouter } from "./upNext";
@@ -15,7 +14,6 @@ export const appRouter = router({
   reels: reelsRouter,
   carousels: carouselsRouter,
   creatorShots: creatorShotsRouter,
-  shoot: shootRouter,
   spots: spotsRouter,
   trialReels: trialReelsRouter,
   upcomingPosts: upcomingPostsRouter,

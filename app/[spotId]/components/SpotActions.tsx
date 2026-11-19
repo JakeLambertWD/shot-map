@@ -4,8 +4,6 @@ import { CAN_EDIT_SPOTS } from "@/lib/photo-spots";
 import type { SpotDetail } from "@/server/routers/spots";
 import { ActionIcon, Button, Group, Menu, Paper, Text, useMantineTheme } from "@mantine/core";
 import {
-  IconCalendarMinus,
-  IconCalendarPlus,
   IconArrowsMove,
   IconDots,
   IconListNumbers,
@@ -15,7 +13,6 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useTodayShoot } from "@/app/today/useTodayShoot";
 import { useUpNext } from "@/app/up-next/useUpNext";
 import { DeleteSpotModal } from "./DeleteSpotButton";
 import { EditSpotModal } from "./EditSpotButton";
@@ -25,14 +22,12 @@ type SpotActionsProps = {
   spot: SpotDetail;
 };
 
-// The spot's menu, behind the ⋯ button in the header: today's shoot, Up next, directions, edit,
+// The spot's menu, behind the ⋯ button in the header: Up next, directions, edit,
 // move and delete. The content tabs are the chips under the spot name.
 export function SpotActions({ spot }: SpotActionsProps) {
   const theme = useMantineTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
-  const shoot = useTodayShoot();
-  const isInShoot = shoot.has(spot.id);
   const upNext = useUpNext();
   const isUpNext = upNext.has(spot.id);
   // A message after adding or removing the spot, with a link to the list it changed.
@@ -44,27 +39,6 @@ export function SpotActions({ spot }: SpotActionsProps) {
     const timer = setTimeout(() => setToast(null), 5000);
     return () => clearTimeout(timer);
   }, [toast]);
-
-  async function toggleShoot() {
-    try {
-      if (isInShoot) {
-        await shoot.remove(spot.id);
-        setToast({ message: "Removed from today's shoot", href: "/today" });
-      } else {
-        await shoot.add(spot.id);
-        const count = shoot.spots.length + 1;
-        setToast({
-          message: `Added to today's shoot · ${count} ${count === 1 ? "spot" : "spots"}`,
-          href: "/today",
-        });
-      }
-    } catch (error) {
-      setToast({
-        message: error instanceof Error ? error.message : "Couldn't update today's shoot",
-        href: "/today",
-      });
-    }
-  }
 
   async function toggleUpNext() {
     try {
@@ -106,20 +80,6 @@ export function SpotActions({ spot }: SpotActionsProps) {
           </ActionIcon>
         </Menu.Target>
         <Menu.Dropdown>
-          {CAN_EDIT_SPOTS && shoot.isReady && (
-            <Menu.Item
-              leftSection={
-                isInShoot ? (
-                  <IconCalendarMinus size={20} />
-                ) : (
-                  <IconCalendarPlus size={20} color="var(--mantine-color-amber-5)" />
-                )
-              }
-              onClick={toggleShoot}
-            >
-              {isInShoot ? "Remove from today's shoot" : "Add to today's shoot"}
-            </Menu.Item>
-          )}
           {CAN_EDIT_SPOTS && upNext.list.isSuccess && (
             <Menu.Item
               leftSection={

@@ -21,7 +21,6 @@ import type { PlaceResult } from "@/server/routers/places";
 import {
   IconAdjustmentsHorizontal,
   IconArrowsMove,
-  IconCalendar,
   IconCheck,
   IconCurrentLocation,
   IconLibraryPhoto,
@@ -54,7 +53,6 @@ import { PlaceSearch } from "./PlaceSearch";
 import { PLACE_ZOOM } from "./PlaceSearch.constants";
 import { SearchedPlaceMarker } from "./SearchedPlaceMarker";
 import { MAP_COLOURS, useMapStyle } from "./mapStyle";
-import { useTodayShoot } from "../today/useTodayShoot";
 import { FilterResultCount } from "./filters/ActiveFilters";
 import { SpotFilterSheet } from "./filters/SpotFilterSheet";
 import {
@@ -92,7 +90,6 @@ export function PhotoSpotsMap() {
   const spotsQuery = api.spots.list.useQuery();
   const moveSpot = api.spots.move.useMutation();
   const mapStyle = useMapStyle();
-  const shoot = useTodayShoot();
   // Posts waiting to go out, counted on the Upcoming button.
   const upcomingCount = api.upcomingPosts.list.useQuery().data?.length ?? 0;
 
@@ -398,8 +395,6 @@ export function PhotoSpotsMap() {
               <Marker key={spot.id} longitude={spot.longitude} latitude={spot.latitude}>
                 <SpotMarker
                   spot={spot}
-                  shootNumber={shoot.indexOf(spot.id) + 1 || undefined}
-                  isShot={Boolean(shoot.spots[shoot.indexOf(spot.id)]?.shotAt)}
                   onSelect={() => {
                     sessionStorage.setItem(
                       LAST_SPOT_STORAGE_KEY,
@@ -647,43 +642,6 @@ export function PhotoSpotsMap() {
                 }}
               >
                 Upcoming
-              </Button>
-              {/* Today's shoot, with how many spots are on it. */}
-              <Button
-                component={Link}
-                href="/today"
-                h="auto"
-                px="sm"
-                radius="sm"
-                variant="default"
-                leftSection={<IconCalendar size={18} color={theme.colors.amber[5]} />}
-                rightSection={
-                  shoot.spots.length > 0 ? (
-                    <Text
-                      component="span"
-                      fz="xs"
-                      fw={900}
-                      c="teal.9"
-                      bg="amber.5"
-                      px={6}
-                      miw={22}
-                      ta="center"
-                      style={{ borderRadius: 11, lineHeight: "22px" }}
-                    >
-                      {shoot.spots.length}
-                    </Text>
-                  ) : null
-                }
-                styles={{
-                  root: {
-                    backgroundColor: theme.colors.teal[7],
-                    borderColor:
-                      shoot.spots.length > 0 ? theme.colors.amber[5] : theme.colors.teal[4],
-                    color: theme.colors.teal[0],
-                  },
-                }}
-              >
-                Today
               </Button>
               {CAN_EDIT_SPOTS && (
                 <Tooltip label="Add spot">
