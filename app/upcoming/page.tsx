@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { UpcomingPosts } from "./components/UpcomingPosts";
 
 export const metadata: Metadata = {
-  title: "Upcoming",
+  title: "Posts",
   description: "Carousels, photos and reels captured and waiting to be posted.",
 };
 

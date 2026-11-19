@@ -38,6 +38,7 @@ import { AddSpotForm, type DraftLocation } from "./add-spot/AddSpotForm";
 import { PlacementCrosshair } from "./add-spot/PlacementCrosshair";
 import { SPOT_FORM_MODAL_TITLE_STYLES, SpotFormModalTitle } from "./add-spot/SpotFormModalTitle";
 import { AppMenu } from "./AppMenu";
+import { CountBadge } from "./count-badge/CountBadge";
 import { ClusterMarker } from "./ClusterMarker";
 import {
   CLUSTER_MAX_ZOOM,
@@ -90,7 +91,7 @@ export function PhotoSpotsMap() {
   const spotsQuery = api.spots.list.useQuery();
   const moveSpot = api.spots.move.useMutation();
   const mapStyle = useMapStyle();
-  // Posts waiting to go out, counted on the Upcoming button.
+  // Posts waiting to go out, counted on the Posts button.
   const upcomingCount = api.upcomingPosts.list.useQuery().data?.length ?? 0;
 
   const [viewport, setViewport] = useState<Viewport | null>(null);
@@ -615,23 +616,7 @@ export function PhotoSpotsMap() {
                 radius="sm"
                 variant="default"
                 leftSection={<IconLibraryPhoto size={18} color={theme.colors.amber[5]} />}
-                rightSection={
-                  upcomingCount > 0 ? (
-                    <Text
-                      component="span"
-                      fz="xs"
-                      fw={900}
-                      c="teal.9"
-                      bg="amber.5"
-                      px={6}
-                      miw={22}
-                      ta="center"
-                      style={{ borderRadius: 11, lineHeight: "22px" }}
-                    >
-                      {upcomingCount}
-                    </Text>
-                  ) : null
-                }
+                rightSection={upcomingCount > 0 ? <CountBadge count={upcomingCount} /> : null}
                 styles={{
                   root: {
                     backgroundColor: theme.colors.teal[7],
@@ -641,7 +626,7 @@ export function PhotoSpotsMap() {
                   section: { marginInlineStart: 8 },
                 }}
               >
-                Upcoming
+                Posts
               </Button>
               {CAN_EDIT_SPOTS && (
                 <Tooltip label="Add spot">

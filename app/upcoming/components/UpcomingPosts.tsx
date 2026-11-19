@@ -71,11 +71,11 @@ export function UpcomingPosts() {
           <IconChevronLeft size={24} />
         </ActionIcon>
         <Title order={1} fz="lg" c="teal.0">
-          Upcoming
+          Posts
         </Title>
         {CAN_EDIT_SPOTS ? (
           <ActionIcon
-            aria-label="Add an upcoming post"
+            aria-label="Add a post"
             onClick={() => setEditing(null)}
             size={44}
             variant="transparent"

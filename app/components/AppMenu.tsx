@@ -1,13 +1,27 @@
 "use client";
 
+import { api } from "@/app/providers";
 import { ActionIcon, Menu, useMantineTheme } from "@mantine/core";
 import { IconMenu2 } from "@tabler/icons-react";
 import Link from "next/link";
-import { APP_MENU_LINKS } from "./AppMenu.constants";
+import { B_ROLL_SHOTS } from "@/app/b-roll/components/BRollShots.constants";
+import { APP_MENU_LINKS, type AppMenuHref } from "./AppMenu.constants";
+import { CountBadge } from "./count-badge/CountBadge";
 
 // The map's menu button, beside the search bar, linking to the app's other pages.
 export function AppMenu() {
   const theme = useMantineTheme();
+  const { data: upNextSpots } = api.upNext.list.useQuery();
+  const { data: upcomingPosts } = api.upcomingPosts.list.useQuery();
+  const { data: reelSpots } = api.reels.spots.useQuery();
+
+  // How many things are on each page; blank until a list has loaded.
+  const counts: Record<AppMenuHref, number | undefined> = {
+    "/up-next": upNextSpots?.length,
+    "/upcoming": upcomingPosts?.length,
+    "/reels": reelSpots?.reduce((total, spot) => total + spot.reelCount, 0),
+    "/b-roll": B_ROLL_SHOTS.length,
+  };
 
   return (
     <Menu
@@ -46,6 +60,7 @@ export function AppMenu() {
             component={Link}
             href={href}
             leftSection={<Icon size={20} color="var(--mantine-color-amber-5)" />}
+            rightSection={counts[href] !== undefined && <CountBadge count={counts[href]} />}
           >
             {label}
           </Menu.Item>
