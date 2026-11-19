@@ -101,7 +101,6 @@ export const REEL_KINDS = [
   "humour",
   "still_frames",
   "location_reveal",
-  "series",
   "showcase",
   "pov",
 ] as const;

@@ -17,10 +17,9 @@ export const UPCOMING_REEL_TYPES = [
   "educational",
   "bts",
   "humour",
-  "still_frames",
   "location_reveal",
-  "series",
   "showcase",
+  "still_frames",
 ] as const;
 export type UpcomingReelType = (typeof UPCOMING_REEL_TYPES)[number];
 

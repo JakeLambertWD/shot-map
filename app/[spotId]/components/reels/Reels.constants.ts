@@ -36,10 +36,6 @@ export const REEL_KIND_COPY: Record<ReelKind, { emptyText: string; placeholder: 
     emptyText: "No location reveal reel ideas yet",
     placeholder: "e.g. Guess where this is, then pull back to show the station",
   },
-  series: {
-    emptyText: "No series reel ideas yet",
-    placeholder: "e.g. Hidden London spots #03",
-  },
   showcase: {
     emptyText: "No showcase reel ideas yet",
     placeholder: "e.g. The best 6 shots from this spot, cut to the beat",
@@ -56,10 +52,9 @@ export const REEL_TYPE_KINDS = [
   "educational",
   "bts",
   "humour",
-  "still_frames",
   "location_reveal",
-  "series",
   "showcase",
+  "still_frames",
 ] as const satisfies readonly ReelKind[];
 
 // Label and colours for each reel type's pill. Colours differ in lightness as well as hue.
@@ -91,12 +86,6 @@ export const REEL_TYPE_STYLES: Record<
     color: "#e07a9a",
     text: "#eea6bd",
     tint: "rgba(224, 122, 154, 0.12)",
-  },
-  series: {
-    label: "Series",
-    color: "#5fc4cc",
-    text: "#8fd9de",
-    tint: "rgba(95, 196, 204, 0.12)",
   },
   showcase: {
     label: "Showcase",
