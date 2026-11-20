@@ -1,6 +1,7 @@
 "use client";
 
 import { api } from "@/app/providers";
+import type { UpNextContent } from "@/lib/photo-spots";
 
 // The Up next list: spots to shoot in the near future, in order.
 export function useUpNext() {
@@ -11,6 +12,7 @@ export function useUpNext() {
   const add = api.upNext.add.useMutation({ onSuccess: refresh });
   const remove = api.upNext.remove.useMutation({ onSuccess: refresh });
   const reorder = api.upNext.reorder.useMutation();
+  const setContent = api.upNext.setContent.useMutation();
 
   const spots = list.data ?? [];
 
@@ -24,6 +26,14 @@ export function useUpNext() {
     reorder.mutate({ spotIds }, { onError: refresh });
   }
 
+  // Shows the spot's new content straight away, then saves it. On failure, reloads the list.
+  function saveContent(spotId: string, content: UpNextContent) {
+    utils.upNext.list.setData(undefined, (current) =>
+      current?.map((spot) => (spot.id === spotId ? { ...spot, content } : spot)),
+    );
+    setContent.mutate({ spotId, content }, { onError: refresh });
+  }
+
   return {
     list,
     spots,
@@ -31,6 +41,7 @@ export function useUpNext() {
     add: (spotId: string) => add.mutateAsync({ spotId }),
     remove: (spotId: string) => remove.mutateAsync({ spotId }),
     saveOrder,
+    saveContent,
     // The spot being added, so its row can show a loader.
     addingSpotId: add.isPending ? add.variables.spotId : null,
     removingSpotId: remove.isPending ? remove.variables.spotId : null,

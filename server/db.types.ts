@@ -113,6 +113,7 @@ export interface PhotoSpotTrialReel {
 }
 
 export interface PhotoSpotUpNext {
+  content: Generated<string>;
   created_at: Generated<Timestamp>;
   position: Generated<number>;
   spot_id: string;

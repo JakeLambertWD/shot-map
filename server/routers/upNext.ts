@@ -1,4 +1,4 @@
-import { SPOT_GEAR } from "@/lib/photo-spots";
+import { SPOT_GEAR, UP_NEXT_CONTENT } from "@/lib/photo-spots";
 import { TRPCError } from "@trpc/server";
 import { sql } from "kysely";
 import { z } from "zod";
@@ -15,6 +15,8 @@ const upNextSpotSchema = z.object({
   // Weather the spot suits, as on the map.
   tags: z.array(z.string()),
   coverImageUrl: z.string().nullable(),
+  // What the spot is being shot for: a reel, a carousel, or both.
+  content: z.enum(UP_NEXT_CONTENT),
 });
 
 export type UpNextSpot = z.infer<typeof upNextSpotSchema>;
@@ -35,6 +37,7 @@ export const upNextRouter = router({
         "s.longitude",
         "s.gear",
         "s.tags",
+        "u.content",
         // The spot's first Showcase photo, as on the map.
         eb
           .selectFrom("photo_spot_image")
@@ -94,6 +97,17 @@ export const upNextRouter = router({
     assertCanEdit();
     await getDb().deleteFrom("photo_spot_up_next").where("spot_id", "=", input.spotId).execute();
   }),
+
+  setContent: publicProcedure
+    .input(spotInput.extend({ content: z.enum(UP_NEXT_CONTENT) }))
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+      await getDb()
+        .updateTable("photo_spot_up_next")
+        .set({ content: input.content })
+        .where("spot_id", "=", input.spotId)
+        .execute();
+    }),
 
   // Saves the list's order: every spot on it, top first.
   reorder: publicProcedure

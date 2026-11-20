@@ -66,6 +66,10 @@ export function getSpotGearOption(gear: SpotGear) {
   return SPOT_GEAR_OPTIONS.find((option) => option.value === gear) ?? SPOT_GEAR_OPTIONS[0];
 }
 
+// What an Up next spot is being shot for.
+export const UP_NEXT_CONTENT = ["reel", "carousel", "both"] as const;
+export type UpNextContent = (typeof UP_NEXT_CONTENT)[number];
+
 // Only accept photos that were uploaded to this project's public Vercel Blob store.
 export function isSpotPhotoUrl(value: string) {
   try {

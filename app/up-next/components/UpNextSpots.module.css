@@ -1,0 +1,11 @@
+/* The title's link stretches over the spot's photo and text, so tapping anywhere there opens the
+   spot, while the buttons beside it stay tappable on their own. */
+.row {
+  position: relative;
+}
+
+.titleLink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
