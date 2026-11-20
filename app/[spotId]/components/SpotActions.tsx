@@ -1,6 +1,6 @@
 "use client";
 
-import { CAN_EDIT_SPOTS } from "@/lib/photo-spots";
+import { CAN_EDIT_SPOTS, type UpNextContent } from "@/lib/photo-spots";
 import type { SpotDetail } from "@/server/routers/spots";
 import { ActionIcon, Button, Group, Menu, Paper, Text, useMantineTheme } from "@mantine/core";
 import {
@@ -13,6 +13,7 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { UpNextContentModal } from "@/app/up-next/components/UpNextContentModal";
 import { useUpNext } from "@/app/up-next/useUpNext";
 import { DeleteSpotModal } from "./DeleteSpotButton";
 import { EditSpotModal } from "./EditSpotButton";
@@ -28,6 +29,7 @@ export function SpotActions({ spot }: SpotActionsProps) {
   const theme = useMantineTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [isChoosingUpNextContent, setIsChoosingUpNextContent] = useState(false);
   const upNext = useUpNext();
   const isUpNext = upNext.has(spot.id);
   // A message after adding or removing the spot, with a link to the list it changed.
@@ -40,25 +42,32 @@ export function SpotActions({ spot }: SpotActionsProps) {
     return () => clearTimeout(timer);
   }, [toast]);
 
+  // Adding asks what the spot is being shot for first; removing happens straight away.
   async function toggleUpNext() {
+    if (!isUpNext) {
+      setIsChoosingUpNextContent(true);
+      return;
+    }
     try {
-      if (isUpNext) {
-        await upNext.remove(spot.id);
-        setToast({ message: "Removed from Up next", href: "/up-next" });
-      } else {
-        await upNext.add(spot.id);
-        const count = upNext.spots.length + 1;
-        setToast({
-          message: `Added to Up next · ${count} ${count === 1 ? "spot" : "spots"}`,
-          href: "/up-next",
-        });
-      }
+      await upNext.remove(spot.id);
+      setToast({ message: "Removed from Up next", href: "/up-next" });
     } catch (error) {
       setToast({
         message: error instanceof Error ? error.message : "Couldn't update Up next",
         href: "/up-next",
       });
     }
+  }
+
+  // Errors stay in the modal, which shows them under the options.
+  async function addToUpNext(content: UpNextContent) {
+    await upNext.add(spot.id, content);
+    setIsChoosingUpNextContent(false);
+    const count = upNext.spots.length + 1;
+    setToast({
+      message: `Added to Up next · ${count} ${count === 1 ? "spot" : "spots"}`,
+      href: "/up-next",
+    });
   }
 
   return (
@@ -156,6 +165,12 @@ export function SpotActions({ spot }: SpotActionsProps) {
 
       {CAN_EDIT_SPOTS && (
         <>
+          <UpNextContentModal
+            opened={isChoosingUpNextContent}
+            onClose={() => setIsChoosingUpNextContent(false)}
+            spotTitle={spot.title}
+            onPick={addToUpNext}
+          />
           <EditSpotModal spot={spot} opened={isEditing} onClose={() => setIsEditing(false)} />
           <DeleteSpotModal
             spotId={spot.id}

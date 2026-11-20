@@ -25,7 +25,7 @@ import { isInUpNextTab, UP_NEXT_TABS, type UpNextTab } from "./UpNext.constants"
 import { UpNextSpotCard } from "./UpNextSpotCard";
 
 // The Up next page: spots to shoot in the near future, as cards like the Posts page. Spots are
-// added from here or from a spot's menu, join the bottom of the list, and can be dragged into the
+// added from here or from a spot's menu, join the top of the list, and can be dragged into the
 // order they'll be shot. The tabs narrow the list to spots shot for a carousel or a reel.
 export function UpNextSpots() {
   const upNext = useUpNext();
@@ -167,8 +167,9 @@ export function UpNextSpots() {
           opened={isAdding}
           onClose={() => setIsAdding(false)}
           upNextSpotIds={spots.map((spot) => spot.id)}
-          onAdd={upNext.add}
-          addingSpotId={upNext.addingSpotId}
+          onAdd={async (spotId, content) => {
+            await upNext.add(spotId, content);
+          }}
         />
       )}
     </Container>

@@ -50,10 +50,25 @@ export function matchesSpotSearch(
 // The choices for what an Up next spot is being shot for, in menu order. A carousel is shown as
 // a camera and a reel as a video camera.
 export const UP_NEXT_CONTENT_OPTIONS = [
-  { value: "reel", label: "Reel", icons: [IconVideo] },
-  { value: "carousel", label: "Carousel", icons: [IconCamera] },
-  { value: "both", label: "Both", icons: [IconCamera, IconVideo] },
-] as const satisfies readonly { value: UpNextContent; label: string; icons: readonly Icon[] }[];
+  {
+    value: "carousel",
+    label: "Carousel",
+    description: "Photos for a carousel",
+    icons: [IconCamera],
+  },
+  { value: "reel", label: "Reel", description: "Clips for a reel", icons: [IconVideo] },
+  {
+    value: "both",
+    label: "Both",
+    description: "Photos and clips",
+    icons: [IconCamera, IconVideo],
+  },
+] as const satisfies readonly {
+  value: UpNextContent;
+  label: string;
+  description: string;
+  icons: readonly Icon[];
+}[];
 
 export function getUpNextContentOption(content: UpNextContent) {
   return (

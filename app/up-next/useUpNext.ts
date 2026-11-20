@@ -38,12 +38,10 @@ export function useUpNext() {
     list,
     spots,
     has: (spotId: string) => spots.some((spot) => spot.id === spotId),
-    add: (spotId: string) => add.mutateAsync({ spotId }),
+    add: (spotId: string, content: UpNextContent) => add.mutateAsync({ spotId, content }),
     remove: (spotId: string) => remove.mutateAsync({ spotId }),
     saveOrder,
     saveContent,
-    // The spot being added, so its row can show a loader.
-    addingSpotId: add.isPending ? add.variables.spotId : null,
     removingSpotId: remove.isPending ? remove.variables.spotId : null,
   };
 }

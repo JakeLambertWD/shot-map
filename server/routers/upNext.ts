@@ -55,43 +55,50 @@ export const upNextRouter = router({
     return z.array(upNextSpotSchema).parse(rows);
   }),
 
-  // Adds the spot to the end of the list. Adding it twice does nothing.
-  add: publicProcedure.input(spotInput).mutation(async ({ input }) => {
-    assertCanEdit();
-    const db = getDb();
+  // Adds the spot to the top of the list, shot for a reel, a carousel or both, by placing it one
+  // above the current first spot (positions can go below zero until the list is next reordered).
+  // Adding it twice does nothing.
+  add: publicProcedure
+    .input(spotInput.extend({ content: z.enum(UP_NEXT_CONTENT) }))
+    .mutation(async ({ input }) => {
+      assertCanEdit();
+      const db = getDb();
 
-    const added = await db
-      .insertInto("photo_spot_up_next")
-      .columns(["spot_id", "position"])
-      .expression((eb) =>
-        eb
-          .selectFrom("photo_spot as spot")
-          .select((eb) => [
-            "spot.id",
-            eb(
-              eb.fn.coalesce(
-                eb.selectFrom("photo_spot_up_next").select((eb) => eb.fn.max("position").as("max")),
-                eb.lit(-1),
-              ),
-              "+",
-              1,
-            ).as("position"),
-          ])
-          .where("spot.id", "=", input.spotId),
-      )
-      .onConflict((oc) => oc.column("spot_id").doNothing())
-      .returning("spot_id")
-      .executeTakeFirst();
-
-    if (!added) {
-      const spot = await db
-        .selectFrom("photo_spot")
-        .select("id")
-        .where("id", "=", input.spotId)
+      const added = await db
+        .insertInto("photo_spot_up_next")
+        .columns(["spot_id", "position", "content"])
+        .expression((eb) =>
+          eb
+            .selectFrom("photo_spot as spot")
+            .select((eb) => [
+              "spot.id",
+              eb(
+                eb.fn.coalesce(
+                  eb
+                    .selectFrom("photo_spot_up_next")
+                    .select((eb) => eb.fn.min("position").as("min")),
+                  eb.lit(1),
+                ),
+                "-",
+                1,
+              ).as("position"),
+              eb.val(input.content).as("content"),
+            ])
+            .where("spot.id", "=", input.spotId),
+        )
+        .onConflict((oc) => oc.column("spot_id").doNothing())
+        .returning("spot_id")
         .executeTakeFirst();
-      if (!spot) throw new TRPCError({ code: "NOT_FOUND", message: "Spot not found." });
-    }
-  }),
+
+      if (!added) {
+        const spot = await db
+          .selectFrom("photo_spot")
+          .select("id")
+          .where("id", "=", input.spotId)
+          .executeTakeFirst();
+        if (!spot) throw new TRPCError({ code: "NOT_FOUND", message: "Spot not found." });
+      }
+    }),
 
   remove: publicProcedure.input(spotInput).mutation(async ({ input }) => {
     assertCanEdit();
