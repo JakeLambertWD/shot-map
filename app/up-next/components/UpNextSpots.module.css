@@ -1,5 +1,6 @@
-/* The title's link stretches over the spot's photo and text, so tapping anywhere there opens the
-   spot, while the buttons beside it stay tappable on their own. */
+/* The title's link stretches over the whole card, so tapping anywhere on it opens the spot.
+   Anything marked raised, like the content dropdown, sits above it and stays tappable on its own;
+   the menu and the number are positioned after the link, so they already do. */
 .row {
   position: relative;
 }
@@ -8,4 +9,9 @@
   content: "";
   position: absolute;
   inset: 0;
+}
+
+.raised {
+  position: relative;
+  z-index: 1;
 }

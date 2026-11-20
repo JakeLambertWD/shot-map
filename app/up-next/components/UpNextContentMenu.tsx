@@ -6,6 +6,7 @@ import { IconCheck, IconChevronDown } from "@tabler/icons-react";
 import { getUpNextContentOption, UP_NEXT_CONTENT_OPTIONS } from "./UpNext.constants";
 
 type UpNextContentMenuProps = {
+  className?: string;
   spotTitle: string;
   content: UpNextContent;
   onChange: (content: UpNextContent) => void;
@@ -13,33 +14,39 @@ type UpNextContentMenuProps = {
 
 // What an Up next spot is being shot for, as icons in an outlined button: a camera for a
 // carousel, a video camera for a reel, or both. Tapping it opens a menu to switch.
-export function UpNextContentMenu({ spotTitle, content, onChange }: UpNextContentMenuProps) {
+export function UpNextContentMenu({
+  className,
+  spotTitle,
+  content,
+  onChange,
+}: UpNextContentMenuProps) {
   const current = getUpNextContentOption(content);
 
   const button = (
     <UnstyledButton
+      className={className}
       aria-label={`${spotTitle} is for: ${current.label}${CAN_EDIT_SPOTS ? ", change" : ""}`}
       disabled={!CAN_EDIT_SPOTS}
-      h={40}
-      px="sm"
-      bdrs="md"
+      h={24}
+      px={8}
+      bdrs="sm"
       c="amber.5"
       style={{
         flexShrink: 0,
         border: "1px solid var(--mantine-color-teal-4)",
         display: "flex",
         alignItems: "center",
-        gap: 10,
+        gap: 6,
         cursor: CAN_EDIT_SPOTS ? "pointer" : "default",
       }}
     >
-      <Group gap={8} wrap="nowrap" aria-hidden>
+      <Group gap={6} wrap="nowrap" aria-hidden>
         {current.icons.map((Icon, index) => (
-          <Icon key={index} size={18} stroke={1.75} />
+          <Icon key={index} size={14} stroke={1.75} />
         ))}
       </Group>
       {CAN_EDIT_SPOTS && (
-        <IconChevronDown size={14} stroke={2} color="var(--mantine-color-teal-1)" aria-hidden />
+        <IconChevronDown size={12} stroke={2} color="var(--mantine-color-teal-1)" aria-hidden />
       )}
     </UnstyledButton>
   );
@@ -47,7 +54,7 @@ export function UpNextContentMenu({ spotTitle, content, onChange }: UpNextConten
   if (!CAN_EDIT_SPOTS) return button;
 
   return (
-    <Menu position="bottom-end" width={200} radius="md" shadow="md">
+    <Menu position="bottom-start" width={200} radius="md" shadow="md">
       <Menu.Target>{button}</Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>Shooting for</Menu.Label>

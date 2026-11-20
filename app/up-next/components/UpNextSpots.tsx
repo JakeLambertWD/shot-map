@@ -1,9 +1,7 @@
 "use client";
 
-import { getSpotTabHref } from "@/app/[spotId]/components/SpotContentTabs.constants";
-import { formatSpotLocation } from "@/app/components/sortable-spots/SortableSpots.constants";
-import { SortableSpotList } from "@/app/components/sortable-spots/SortableSpotList";
-import { SpotThumbnail } from "@/app/components/sortable-spots/SpotThumbnail";
+import { TabChips } from "@/app/components/tab-chips/TabChips";
+import { UpcomingPostList } from "@/app/upcoming/components/UpcomingPostList";
 import { CAN_EDIT_SPOTS } from "@/lib/photo-spots";
 import {
   ActionIcon,
@@ -13,42 +11,29 @@ import {
   Container,
   Group,
   Loader,
-  Menu,
-  SegmentedControl,
   Stack,
+  Tabs,
   Text,
   Title,
 } from "@mantine/core";
-import {
-  IconChevronLeft,
-  IconDots,
-  IconListNumbers,
-  IconPlus,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconChevronLeft, IconListNumbers, IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useUpNext } from "../useUpNext";
 import { AddUpNextSpotsModal } from "./AddUpNextSpotsModal";
-import { getSpotChips, isInUpNextTab, UP_NEXT_TABS, type UpNextTab } from "./UpNext.constants";
-import { UpNextContentMenu } from "./UpNextContentMenu";
-import classes from "./UpNextSpots.module.css";
+import { isInUpNextTab, UP_NEXT_TABS, type UpNextTab } from "./UpNext.constants";
+import { UpNextSpotCard } from "./UpNextSpotCard";
 
-const CARD_BACKGROUND = "var(--mantine-color-teal-6)";
-const CARD_BORDER = "1px solid var(--mantine-color-teal-4)";
-
-// The Up next page: spots to shoot in the near future, in a card. Spots are added from here or
-// from a spot's menu, join the bottom of the list, and can be dragged into the order they'll be
-// shot. The tabs narrow the list to spots shot for a carousel or a reel.
+// The Up next page: spots to shoot in the near future, as cards like the Posts page. Spots are
+// added from here or from a spot's menu, join the bottom of the list, and can be dragged into the
+// order they'll be shot. The tabs narrow the list to spots shot for a carousel or a reel.
 export function UpNextSpots() {
   const upNext = useUpNext();
   const { isPending, isError, error } = upNext.list;
   const { spots } = upNext;
-  const [tab, setTab] = useState<UpNextTab>("all");
+  const [activeTab, setActiveTab] = useState<UpNextTab>("all");
   const [isAdding, setIsAdding] = useState(false);
   const [removeError, setRemoveError] = useState<string | null>(null);
-
-  const shownSpots = spots.filter((spot) => isInUpNextTab(spot.content, tab));
 
   async function remove(spotId: string) {
     setRemoveError(null);
@@ -61,183 +46,121 @@ export function UpNextSpots() {
     }
   }
 
+  const tabs = UP_NEXT_TABS.map((tab) => ({
+    ...tab,
+    count: spots.filter((spot) => isInUpNextTab(spot.content, tab.id)).length,
+  }));
+
   return (
-    <Container size="30rem" px="md" py="sm" pb="xxl" w="100%">
-      <ActionIcon
-        component={Link}
-        href="/"
-        aria-label="Back to map"
-        variant="subtle"
-        color="teal.0"
-        size={44}
-        ml={-10}
-        mb="xs"
-      >
-        <IconChevronLeft size={24} />
-      </ActionIcon>
-
-      <Box bg={CARD_BACKGROUND} bdrs="xxl" style={{ border: CARD_BORDER, overflow: "hidden" }}>
-        <Stack gap="md" p="lg" pb="md" style={{ borderBottom: CARD_BORDER }}>
-          <Group justify="space-between" align="flex-start" wrap="nowrap">
-            <Stack gap={2} miw={0}>
-              <Title order={1} fz={28} lh={1.2} fw={800} c="teal.0">
-                Up next
-              </Title>
-              <Text fz="sm" c="teal.1">
-                {spots.length} {spots.length === 1 ? "spot" : "spots"} to shoot
-              </Text>
-            </Stack>
-            {CAN_EDIT_SPOTS && (
-              <Button
-                size="md"
-                radius="md"
-                leftSection={<IconPlus size={18} />}
-                onClick={() => setIsAdding(true)}
-                autoContrast
-                style={{ flexShrink: 0 }}
-              >
-                Add spot
-              </Button>
-            )}
-          </Group>
-
-          <SegmentedControl
-            fullWidth
-            size="md"
-            radius="md"
-            aria-label="Show spots for"
-            data={[...UP_NEXT_TABS]}
-            value={tab}
-            onChange={(value) => setTab(value as UpNextTab)}
-            color="teal.4"
-            bg="teal.7"
-            styles={{ label: { fontWeight: 700 } }}
-          />
-        </Stack>
-
-        {removeError && (
-          <Text fz="sm" c="red.5" px="lg" pt="sm" role="alert">
-            {removeError}
-          </Text>
-        )}
-
-        {isPending ? (
-          <Center mih={240}>
-            <Loader color="amber" />
-          </Center>
-        ) : isError ? (
-          <Text c="red.5" p="lg" role="alert">
-            {error.message}
-          </Text>
-        ) : spots.length === 0 ? (
-          <Stack mih={280} align="center" justify="center" gap="sm" px="xl" ta="center">
-            <IconListNumbers size={40} stroke={1.5} color="var(--mantine-color-teal-2)" />
-            <Text fw={700} c="teal.0">
-              Nothing up next yet
-            </Text>
-            <Text fz="sm" c="teal.1">
-              Add the spots you want to shoot soon, then drag them into order.
-            </Text>
-          </Stack>
-        ) : shownSpots.length === 0 ? (
-          <Center mih={200} px="xl" ta="center" fz="sm" c="teal.1">
-            No spots up next for a {tab} yet
-          </Center>
+    <Container size="30rem" px={0} pb="xxl" w="100%">
+      <Group justify="space-between" wrap="nowrap" px="xs" my="sm">
+        <ActionIcon
+          component={Link}
+          href="/"
+          aria-label="Back to map"
+          variant="subtle"
+          color="teal.0"
+          size={44}
+        >
+          <IconChevronLeft size={24} />
+        </ActionIcon>
+        <Title order={1} fz="lg" c="teal.0">
+          Up next
+        </Title>
+        {CAN_EDIT_SPOTS ? (
+          <ActionIcon
+            aria-label="Add spots to Up next"
+            onClick={() => setIsAdding(true)}
+            size={44}
+            variant="transparent"
+          >
+            <Center w={32} h={32} bg="amber.5" style={{ borderRadius: 16 }}>
+              <IconPlus size={18} stroke={2.8} color="var(--mantine-color-teal-9)" />
+            </Center>
+          </ActionIcon>
         ) : (
-          <Box pb="xl">
-            <SortableSpotList
-              spots={shownSpots}
-              // Only the full list can be reordered, so a filtered list never saves a partial order.
-              canReorder={CAN_EDIT_SPOTS && tab === "all"}
-              onReorder={upNext.saveOrder}
-              handleSide="start"
-              rowBackground={CARD_BACKGROUND}
-              renderSpot={(spot) => {
-                const chips = getSpotChips(spot);
-                return (
-                  <>
-                    <Group wrap="nowrap" gap="md" py="md" flex={1} miw={0} className={classes.row}>
-                      <SpotThumbnail coverImageUrl={spot.coverImageUrl} />
-                      <Stack gap={2} flex={1} miw={0}>
-                        <Text
-                          renderRoot={(props) => (
-                            <Link
-                              href={getSpotTabHref(spot.id, "showcase", "up-next")}
-                              {...props}
-                            />
-                          )}
-                          className={classes.titleLink}
-                          fw={700}
-                          c="teal.0"
-                          td="none"
-                          truncate
-                        >
-                          {spot.title}
-                        </Text>
-                        <Text fz="xs" c="teal.1" truncate>
-                          {formatSpotLocation(spot)}
-                        </Text>
-                        {chips.length > 0 && (
-                          <Group gap={6} mt={6}>
-                            {chips.map(({ label, icon: Icon }) => (
-                              <Group
-                                key={label}
-                                gap={4}
-                                wrap="nowrap"
-                                h={24}
-                                px={8}
-                                bdrs="sm"
-                                bg="teal.4"
-                                fz="xs"
-                                fw={700}
-                                c="teal.0"
-                              >
-                                {Icon && <Icon size={13} stroke={1.75} aria-hidden />}
-                                {label}
-                              </Group>
-                            ))}
-                          </Group>
-                        )}
-                      </Stack>
-                    </Group>
-                    <UpNextContentMenu
-                      spotTitle={spot.title}
-                      content={spot.content}
-                      onChange={(content) => upNext.saveContent(spot.id, content)}
-                    />
-                    {CAN_EDIT_SPOTS && (
-                      <Menu position="bottom-end" width={220} radius="md" shadow="md">
-                        <Menu.Target>
-                          <ActionIcon
-                            aria-label={`More for ${spot.title}`}
-                            variant="subtle"
-                            color="teal.1"
-                            size={44}
-                            loading={upNext.removingSpotId === spot.id}
-                            style={{ flexShrink: 0 }}
-                          >
-                            <IconDots size={20} />
-                          </ActionIcon>
-                        </Menu.Target>
-                        <Menu.Dropdown>
-                          <Menu.Item
-                            color="red"
-                            mih={44}
-                            leftSection={<IconTrash size={16} />}
-                            onClick={() => remove(spot.id)}
-                          >
-                            Remove from Up next
-                          </Menu.Item>
-                        </Menu.Dropdown>
-                      </Menu>
-                    )}
-                  </>
-                );
-              }}
-            />
-          </Box>
+          <Box w={44} />
         )}
-      </Box>
+      </Group>
+
+      {isPending ? (
+        <Center mih="50vh">
+          <Loader color="amber" />
+        </Center>
+      ) : isError ? (
+        <Text c="red.5" px="md" role="alert">
+          {error.message}
+        </Text>
+      ) : spots.length === 0 ? (
+        <Stack mih="60vh" align="center" justify="center" gap="sm" px="xl" ta="center">
+          <IconListNumbers size={40} stroke={1.5} color="var(--mantine-color-teal-2)" />
+          <Text fw={700} c="teal.0">
+            Nothing up next yet
+          </Text>
+          <Text fz="sm" c="teal.1">
+            Add the spots you want to shoot soon, then drag them into order.
+          </Text>
+          {CAN_EDIT_SPOTS && (
+            <Button
+              mt="xs"
+              h={48}
+              radius="sm"
+              leftSection={<IconPlus size={18} />}
+              onClick={() => setIsAdding(true)}
+              autoContrast
+            >
+              Add spots
+            </Button>
+          )}
+        </Stack>
+      ) : (
+        <Tabs
+          value={activeTab}
+          onChange={(tab) => tab && setActiveTab(tab as UpNextTab)}
+          variant="pills"
+        >
+          <TabChips tabs={tabs} value={activeTab} ariaLabel="Show spots for" />
+
+          {removeError && (
+            <Text fz="sm" c="red.5" px="md" pb="sm" role="alert">
+              {removeError}
+            </Text>
+          )}
+
+          {UP_NEXT_TABS.map((tab) => {
+            const tabSpots = spots.filter((spot) => isInUpNextTab(spot.content, tab.id));
+            return (
+              <Tabs.Panel key={tab.id} value={tab.id}>
+                {tabSpots.length === 0 ? (
+                  <Center px="lg" pt="xl" fz="sm" c="teal.1" ta="center">
+                    No spots up next for {tab.label.toLowerCase()} yet
+                  </Center>
+                ) : (
+                  <Box px="md" pt={4}>
+                    <UpcomingPostList
+                      posts={tabSpots}
+                      // Only the full list can be reordered, so a narrowed list never saves a
+                      // partial order.
+                      canReorder={CAN_EDIT_SPOTS && tab.id === "all"}
+                      onReorder={upNext.saveOrder}
+                      renderPost={(spot, number, dragHandle) => (
+                        <UpNextSpotCard
+                          spot={spot}
+                          number={number}
+                          dragHandle={dragHandle}
+                          onContentChange={(content) => upNext.saveContent(spot.id, content)}
+                          onRemove={() => remove(spot.id)}
+                          isRemoving={upNext.removingSpotId === spot.id}
+                        />
+                      )}
+                    />
+                  </Box>
+                )}
+              </Tabs.Panel>
+            );
+          })}
+        </Tabs>
+      )}
 
       {CAN_EDIT_SPOTS && (
         <AddUpNextSpotsModal

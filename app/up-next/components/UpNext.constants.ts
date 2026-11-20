@@ -61,14 +61,14 @@ export function getUpNextContentOption(content: UpNextContent) {
   );
 }
 
-// The page's tabs. A spot shot for both shows under Carousel and Reel.
+// The page's tabs. A spot shot for both shows under Carousels and Reels.
 export const UP_NEXT_TABS = [
-  { value: "all", label: "All" },
-  { value: "carousel", label: "Carousel" },
-  { value: "reel", label: "Reel" },
+  { id: "all", label: "All" },
+  { id: "carousel", label: "Carousels" },
+  { id: "reel", label: "Reels" },
 ] as const;
 
-export type UpNextTab = (typeof UP_NEXT_TABS)[number]["value"];
+export type UpNextTab = (typeof UP_NEXT_TABS)[number]["id"];
 
 export function isInUpNextTab(content: UpNextContent, tab: UpNextTab) {
   return tab === "all" || content === tab || content === "both";

@@ -1,17 +1,17 @@
 "use client";
 
-import type { UpcomingPost } from "@/server/routers/upcomingPosts";
 import { Reorder, useDragControls } from "motion/react";
 import { useRef, useState, type ReactNode } from "react";
 import type { UpcomingPostDragHandle } from "./UpcomingPostNumber";
 
-type UpcomingPostListProps = {
-  posts: UpcomingPost[];
+// Anything with an id: Upcoming Posts here, and Up next's spots.
+type UpcomingPostListProps<Post extends { id: string }> = {
+  posts: Post[];
   canReorder: boolean;
   // Called once a post is dropped somewhere new, with every post's id in the new order.
   onReorder: (postIds: string[]) => void;
   renderPost: (
-    post: UpcomingPost,
+    post: Post,
     number: number,
     dragHandle: UpcomingPostDragHandle | undefined,
   ) => ReactNode;
@@ -26,12 +26,12 @@ function moveItem<T>(items: T[], from: number, to: number) {
 
 // One tab's posts. When they can be reordered, each card's number is a handle for dragging it
 // into a new place; the others slide out of the way and the page scrolls near the edges.
-export function UpcomingPostList({
+export function UpcomingPostList<Post extends { id: string }>({
   posts,
   canReorder,
   onReorder,
   renderPost,
-}: UpcomingPostListProps) {
+}: UpcomingPostListProps<Post>) {
   // The order shown while a post is being dragged; null the rest of the time.
   const [dragOrder, setDragOrder] = useState<string[] | null>(null);
   const dragOrderRef = useRef<string[] | null>(null);

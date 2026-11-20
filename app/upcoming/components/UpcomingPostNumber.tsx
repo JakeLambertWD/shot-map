@@ -24,13 +24,20 @@ type UpcomingPostNumberProps = {
   postId: string;
   number: number;
   dragHandle?: UpcomingPostDragHandle;
+  // What the card is, for the handle's label. Defaults to "Post".
+  itemName?: string;
 };
 
 // A post's place in its tab's list, pinned to the bottom right of its card so it sits on the same
 // line as the card's last row of text. The card must be positioned, and keep that text
 // UPCOMING_POST_NUMBER_GUTTER clear of its right edge. With a drag handle it's also the grip for
 // dragging the post into a new place.
-export function UpcomingPostNumber({ postId, number, dragHandle }: UpcomingPostNumberProps) {
+export function UpcomingPostNumber({
+  postId,
+  number,
+  dragHandle,
+  itemName = "Post",
+}: UpcomingPostNumberProps) {
   const label = (
     <Center w={SIZE} h={SIZE} c="amber.5" fz={11} fw={900}>
       {number}
@@ -55,7 +62,7 @@ export function UpcomingPostNumber({ postId, number, dragHandle }: UpcomingPostN
   return (
     <UnstyledButton
       data-drag-handle={postId}
-      aria-label={`Post ${number}. Drag, or press Alt and an arrow key, to move it`}
+      aria-label={`${itemName} ${number}. Drag, or press Alt and an arrow key, to move it`}
       onPointerDown={dragHandle.onPointerDown}
       onKeyDown={handleKeyDown}
       pos="absolute"

@@ -13,16 +13,9 @@ type SortableSpotListProps<Spot extends SortableSpot> = {
   canReorder: boolean;
   // Called once a spot is dropped somewhere new, with every spot's id in the new order.
   onReorder: (spotIds: string[]) => void;
-  // The row's content, shown beside its drag handle.
+  // The row's content, shown before its drag handle.
   renderSpot: (spot: Spot) => ReactNode;
-  // Which side of the row the drag handle sits on. Defaults to the end.
-  handleSide?: HandleSide;
-  // The rows' background, which covers the rows underneath while one is dragged. Defaults to the
-  // page's.
-  rowBackground?: string;
 };
-
-type HandleSide = "start" | "end";
 
 // A list of spots, one per row. When they can be reordered, each row's grip is a handle for
 // dragging it into a new place; the others slide out of the way.
@@ -31,8 +24,6 @@ export function SortableSpotList<Spot extends SortableSpot>({
   canReorder,
   onReorder,
   renderSpot,
-  handleSide = "end",
-  rowBackground = "var(--background)",
 }: SortableSpotListProps<Spot>) {
   // The order shown while a spot is being dragged; null the rest of the time.
   const [dragOrder, setDragOrder] = useState<string[] | null>(null);
@@ -91,8 +82,6 @@ export function SortableSpotList<Spot extends SortableSpot>({
             canReorder={canReorder && spots.length > 1}
             onDragEnd={handleDragEnd}
             onMove={(step) => move(id, step)}
-            handleSide={handleSide}
-            background={rowBackground}
           >
             {renderSpot(spot)}
           </SortableSpotRow>
@@ -109,8 +98,6 @@ type SortableSpotRowProps = {
   onDragEnd: () => void;
   // Alt + up or down arrow moves the spot one place.
   onMove: (step: -1 | 1) => void;
-  handleSide: HandleSide;
-  background: string;
   children: ReactNode;
 };
 
@@ -120,8 +107,6 @@ function SortableSpotRow({
   canReorder,
   onDragEnd,
   onMove,
-  handleSide,
-  background,
   children,
 }: SortableSpotRowProps) {
   const dragControls = useDragControls();
@@ -132,35 +117,6 @@ function SortableSpotRow({
     event.preventDefault();
     onMove(step);
   }
-
-  const handle = canReorder && (
-    <UnstyledButton
-      data-drag-handle={spotId}
-      aria-label={`Move ${title}. Drag, or press Alt and an arrow key`}
-      onPointerDown={(event) => {
-        if (event.pointerType === "mouse" && event.button !== 0) return;
-        dragControls.start(event);
-      }}
-      onKeyDown={handleKeyDown}
-      // Narrower at the start, where the row's edge leaves no room to spare.
-      w={handleSide === "start" ? 28 : 44}
-      h={SPOT_THUMBNAIL_SIZE}
-      ml={handleSide === "end" ? 4 : 0}
-      mr={handleSide === "start" ? 4 : 0}
-      // Stop the page scrolling, or a long press opening a menu, when a finger grabs it.
-      style={{
-        flexShrink: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: handleSide === "end" ? "flex-end" : "flex-start",
-        cursor: "grab",
-        touchAction: "none",
-        WebkitTouchCallout: "none",
-      }}
-    >
-      <IconGripVertical size={18} color="var(--mantine-color-teal-2)" aria-hidden />
-    </UnstyledButton>
-  );
 
   return (
     <Reorder.Item
@@ -177,12 +133,37 @@ function SortableSpotRow({
         alignItems: "center",
         borderBottom: SPOT_ROW_DIVIDER,
         // Covers the rows underneath while it's dragged over them.
-        backgroundColor: background,
+        backgroundColor: "var(--background)",
       }}
     >
-      {handleSide === "start" && handle}
       {children}
-      {handleSide === "end" && handle}
+
+      {canReorder && (
+        <UnstyledButton
+          data-drag-handle={spotId}
+          aria-label={`Move ${title}. Drag, or press Alt and an arrow key`}
+          onPointerDown={(event) => {
+            if (event.pointerType === "mouse" && event.button !== 0) return;
+            dragControls.start(event);
+          }}
+          onKeyDown={handleKeyDown}
+          w={44}
+          h={SPOT_THUMBNAIL_SIZE}
+          ml={4}
+          // Stop the page scrolling, or a long press opening a menu, when a finger grabs it.
+          style={{
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            cursor: "grab",
+            touchAction: "none",
+            WebkitTouchCallout: "none",
+          }}
+        >
+          <IconGripVertical size={18} color="var(--mantine-color-teal-2)" aria-hidden />
+        </UnstyledButton>
+      )}
     </Reorder.Item>
   );
 }
